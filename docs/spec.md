@@ -48,26 +48,25 @@ Every card, every Life Choices option, and every decision log event carries one 
 
 The engine enforces this order; no step can be skipped by hand.
 
-1. Roll one six-sided die and move that many spaces.
-2. Credit monthly cash flow for each Payday space passed or landed on during the move. Each Payday also grows the player's growth assets (see Growth assets) and writes a paydaySnapshot log event.
+Every turn is one month. A round is one month for the whole family, so a 15-round game is 15 months.
+
+1. Payday: at the start of every turn, before the roll, the engine credits the player's monthly cash flow (salary plus passive income minus totalExpenses), grows their growth assets (see Growth assets), and writes a paydaySnapshot log event. A player is paid every month, like real life, not only when they land on a space. A turn skipped by a Setback still gets its Payday.
+2. Roll one six-sided die and move that many spaces.
 3. Resolve the space landed on.
 4. Optional actions: repay a loan in full or cancel a subscription (REPAY, never a mortgage), sell shares of a stock when that stock's card is drawn again, or borrow from the bank in $1,000 increments at 10 percent of principal per month. BORROW is legal when pending is none, buyOrPass, or lifeChoice; it adds the cash and the bank liability and leaves the same decision open. In every other pending state BORROW is rejected. REPAY is legal only when no decision is pending. Kids mode never allows BORROW.
 5. END_TURN: the engine checks escape and the round limit, then advances to the next player.
 
 ### Board
 
-24 spaces. **Proposed** mix and order (Stage D may change the mix, still 24 spaces):
+24 spaces. There are no Payday spaces; Payday happens every turn (decided 2026-10-23, Q1). **Proposed** mix and order (Stage D may change the mix, still 24 spaces):
 
 | Space | Count | Positions (proposed) |
 | --- | --- | --- |
-| Payday | 4 | 0, 6, 12, 18 |
-| Opportunity | 8 | 1, 4, 7, 10, 13, 16, 19, 22 |
-| Life Choices | 5 | 2, 8, 14, 17, 21 |
-| Market | 4 | 3, 9, 15, 23 |
-| Giving | 2 | 5, 20 |
-| Setback | 1 | 11 |
-
-v1 had 2 Payday spaces. With a 15-round limit that gave about 4 Paydays a game, too few for investments to matter. Four Payday spaces give about 9 (see open question Q1).
+| Opportunity | 10 | 0, 3, 5, 8, 10, 13, 15, 18, 20, 23 |
+| Life Choices | 6 | 1, 7, 11, 14, 19, 22 |
+| Market | 4 | 2, 9, 16, 21 |
+| Giving | 2 | 4, 17 |
+| Setback | 2 | 6, 12 |
 
 ### Professions
 
@@ -94,7 +93,7 @@ Landing on Setback draws a Setback card and pays its cashCost immediately; there
 
 ### Bankruptcy (v1, kept)
 
-A player who cannot cover a required payment sells assets at half price until covered. Setback costs are always covered by auto-borrowing, so the payment that triggers bankruptcy is a Payday whose negative cash flow would take cash below zero. Sales are automatic: assets are sold in order of lowest monthly cash flow first, ties broken by lowest purchasePrice, each at pct(purchasePrice, 50) (growth assets at pct(marketValue, 50)), until cash is zero or more. Proceeds pay off the asset's linked mortgage first and the player keeps the rest. A sold deal card returns to its deck's discard pile; a stock lot or growth asset simply disappears. If all assets are gone and cash is still below zero, the player is out: isOut is set, cash is set to 0, and the player takes no further turns.
+A player who cannot cover a required payment sells assets at half price until covered. Setback costs are always covered by auto-borrowing, so the payment that triggers bankruptcy is a turn's Payday whose negative cash flow would take cash below zero. Sales are automatic: assets are sold in order of lowest monthly cash flow first, ties broken by lowest purchasePrice, each at pct(purchasePrice, 50) (growth assets at pct(marketValue, 50)), until cash is zero or more. Proceeds pay off the asset's linked mortgage first and the player keeps the rest. A sold deal card returns to its deck's discard pile; a stock lot or growth asset simply disappears. If all assets are gone and cash is still below zero, the player is out: isOut is set, cash is set to 0, and the player takes no further turns.
 
 ## Kids mode
 
@@ -135,7 +134,7 @@ Savings accounts, CDs, and index funds are growth assets. They teach compounding
 
 - Bought with cash only. The player chooses an amount in $100 steps between the card's minimum and their cash.
 - The asset stores marketValue (starts at the amount invested), plus growthPercent and payoutPercent from the card.
-- At each Payday the owner receives, marketValue grows by pct(marketValue, growthPercent). This happens before cash flow is credited.
+- At each Payday (every turn), marketValue grows by pct(marketValue, growthPercent). This happens before cash flow is credited.
 - The asset's monthly cash flow is derived, never stored: pct(marketValue, payoutPercent). As the value compounds, the payout grows with it.
 - **Proposed ranges:** savings growthPercent 1, payoutPercent 0; CD growthPercent 2, payoutPercent 1; index fund growthPercent 3 to 5, payoutPercent 1. Stage D tunes within growthPercent 1 to 6 and payoutPercent 0 to 2.
 - Market cards can move marketValue with changeMarketValue (a crash or a boom).
@@ -207,7 +206,7 @@ Sections, in this order:
 
 Winners see sections 4 and 5 too.
 
-Attribution rules. "Paydays afterward" means the player's paydaySnapshot events after the decision.
+Attribution rules. "Paydays afterward" means the player's paydaySnapshot events after the decision, which is the number of months the decision kept paying or costing.
 
 | Decision | Dollar impact | Helped or hurt | Principles |
 | --- | --- | --- | --- |
@@ -270,8 +269,8 @@ Each has a recommended default. Stage B uses the default unless Andre overrules 
 
 | # | Question | Recommended default |
 | --- | --- | --- |
-| Q1 | How often is Payday? | 4 Payday spaces (every 6 spaces), about 9 Paydays in a 15-round game. Alternative: credit cash flow every turn and drop Payday spaces. |
-| Q2 | Growth asset math | growthPercent per Payday (not per year) so compounding is visible in one game; cash flow = pct(marketValue, payoutPercent). Ranges as listed under Growth assets. |
+| Q1 | How often is Payday? | **Decided 2026-10-23:** every turn is a month and every player is paid at the start of every turn. No Payday spaces. |
+| Q2 | Growth asset math | **Decided 2026-10-23:** growthPercent per Payday (per month), so compounding is visible in one game; cash flow = pct(marketValue, payoutPercent). Ranges as listed under Growth assets. |
 | Q3 | Does a skipped turn count toward the round? | Yes. A Setback costs a turn, not a round. |
 | Q4 | Favor tokens | Keep earning them; still no spend action. Revisit after playtests. The debrief already rewards giving as a helped decision. |
 | Q5 | Profession numbers rule | Starting cash flow 10 to 25 percent of salary, starting cash one half to two months of totalExpenses, as written under Professions. |

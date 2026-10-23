@@ -31,7 +31,7 @@ Realistic without heavy math: every decision shows two numbers, cost today and c
 
 | Area | Choices in the game | Principles |
 | --- | --- | --- |
-| Investing, safe | Savings account, CD, index fund that grows each Payday | P1, P8 |
+| Investing, safe | Savings account, CD, index fund that grows every month | P1, P8 |
 | Investing, stocks | Single stocks with price swings, dividend stocks | P8, P9 |
 | Real estate | Single-family rental, duplex, apartment building, land | P2, P3, P5 |
 | Business | Vending route, car wash, laundromat, franchise, side hustle | P2, P3, P9 |
@@ -66,7 +66,7 @@ What every player sees, in this order:
 3. Decisions that helped: up to three, each with its dollar impact and principle.
 4. Decisions that hurt: up to three, same format.
 5. Next time, try: two concrete suggestions with the numbers that would have changed.
-6. Money story chart: passive income and totalExpenses at every Payday; the crossing point is freedom.
+6. Money story chart: passive income and totalExpenses every month; the crossing point is freedom.
 7. Principles practiced: the tags this player acted on well.
 
 Winners get sections 4 and 5 too. Knowing why you won includes knowing what you left on the table.
