@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest';
 import { assertInvariants, checkInvariants } from './invariants';
 import { reduce } from './reduce';
 import { replay } from './replay';
+import { roundLimit, roundNumber, winner } from './selectors';
 import { deepFreeze } from './test/deepFreeze';
 import { NUM_RUNS } from './test/fcConfig';
 import { isStuck, setupGame, step, type WalkSetup } from './test/walk';
@@ -123,6 +124,26 @@ describe('property: random games', () => {
     );
   }, PROPERTY_TIMEOUT_MS);
 
+  it('the game never runs past the round limit, and a game that ends at the limit has a winner who is still in (spec v2)', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constantFrom('standard', 'kids')), choicesArb, (setup, choices) => {
+        const played = play(setup, choices);
+        const final = played.final;
+        expect(roundNumber(final)).toBeLessThanOrEqual(roundLimit(final));
+        const ended = final.game.log.at(-1)?.events.find((e) => e.kind === 'gameEnded');
+        if (ended?.kind === 'gameEnded' && ended.reason === 'roundLimit') {
+          expect(final.game.phase).toBe('finished');
+          expect(roundNumber(final)).toBe(roundLimit(final));
+          const w = winner(final);
+          expect(w).toBeDefined();
+          expect(w?.isOut).toBe(false);
+          expect(final.game.currentPlayerId).toBe(w?.id);
+        }
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
   it('an action from a player who is not current is always rejected with NOT_YOUR_TURN and changes nothing', () => {
     fc.assert(
       fc.property(setupArb(fc.constant('standard')), choicesArb, fc.nat({ max: 1_000_000 }), (setup, choices, n) => {
@@ -213,6 +234,17 @@ describe('checkInvariants', () => {
       ),
     };
     expect(checkInvariants(invested)).toEqual([]);
+  });
+
+  it('catches a playing game that has completed as many rounds as the limit (spec v2 invariant)', () => {
+    const state = setupGame({ seed: 1, mode: 'kids', professions: [0, 5] });
+    const events = Array.from({ length: 10 }, (_, i) => ({
+      turnNumber: i,
+      action: { type: 'END_TURN' as const, playerId: 'p2' },
+      events: [{ kind: 'roundCompleted' as const, round: i + 1 }],
+    }));
+    const broken: GameState = { ...state, game: { ...state.game, turnNumber: 10, log: events } };
+    expect(checkInvariants(broken).join('\n')).toMatch(/round limit/);
   });
 
   it('catches a current player who is out before rolling', () => {

@@ -144,7 +144,7 @@ describe('ROLL: Setback log', () => {
     const next = hitSetback(5_000, 'setback-002');
     expect(next.game.log.at(-1)?.events).toEqual([
       { kind: 'payday', amount: 700 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 5_700 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 5_700, roundNumber: 1 },
       { kind: 'rolled', value: 1 },
       { kind: 'moved', from: 5, to: 6 },
       { kind: 'drewCard', deck: 'setback', cardId: 'setback-002' },
@@ -222,7 +222,8 @@ describe('END_TURN: skipped turns', () => {
     expect(next.game.currentPlayerId).toBe('p1');
     expect(playerById(next, 'p2').skipsNextTurn).toBe(true);
     expect(playerById(next, 'p3').skipsNextTurn).toBe(false);
-    expect(kinds(next)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot']);
+    // p1 ends, p2 is out, p3 is skipped, so the turn comes back to p1 and the round is complete.
+    expect(kinds(next)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'roundCompleted']);
     expect(next.game.log.at(-1)?.events[0]).toEqual({ kind: 'turnSkipped', playerId: 'p3' });
   });
 
@@ -251,7 +252,9 @@ describe('END_TURN: a skipped seat still gets its Payday (spec, Core rules, turn
     expect(next.game.log.at(-1)?.events).toEqual([
       { kind: 'turnSkipped', playerId: 'p1' },
       { kind: 'payday', amount: 700 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_700 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_700, roundNumber: 1 },
+      // p1's skipped turn completes the round, so p2 is up again in round 2.
+      { kind: 'roundCompleted', round: 1 },
     ]);
   });
 
@@ -267,7 +270,7 @@ describe('END_TURN: a skipped seat still gets its Payday (spec, Core rules, turn
     expect(p1(next).cash).toBe(0);
     expect(next.game.phase).toBe('finished');
     expect(next.game.currentPlayerId).toBe('p2');
-    expect(next.game.log.at(-1)?.events.map((e) => e.kind)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'wentOut']);
+    expect(next.game.log.at(-1)?.events.map((e) => e.kind)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'wentOut', 'gameEnded']);
   });
 
   it('END_TURN: with three players, a skipped seat that goes out at Payday is passed and play continues', () => {

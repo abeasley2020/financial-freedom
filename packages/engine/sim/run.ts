@@ -57,6 +57,7 @@ export function formatReport(report: SimReport, generatedAt: string): string {
   lines.push(`| Measure | Value |`);
   lines.push(`| --- | --- |`);
   lines.push(`| Games ending by escape | ${String(endings.escape)} (${pctOf(endings.escape, options.games)}) |`);
+  lines.push(`| Games ending at the round limit | ${String(endings.roundLimit)} (${pctOf(endings.roundLimit, options.games)}) |`);
   lines.push(`| Games ending with one player left | ${String(endings.lastStanding)} (${pctOf(endings.lastStanding, options.games)}) |`);
   lines.push(`| Games abandoned at the turn cap | ${String(endings.capped)} (${pctOf(endings.capped, options.games)}) |`);
   lines.push(`| Game length, turns: mean / median / p90 / max | ${fixed(turns.mean)} / ${String(turns.median)} / ${String(turns.p90)} / ${String(turns.max)} |`);

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { ActionSchema } from './actions';
 import { LIABILITY_PAYMENT_PERCENT, ProfessionSchema } from './professions';
-import { BOARD_SIZE, GameStateSchema, type GameState, PendingSchema, type Player, PlayerSchema } from './state';
+import { BOARD_SIZE, GameStateSchema, type GameState, LogEventSchema, PendingSchema, type Player, PlayerSchema, ROUND_LIMIT } from './state';
 
 const player: Player = {
   id: 'p1',
@@ -217,5 +217,25 @@ describe('ProfessionSchema', () => {
   it('publishes the fixed payment percent per liability kind from the spec', () => {
     // Mortgage is 0: the deal card's monthlyCashFlow is already net of the mortgage payment.
     expect(LIABILITY_PAYMENT_PERCENT).toEqual({ student: 1, car: 2, credit: 3, mortgage: 0, bank: 10 });
+  });
+});
+
+describe('v2 round events (spec, Winning and game length)', () => {
+  it('ROUND_LIMIT is 15 standard and 10 kids', () => {
+    expect(ROUND_LIMIT).toEqual({ standard: 15, kids: 10 });
+  });
+
+  it('roundCompleted and gameEnded are log events', () => {
+    expect(LogEventSchema.safeParse({ kind: 'roundCompleted', round: 1 }).success).toBe(true);
+    expect(LogEventSchema.safeParse({ kind: 'gameEnded', reason: 'roundLimit', winnerId: 'p1' }).success).toBe(true);
+    expect(LogEventSchema.safeParse({ kind: 'gameEnded', reason: 'escape', winnerId: 'p1' }).success).toBe(true);
+    expect(LogEventSchema.safeParse({ kind: 'gameEnded', reason: 'lastStanding', winnerId: 'p1' }).success).toBe(true);
+    expect(LogEventSchema.safeParse({ kind: 'gameEnded', reason: 'timeout', winnerId: 'p1' }).success).toBe(false);
+  });
+
+  it('a paydaySnapshot carries the round number', () => {
+    const snapshot = { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100, roundNumber: 1 };
+    expect(LogEventSchema.safeParse(snapshot).success).toBe(true);
+    expect(LogEventSchema.safeParse(Object.fromEntries(Object.entries(snapshot).filter(([k]) => k !== 'roundNumber'))).success).toBe(false);
   });
 });

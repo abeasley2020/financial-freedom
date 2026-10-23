@@ -2,7 +2,7 @@ import { isGrowthAsset, type GameState, type LogEvent } from '@ff/shared';
 
 import { resolveBankruptcy } from './bankruptcy';
 import { pct } from './money';
-import { monthlyCashFlow, passiveIncome, playerById, totalExpenses } from './selectors';
+import { monthlyCashFlow, passiveIncome, playerById, roundNumber, totalExpenses } from './selectors';
 
 export interface Payday {
   readonly state: GameState;
@@ -42,6 +42,7 @@ export function creditPayday(state: GameState, playerId: string): Payday {
       passiveIncome: passiveIncome(player),
       totalExpenses: totalExpenses(player),
       cash,
+      roundNumber: roundNumber(state),
     },
   );
   if (cash < 0) {

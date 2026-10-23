@@ -5,7 +5,7 @@
 import { CARDS_BY_DECK, CARDS_BY_ID, DECK_IDS, GameStateSchema, isGrowthAsset, type DeckId, type GameState } from '@ff/shared';
 
 import { inDeckForMode } from './createGame';
-import { hasRolledThisTurn } from './selectors';
+import { hasRolledThisTurn, roundLimit, roundNumber } from './selectors';
 
 /** Card ids a deck holds in this mode (CLAUDE.md: never hard-code counts). */
 export function fullDeck(state: GameState, deck: DeckId): readonly string[] {
@@ -96,6 +96,11 @@ export function checkInvariants(state: GameState): readonly string[] {
   }
   if (pending.kind === 'marketChoice' && CARDS_BY_ID.get(pending.cardId)?.deck !== 'market') violations.push(`marketChoice names non-market card "${pending.cardId}"`);
   if (pending.kind === 'lifeChoice' && CARDS_BY_ID.get(pending.cardId)?.deck !== 'lifeChoices') violations.push(`lifeChoice names non-Life-Choices card "${pending.cardId}"`);
+
+  // The game never runs past the round limit (spec v2 invariant).
+  if (state.game.phase === 'playing' && roundNumber(state) > roundLimit(state)) {
+    violations.push(`the game is in round ${String(roundNumber(state))} but the round limit is ${String(roundLimit(state))}`);
+  }
 
   // Log turn numbers never decrease and never exceed the current turn.
   let lastTurn = 0;

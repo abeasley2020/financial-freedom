@@ -183,7 +183,7 @@ describe('Bankruptcy: log', () => {
     const next = payday(0, [robotics]);
     expect(next.game.log.at(-1)?.events).toEqual([
       { kind: 'payday', amount: -800 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_100, cash: -800 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_100, cash: -800, roundNumber: 1 },
       { kind: 'sold', assetId: 'rob', cardId: 'small-005', proceeds: 100, principles: ['P8', 'P9'] },
       { kind: 'cashChanged', delta: 100, reason: 'bankruptcy' },
       { kind: 'wentOut', shortfall: 700 },
@@ -194,7 +194,7 @@ describe('Bankruptcy: log', () => {
     const next = payday(500, [lawn]);
     expect(next.game.log.at(-1)?.events).toEqual([
       { kind: 'payday', amount: -650 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 150, totalExpenses: 4_100, cash: -150 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 150, totalExpenses: 4_100, cash: -150, roundNumber: 1 },
       { kind: 'sold', assetId: 'lawn', cardId: 'small-003', proceeds: 1_500, principles: ['P2', 'P3'] },
       { kind: 'cashChanged', delta: 1_500, reason: 'bankruptcy' },
       { kind: 'rolled', value: 1 },
