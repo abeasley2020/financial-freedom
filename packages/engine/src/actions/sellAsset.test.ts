@@ -11,7 +11,9 @@ import { offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 //   small-005 Birchwood Robotics: stock, 500 shares, price range 5-40, no dividend
 //   small-007 Lakeshore Utilities: stock, 200 shares, price range 50-90, dividend 1/share
 //   small-001 Duplex in Decatur: rental (not a stock)
-// Ada the Teacher (p1) starts with 400 cash.
+// Ada the Teacher (p1) starts with 400 cash. `holding` gives her 1,000 and
+// walks a real ROLL, whose Payday adds 700 plus any dividends, so cash
+// assertions compare against the state before the sale.
 
 const sell = (assetId: string, shares?: number, playerId = 'p1'): Action =>
   shares === undefined ? { type: 'SELL_ASSET', playerId, assetId } : { type: 'SELL_ASSET', playerId, assetId, shares };
@@ -42,7 +44,7 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
     const before = holding([lot('lot-a', 'small-005', 10, 20)], 'small-005', 30);
     expect(before.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-005', sharePrice: 30 });
     const next = apply(before, sell('lot-a'));
-    expect(p1(next).cash).toBe(1_000 + 300);
+    expect(p1(next).cash).toBe(p1(before).cash + 300);
     expect(p1(next).assets).toEqual([]);
     expect(next.pending).toEqual({ kind: 'none' });
   });
@@ -50,7 +52,7 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
   it('SELL_ASSET: sells a named number of shares and shrinks the lot in proportion', () => {
     const before = holding([lot('lot-a', 'small-005', 10, 20)], 'small-005', 30);
     const next = apply(before, sell('lot-a', 4));
-    expect(p1(next).cash).toBe(1_000 + 120);
+    expect(p1(next).cash).toBe(p1(before).cash + 120);
     expect(p1(next).assets).toEqual([
       { id: 'lot-a', cardId: 'small-005', type: 'stock', purchasePrice: 120, downPaid: 120, monthlyCashFlow: 0, shares: 6 },
     ]);
@@ -59,8 +61,9 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
   it('SELL_ASSET: a partial sale floors purchasePrice and downPaid when they do not divide evenly', () => {
     // 20 shares carrying a 250 cost basis (as after a 2-for-1 split of 10 shares bought at 25).
     const split: Asset = { ...lot('lot-a', 'small-005', 20, 0), purchasePrice: 250, downPaid: 250 };
-    const next = apply(holding([split], 'small-005', 10), sell('lot-a', 7));
-    expect(p1(next).cash).toBe(1_000 + 70);
+    const before = holding([split], 'small-005', 10);
+    const next = apply(before, sell('lot-a', 7));
+    expect(p1(next).cash).toBe(p1(before).cash + 70);
     expect(p1(next).assets[0]).toMatchObject({ shares: 13, purchasePrice: 162, downPaid: 162 });
   });
 
@@ -68,7 +71,7 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
     const before = holding([lot('lot-d', 'small-007', 25, 60, 1)], 'small-007', 80);
     expect(passiveIncome(p1(before))).toBe(25);
     const next = apply(before, sell('lot-d', 10));
-    expect(p1(next).cash).toBe(1_000 + 800);
+    expect(p1(next).cash).toBe(p1(before).cash + 800);
     expect(p1(next).assets[0]).toMatchObject({ shares: 15, monthlyCashFlow: 15, purchasePrice: 900 });
     expect(passiveIncome(p1(next))).toBe(15);
   });
@@ -82,14 +85,16 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
   it('SELL_ASSET: sells from the named lot when the player holds two lots of the same stock', () => {
     const a = lot('lot-a', 'small-005', 10, 20);
     const b = lot('lot-b', 'small-005', 5, 30);
-    const next = apply(holding([a, b], 'small-005', 40), sell('lot-b'));
+    const before = holding([a, b], 'small-005', 40);
+    const next = apply(before, sell('lot-b'));
     expect(p1(next).assets).toEqual([a]);
-    expect(p1(next).cash).toBe(1_000 + 200);
+    expect(p1(next).cash).toBe(p1(before).cash + 200);
   });
 
   it('SELL_ASSET: sells at a loss when the new price is lower', () => {
-    const next = apply(holding([lot('lot-a', 'small-005', 10, 20)], 'small-005', 5), sell('lot-a'));
-    expect(p1(next).cash).toBe(1_000 + 50);
+    const before = holding([lot('lot-a', 'small-005', 10, 20)], 'small-005', 5);
+    const next = apply(before, sell('lot-a'));
+    expect(p1(next).cash).toBe(p1(before).cash + 50);
   });
 
   it('SELL_ASSET: accepts shares equal to the lot and rejects one more with INVALID_SHARES', () => {
@@ -115,7 +120,8 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
     if (lotId === undefined) throw new Error('BUY must create a lot');
     const nextTurn = withGame(apply(bought, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const next = apply(offered(nextTurn, 'small-005', 35), sell(lotId));
-    expect(p1(next).cash).toBe(1_000 - 200 + 350);
+    // Two turns, two Paydays of 700 (the lot pays no dividend).
+    expect(p1(next).cash).toBe(1_000 + 700 - 200 + 700 + 350);
     expect(p1(next).assets).toEqual([]);
   });
 

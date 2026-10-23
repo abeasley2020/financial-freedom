@@ -5,6 +5,7 @@ import { BOARD, CARDS_BY_ID, type DeckId, type Game, type GameState, type Player
 import { createGame } from '../createGame';
 import { reduce } from '../reduce';
 import { rollDie } from '../rng';
+import { passiveIncome, playerById, totalExpenses } from '../selectors';
 
 /** A standard two-player game: p1 Ada the Teacher (current), p2 Grace the Doctor. Seed 42. */
 export function twoPlayerGame(overrides: Partial<Parameters<typeof createGame>[0]> = {}): GameState {
@@ -29,6 +30,16 @@ export function withPlayer(state: GameState, playerId: string, patch: Partial<Pl
     ...state,
     players: state.players.map((p) => (p.id === playerId ? { ...p, ...patch } : p)),
   };
+}
+
+/**
+ * Sets the player's salary so their monthly cash flow is exactly $0, which
+ * makes every Payday credit nothing. Lets a test reason about cash boundaries
+ * (a $10 gift, an exact down payment) without the Payday moving the numbers.
+ */
+export function withZeroCashFlow(state: GameState, playerId: string): GameState {
+  const player = playerById(state, playerId);
+  return withPlayer(state, playerId, { salary: totalExpenses(player) - passiveIncome(player) });
 }
 
 /**
@@ -71,10 +82,24 @@ export function onTopOfDeck(state: GameState, deck: DeckId, cardId: string): Gam
 }
 
 /**
+ * Rolls the current player (or `playerId`) from 3 onto Giving (space 4) and
+ * skips the gift: the one way to finish a ROLL with nothing pending, no card
+ * drawn, and no cash spent now that the board has no Payday spaces. Payday
+ * still happens, so cash goes up by the player's monthly cash flow. Leaves
+ * two log entries (ROLL, SKIP_GIVE).
+ */
+export function rolledClean(state: GameState, playerId = state.game.currentPlayerId): GameState {
+  const turn = withGame(state, { currentPlayerId: playerId });
+  const rolled = mustApply(withGame(aboutToRoll(turn, 3, 1), { currentPlayerId: playerId }), { type: 'ROLL', playerId });
+  return mustApply(rolled, { type: 'SKIP_GIVE', playerId });
+}
+
+/**
  * Walks the real path to a buyOrPass decision for `cardId`: puts the card on
- * top of its deck, rolls the current player from 0 onto Opportunity (space 1),
+ * top of its deck, rolls the current player from 2 onto Opportunity (space 3),
  * and chooses that deck. For a stock, `sharePrice` overrides the rolled price
- * so a test can pin the cost.
+ * so a test can pin the cost. Payday happens on the way, so cash goes up by
+ * the player's monthly cash flow.
  */
 export function offered(state: GameState, cardId: string, sharePrice?: number): GameState {
   const card = CARDS_BY_ID.get(cardId);
@@ -84,7 +109,7 @@ export function offered(state: GameState, cardId: string, sharePrice?: number): 
   const deck = card.deck;
   const onTop = onTopOfDeck(state, deck, cardId);
   const playerId = state.game.currentPlayerId;
-  const rolled = mustApply(aboutToRoll(onTop, 0, 1), { type: 'ROLL', playerId });
+  const rolled = mustApply(aboutToRoll(onTop, 2, 1), { type: 'ROLL', playerId });
   // Kids mode draws the small deal on landing, with no size to choose.
   const chosen =
     rolled.pending.kind === 'buyOrPass'
@@ -97,8 +122,8 @@ export function offered(state: GameState, cardId: string, sharePrice?: number): 
 /**
  * Walks the real path to a marketChoice or payLifestyle decision for
  * `cardId`: puts the card on top of its deck and rolls the current player
- * from 0 onto the first board space of the matching kind (Market is space 2,
- * Lifestyle is space 4 on the starter board; neither crosses a Payday).
+ * from 0 onto the first board space of the matching kind (Lifestyle is space
+ * 1, Market is space 2 on the v2 board). Payday happens on the way.
  */
 export function drawn(state: GameState, cardId: string): GameState {
   const card = CARDS_BY_ID.get(cardId);

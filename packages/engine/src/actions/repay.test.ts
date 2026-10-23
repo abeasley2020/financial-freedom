@@ -5,7 +5,7 @@ import { reduce } from '../reduce';
 import { debtPayments, monthlyCashFlow, playerById, totalExpenses } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { offered, rolledClean, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
 // Ada the Teacher (p1) starts with 400 cash, salary 3,300, baseExpenses 2,300 and
 // three loans: p1-student-0 (12,000 at 1% = 120/mo), p1-car-1 (6,000 at 2% = 120/mo),
@@ -14,9 +14,9 @@ import { aboutToRoll, offered, twoPlayerGame, withGame, withPlayer } from '../te
 const repay = (liabilityId: string, playerId = 'p1'): Action => ({ type: 'REPAY', playerId, liabilityId });
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-/** p1 with `cash` has rolled from 11 onto Payday (12): pending none, cash + 700. */
+/** p1 with `cash` has rolled (Payday 700 credited) and skipped a Giving space: pending none, cash + 700. */
 function afterRoll(state: GameState = twoPlayerGame(), cash = 5_000): GameState {
-  return apply(aboutToRoll(withPlayer(state, 'p1', { cash }), 11, 1), { type: 'ROLL', playerId: 'p1' });
+  return rolledClean(withPlayer(state, 'p1', { cash }), 'p1');
 }
 
 describe('REPAY: paying off a loan in full', () => {

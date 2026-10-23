@@ -5,7 +5,7 @@ import { reduce } from '../reduce';
 import { passiveIncome, playerById } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { drawn, offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { drawn, offered, twoPlayerGame, withGame, withPlayer, withZeroCashFlow } from '../test/fixtures';
 
 // Market fixtures:
 //   market-001 Eager Buyer:      offerBuyout 200% of purchase price, rentals
@@ -15,7 +15,9 @@ import { drawn, offered, twoPlayerGame, withGame, withPlayer } from '../test/fix
 // Deal fixtures: small-001 Duplex (rental 50,000, mortgage 45,000, +160),
 //   small-002 Condo (rental 45,000, mortgage 41,000, +120), big-003 Forty Acres
 //   (land 60,000, mortgage 48,000, -50), small-005 Birchwood (stock).
-// Ada the Teacher (p1) starts with 400 cash.
+// Ada the Teacher (p1) starts with 400 cash. `facing` pins her salary to her
+// totalExpenses so the Payday that opens the turn adds $0 and the sale math
+// below reads straight off the card.
 
 const ACCEPT: Action = { type: 'ACCEPT_MARKET', playerId: 'p1' };
 const acceptAsset = (assetId: string): Action => ({ type: 'ACCEPT_MARKET', playerId: 'p1', assetId });
@@ -30,11 +32,11 @@ const acresMortgage: Liability = { id: 'acr-mortgage', kind: 'mortgage', princip
 const robotics: Asset = { id: 'rob', cardId: 'small-005', type: 'stock', purchasePrice: 200, downPaid: 200, monthlyCashFlow: 0, shares: 10 };
 const utilities: Asset = { id: 'uti', cardId: 'small-007', type: 'stock', purchasePrice: 1_500, downPaid: 1_500, monthlyCashFlow: 25, shares: 25 };
 
-/** p1 holds `assets` (plus the matching mortgages) and has just drawn `cardId`. */
+/** p1 holds `assets` (plus the matching mortgages), has a Payday of $0, and has just drawn `cardId`. */
 function facing(cardId: string, assets: readonly Asset[], mortgages: readonly Liability[] = [], state = twoPlayerGame()): GameState {
   const base = p1(state);
   return drawn(
-    withPlayer(state, 'p1', { assets: [...assets], liabilities: [...base.liabilities, ...mortgages] }),
+    withZeroCashFlow(withPlayer(state, 'p1', { assets: [...assets], liabilities: [...base.liabilities, ...mortgages] }), 'p1'),
     cardId,
   );
 }
@@ -122,7 +124,8 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
     const bought = apply(offered(withPlayer(twoPlayerGame(), 'p1', { cash: 10_000 }), 'small-001'), { type: 'BUY', playerId: 'p1' });
     const nextTurn = withGame(apply(bought, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const next = apply(drawn(nextTurn, 'market-001'), ACCEPT);
-    expect(p1(next).cash).toBe(5_000 + 55_000);
+    // 10,000 + 700 Payday - 5,000 down, then a second Payday of 700 + 160 rent, then the sale.
+    expect(p1(next).cash).toBe(10_700 - 5_000 + 860 + 55_000);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).liabilities.some((l) => l.kind === 'mortgage')).toBe(false);
     expect(next.decks.smallDeals.discardPile).toContain('small-001');
@@ -170,6 +173,7 @@ describe('ACCEPT_MARKET: stock splits', () => {
     const nextTurn = withGame(apply(split, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const sold = apply(offered(nextTurn, 'small-005', 10), { type: 'SELL_ASSET', playerId: 'p1', assetId: 'rob' });
     expect(p1(sold).cash).toBe(400 + 200);
+    expect(p1(sold).assets).toEqual([]);
   });
 });
 

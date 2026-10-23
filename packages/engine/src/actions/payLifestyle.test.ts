@@ -12,6 +12,7 @@ import { drawn, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 //   life-002 Family Beach Week: cash 2,500 only
 //   life-003 Big Screen: cash 1,800, or loan 90/mo on 1,800 principal
 // Ada the Teacher (p1) starts with 400 cash, totalExpenses 2,600, cash flow 700.
+// `drawn` walks a real ROLL, so its Payday adds 700 before the card is paid.
 
 const payCash: Action = { type: 'PAY_LIFESTYLE', playerId: 'p1', method: 'cash' };
 const payLoan: Action = { type: 'PAY_LIFESTYLE', playerId: 'p1', method: 'loan' };
@@ -23,7 +24,7 @@ describe('PAY_LIFESTYLE: paying cash', () => {
     const before = drawn(withCash(3_000), 'life-002');
     expect(before.pending).toEqual({ kind: 'payLifestyle', cardId: 'life-002' });
     const next = apply(before, payCash);
-    expect(p1(next).cash).toBe(500);
+    expect(p1(next).cash).toBe(3_700 - 2_500);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
     expect(next.pending).toEqual({ kind: 'none' });
     expect(monthlyCashFlow(p1(next))).toBe(700);
@@ -31,16 +32,17 @@ describe('PAY_LIFESTYLE: paying cash', () => {
 
   it('PAY_LIFESTYLE: cash is allowed on a card that also offers a loan', () => {
     const next = apply(drawn(withCash(5_000), 'life-001'), payCash);
-    expect(p1(next).cash).toBe(1_000);
+    expect(p1(next).cash).toBe(5_700 - 4_000);
     expect(p1(next).liabilities.some((l) => l.kind === 'lifestyle')).toBe(false);
   });
 
   it('PAY_LIFESTYLE: accepts when cash exactly equals cashCost, leaving zero cash', () => {
-    expect(p1(apply(drawn(withCash(2_500), 'life-002'), payCash)).cash).toBe(0);
+    expect(p1(apply(drawn(withCash(1_800), 'life-002'), payCash)).cash).toBe(0);
   });
 
   it('PAY_LIFESTYLE: rejected with INSUFFICIENT_CASH one dollar short, and the card stays pending', () => {
-    const before = drawn(withCash(2_499), 'life-002');
+    const before = drawn(withCash(1_799), 'life-002');
+    expect(p1(before).cash).toBe(2_499);
     expect(reject(before, payCash)).toBe('INSUFFICIENT_CASH');
     expect(before.pending).toEqual({ kind: 'payLifestyle', cardId: 'life-002' });
   });
@@ -50,7 +52,7 @@ describe('PAY_LIFESTYLE: paying cash', () => {
     expect(reject(short, payCash)).toBe('INSUFFICIENT_CASH');
     const funded = apply(short, { type: 'BORROW', playerId: 'p1', amount: 3_000 });
     const paid = apply(funded, payCash);
-    expect(p1(paid).cash).toBe(400 + 3_000 - 2_500);
+    expect(p1(paid).cash).toBe(400 + 700 + 3_000 - 2_500);
     expect(paid.pending).toEqual({ kind: 'none' });
   });
 
@@ -66,7 +68,7 @@ describe('PAY_LIFESTYLE: taking the loan', () => {
   it('PAY_LIFESTYLE: adds a lifestyle liability with the card payment, principal, and sourceCardId; cash unchanged', () => {
     const before = drawn(twoPlayerGame(), 'life-001');
     const next = apply(before, payLoan);
-    expect(p1(next).cash).toBe(400);
+    expect(p1(next).cash).toBe(400 + 700);
     expect(p1(next).liabilities).toEqual([
       ...p1(before).liabilities,
       {
@@ -90,7 +92,7 @@ describe('PAY_LIFESTYLE: taking the loan', () => {
 
   it('PAY_LIFESTYLE: the loan works with zero cash on hand', () => {
     const next = apply(drawn(withCash(0), 'life-003'), payLoan);
-    expect(p1(next).cash).toBe(0);
+    expect(p1(next).cash).toBe(700);
     expect(p1(next).liabilities.at(-1)).toMatchObject({ kind: 'lifestyle', principal: 1_800, monthlyPayment: 90 });
   });
 

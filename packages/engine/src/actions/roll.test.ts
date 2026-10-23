@@ -7,9 +7,11 @@ import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
 import { aboutToRoll, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
-// Board layout from board.json: payday 0 and 12, setback 11, opportunity 1,
-// market 2, lifestyle 4, giving 6. Tests pin position and die roll with
-// aboutToRoll so landing spaces are exact.
+// v2 board (spec, Core rules, Board; decided 2026-10-23, Q8): opportunity at
+// 0, 3, 5, 8, 10, 13, 15, 18, 20, 23; lifestyle (Life Choices) at 1, 7, 11,
+// 14, 19, 22; market at 2, 9, 16, 21; giving at 4, 17; setback at 6, 12.
+// There are no Payday spaces: Payday happens at the start of every turn.
+// Tests pin position and die roll with aboutToRoll so landing spaces are exact.
 
 const ROLL: Action = { type: 'ROLL', playerId: 'p1' };
 const p1 = (state: GameState) => playerById(state, 'p1');
@@ -36,36 +38,33 @@ describe('ROLL: movement', () => {
   });
 });
 
-describe('ROLL: Payday', () => {
-  it('ROLL: credits Payday cash flow when passing a Payday space', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 10, 3), ROLL);
-    expect(p1(next).position).toBe(13);
+describe('ROLL: Payday every turn (spec, Core rules, turn step 1; decided 2026-10-23, Q1)', () => {
+  it('ROLL: credits monthly cash flow at the start of the turn, before the die is rolled', () => {
+    const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
+    expect(p1(next).position).toBe(3);
     expect(p1(next).cash).toBe(400 + TEACHER_CASH_FLOW);
   });
 
-  it('ROLL: credits Payday cash flow when landing on a Payday space and leaves pending none', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 9, 3), ROLL);
-    expect(p1(next).position).toBe(12);
-    expect(p1(next).cash).toBe(1_100);
-    expect(next.pending).toEqual({ kind: 'none' });
+  it('ROLL: credits Payday on the very first turn of the game', () => {
+    const next = apply(twoPlayerGame(), ROLL);
+    expect(p1(next).cash).toBe(400 + TEACHER_CASH_FLOW);
   });
 
-  it('ROLL: credits Payday when wrapping past space 0', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 22, 3), ROLL);
-    expect(p1(next).position).toBe(1);
-    expect(p1(next).cash).toBe(1_100);
+  it('ROLL: credits exactly one Payday per turn no matter how far the player moves', () => {
+    const next = apply(aboutToRoll(twoPlayerGame(), 22, 6), ROLL);
+    expect(p1(next).position).toBe(4);
+    expect(p1(next).cash).toBe(400 + TEACHER_CASH_FLOW);
   });
 
-  it('ROLL: does not credit Payday when no Payday space is passed', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 1, 4), ROLL);
-    expect(p1(next).cash).toBe(400);
+  it('ROLL: the board has no Payday space', () => {
+    expect(BOARD).not.toContain('payday');
   });
 
   it('ROLL: Payday includes passive income from assets', () => {
     const owner = withPlayer(twoPlayerGame(), 'p1', {
       assets: [{ id: 'a1', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 }],
     });
-    const next = apply(aboutToRoll(owner, 10, 3), ROLL);
+    const next = apply(aboutToRoll(owner, 2, 1), ROLL);
     expect(p1(next).cash).toBe(400 + 700 + 160);
   });
 
@@ -77,15 +76,59 @@ describe('ROLL: Payday', () => {
         { id: 'l-truck', kind: 'lifestyle', principal: 12_000, monthlyPayment: 1_000, sourceCardId: 'life-001' },
       ],
     });
-    const next = apply(aboutToRoll(indebted, 10, 3), ROLL);
+    const next = apply(aboutToRoll(indebted, 2, 1), ROLL);
     expect(p1(next).cash).toBe(400 + (700 - 1_000));
+  });
+
+  it('ROLL: logs payday and paydaySnapshot before the die, with the snapshot taken after the credit', () => {
+    const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
+    expect(next.game.log[0]?.events.slice(0, 3)).toEqual([
+      { kind: 'payday', amount: TEACHER_CASH_FLOW },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100 },
+      { kind: 'rolled', value: 1 },
+    ]);
+  });
+
+  it('ROLL: a Payday that puts the player out ends the ROLL with no die roll, no move, and nothing pending', () => {
+    const base = twoPlayerGame();
+    const doomed = withPlayer(base, 'p1', {
+      cash: 0,
+      liabilities: [
+        ...p1(base).liabilities,
+        { id: 'l-truck', kind: 'lifestyle', principal: 12_000, monthlyPayment: 1_000, sourceCardId: 'life-001' },
+      ],
+    });
+    const before = aboutToRoll(doomed, 2, 1);
+    const next = apply(before, ROLL);
+    expect(p1(next).isOut).toBe(true);
+    expect(p1(next).cash).toBe(0);
+    expect(p1(next).position).toBe(2);
+    expect(next.pending).toEqual({ kind: 'none' });
+    expect(next.game.rngState).toBe(before.game.rngState);
+    const kinds = next.game.log[0]?.events.map((e) => e.kind);
+    expect(kinds).toEqual(['payday', 'paydaySnapshot', 'wentOut']);
+  });
+
+  it('ROLL: a player who went out at Payday can still END_TURN so play moves on', () => {
+    const base = twoPlayerGame();
+    const doomed = withPlayer(base, 'p1', {
+      cash: 0,
+      liabilities: [
+        ...p1(base).liabilities,
+        { id: 'l-truck', kind: 'lifestyle', principal: 12_000, monthlyPayment: 1_000, sourceCardId: 'life-001' },
+      ],
+    });
+    const out = apply(aboutToRoll(doomed, 2, 1), ROLL);
+    const next = apply(out, { type: 'END_TURN', playerId: 'p1' });
+    expect(next.game.phase).toBe('finished');
+    expect(next.game.currentPlayerId).toBe('p2');
   });
 });
 
 describe('ROLL: resolving the landed space', () => {
   it('ROLL: landing on Opportunity sets pending chooseDealSize', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 0, 1), ROLL);
-    expect(BOARD[1]).toBe('opportunity');
+    const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
+    expect(BOARD[3]).toBe('opportunity');
     expect(next.pending).toEqual({ kind: 'chooseDealSize' });
   });
 
@@ -102,32 +145,32 @@ describe('ROLL: resolving the landed space', () => {
   it('ROLL: landing on Lifestyle draws the top lifestyle card into pending payLifestyle', () => {
     const before = twoPlayerGame();
     const [top, ...rest] = before.decks.lifestyle.drawPile;
-    const next = apply(aboutToRoll(before, 0, 4), ROLL);
-    expect(BOARD[4]).toBe('lifestyle');
+    const next = apply(aboutToRoll(before, 0, 1), ROLL);
+    expect(BOARD[1]).toBe('lifestyle');
     expect(next.pending).toEqual({ kind: 'payLifestyle', cardId: top });
     expect(next.decks.lifestyle.drawPile).toEqual(rest);
   });
 
   it('ROLL: landing on Giving sets pending giveOrSkip', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 0, 6), ROLL);
-    expect(BOARD[6]).toBe('giving');
+    const next = apply(aboutToRoll(twoPlayerGame(), 0, 4), ROLL);
+    expect(BOARD[4]).toBe('giving');
     expect(next.pending).toEqual({ kind: 'giveOrSkip' });
   });
 
   it('ROLL: landing on Setback draws the top setback card, pays it, and leaves pending none (details in setback.test.ts)', () => {
     const before = twoPlayerGame();
     const [top, ...rest] = before.decks.setback.drawPile;
-    const next = apply(aboutToRoll(before, 10, 1), ROLL);
-    expect(BOARD[11]).toBe('setback');
+    const next = apply(aboutToRoll(before, 5, 1), ROLL);
+    expect(BOARD[6]).toBe('setback');
     expect(next.pending).toEqual({ kind: 'none' });
     expect(next.decks.setback).toEqual({ drawPile: rest, discardPile: [top] });
-    expect(p1(next).cash).toBeLessThan(400 + 4_000);
+    expect(p1(next).cash).toBeLessThan(400 + 700 + 4_000);
   });
 
   it('ROLL: in kids mode, Opportunity draws from the small deals deck into pending buyOrPass', () => {
     const kids = twoPlayerGame({ mode: 'kids' });
     const [top, ...rest] = kids.decks.smallDeals.drawPile;
-    const next = apply(aboutToRoll(kids, 0, 1), ROLL);
+    const next = apply(aboutToRoll(kids, 2, 1), ROLL);
     expect(next.pending).toEqual({ kind: 'buyOrPass', cardId: top });
     expect(next.decks.smallDeals.drawPile).toEqual(rest);
   });
@@ -139,7 +182,7 @@ describe('ROLL: resolving the landed space', () => {
       const deckSize = state.decks.smallDeals.drawPile.length;
       expect(deckSize).toBeGreaterThan(0);
       for (let draw = 0; draw < deckSize * 2; draw++) {
-        const next = apply(aboutToRoll(state, 0, 1), ROLL);
+        const next = apply(aboutToRoll(state, 2, 1), ROLL);
         expect(next.pending.kind).toBe('buyOrPass');
         const cardId = (next.pending as { cardId: string }).cardId;
         const card = CARDS_BY_ID.get(cardId);
@@ -206,16 +249,17 @@ describe('ROLL: deck piles', () => {
 });
 
 describe('ROLL: log and determinism', () => {
-  it('ROLL: appends a log entry with the roll, move, and Payday events', () => {
-    const next = apply(aboutToRoll(twoPlayerGame(), 10, 3), ROLL);
+  it('ROLL: appends a log entry with the Payday, roll, and move events', () => {
+    const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
     expect(next.game.log).toEqual([
       {
         turnNumber: 0,
         action: ROLL,
         events: [
-          { kind: 'rolled', value: 3 },
-          { kind: 'moved', from: 10, to: 13 },
           { kind: 'payday', amount: TEACHER_CASH_FLOW },
+          { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100 },
+          { kind: 'rolled', value: 1 },
+          { kind: 'moved', from: 2, to: 3 },
         ],
       },
     ]);
@@ -262,18 +306,20 @@ describe('ROLL: rejections', () => {
   });
 
   it('ROLL: rejected with ALREADY_ROLLED when the player has rolled this turn', () => {
-    const rolled = apply(aboutToRoll(twoPlayerGame(), 11, 1), ROLL); // lands on Payday, pending none
-    expect(reject(rolled, ROLL)).toBe('ALREADY_ROLLED');
+    const rolled = apply(aboutToRoll(twoPlayerGame(), 0, 4), ROLL); // lands on Giving
+    const cleared = apply(rolled, { type: 'SKIP_GIVE', playerId: 'p1' });
+    expect(reject(cleared, ROLL)).toBe('ALREADY_ROLLED');
   });
 
   it.each(['lobby', 'finished'] as const)('ROLL: rejected with GAME_NOT_PLAYING when phase is %s', (phase) => {
     expect(reject(withGame(twoPlayerGame(), { phase }), ROLL)).toBe('GAME_NOT_PLAYING');
   });
 
-  it('ROLL: a rejected action is not logged', () => {
+  it('ROLL: a rejected action is not logged and credits no Payday', () => {
     const before = deepFreeze(withGame(twoPlayerGame(), { phase: 'finished' }));
     const result = reduce(before, ROLL);
     expect(result.ok).toBe(false);
     expect(before.game.log).toEqual([]);
+    expect(p1(before).cash).toBe(400);
   });
 });

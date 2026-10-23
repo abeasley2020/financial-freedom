@@ -5,15 +5,16 @@ import { reduce } from '../reduce';
 import { playerById } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { aboutToRoll, twoPlayerGame, withGame, withPlayer, withZeroCashFlow } from '../test/fixtures';
 
-// Ada the Teacher (p1) starts with 400 cash and 0 Favor tokens. Giving is space 6.
+// Ada the Teacher (p1) starts with 400 cash and 0 Favor tokens. Giving is
+// space 4. Her salary is pinned to her totalExpenses so the turn's Payday adds $0.
 
 const SKIP: Action = { type: 'SKIP_GIVE', playerId: 'p1' };
 const p1 = (state: GameState) => playerById(state, 'p1');
 
 function onGiving(cash: number, state = twoPlayerGame()): GameState {
-  return apply(aboutToRoll(withPlayer(state, 'p1', { cash }), 0, 6), { type: 'ROLL', playerId: 'p1' });
+  return apply(aboutToRoll(withZeroCashFlow(withPlayer(state, 'p1', { cash }), 'p1'), 0, 4), { type: 'ROLL', playerId: 'p1' });
 }
 
 describe('SKIP_GIVE: declining to give', () => {

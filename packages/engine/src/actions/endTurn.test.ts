@@ -3,14 +3,13 @@ import { describe, expect, it } from 'vitest';
 
 import { createGame } from '../createGame';
 import { apply, reject } from '../test/apply';
-import { aboutToRoll, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { rolledClean, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
 const END_TURN: Action = { type: 'END_TURN', playerId: 'p1' };
-const ROLL: Action = { type: 'ROLL', playerId: 'p1' };
 
-/** p1 has rolled from 11 to 12 (Payday, pending none). Cash is 400 + 700. */
+/** p1 has rolled (Payday 700 credited) and skipped a Giving space: pending none, cash 400 + 700. */
 function afterRoll(state: GameState = twoPlayerGame()): GameState {
-  return apply(aboutToRoll(state, 11, 1), ROLL);
+  return rolledClean(state, 'p1');
 }
 
 describe('END_TURN: advancing', () => {
@@ -30,8 +29,7 @@ describe('END_TURN: advancing', () => {
   });
 
   it('END_TURN: wraps from the last player to the first', () => {
-    const base = withGame(twoPlayerGame(), { currentPlayerId: 'p2' });
-    const rolled = apply(aboutToRoll(base, 11, 1), { type: 'ROLL', playerId: 'p2' });
+    const rolled = rolledClean(twoPlayerGame(), 'p2');
     const next = apply(rolled, { type: 'END_TURN', playerId: 'p2' });
     expect(next.game.currentPlayerId).toBe('p1');
     expect(next.game.turnNumber).toBe(1);
@@ -79,8 +77,8 @@ describe('END_TURN: win condition', () => {
 describe('END_TURN: log', () => {
   it('END_TURN: appends a log entry carrying the turn number that just ended', () => {
     const next = apply(afterRoll(), END_TURN);
-    expect(next.game.log).toHaveLength(2);
-    expect(next.game.log[1]).toEqual({ turnNumber: 0, action: END_TURN, events: [] });
+    expect(next.game.log).toHaveLength(3);
+    expect(next.game.log[2]).toEqual({ turnNumber: 0, action: END_TURN, events: [] });
   });
 });
 
