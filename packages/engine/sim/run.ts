@@ -2,8 +2,11 @@
 // [--max-turns N] [--players MIN-MAX] [--out path.md]`. Plays bot games through
 // the real engine and prints the report the spec asks for (spec, Testing
 // strategy: average game length, win rate by profession, bankruptcy rate).
-// Targets from the spec: no profession above 25% win rate, median game under
-// 60 turns.
+// Targets from spec v2 (Engineering practices): at least 70% of games end by
+// escape or the round limit; at most 20% of seats go bankrupt; every
+// profession's win rate between 20% and 45%; median game between 10 and 15
+// rounds; kids mode never stuck, median at or under 10 rounds. The Wealth
+// Builder and Big Spender bots arrive in Stage D.
 
 import { writeFileSync } from 'node:fs';
 
@@ -50,7 +53,9 @@ export function formatReport(report: SimReport, generatedAt: string): string {
   lines.push('');
   lines.push(`Generated ${generatedAt} by \`pnpm sim\`. ${String(options.games)} ${options.mode} games, seeds ${String(options.seed)} to ${String(options.seed + options.games - 1)}, ${String(options.minPlayers)} to ${String(options.maxPlayers)} bot players per game, abandoned as a draw after ${String(options.maxTurns)} turns. Bots are the three simple strategies in \`packages/engine/sim/bots.ts\` (cautious, balanced, aggressive), assigned at random per seat. The report measures the rules and numbers, not human play.`);
   lines.push('');
-  lines.push(`Spec targets: no profession above 25% win rate; median game under 60 turns.`);
+  lines.push(
+    `Spec v2 targets: at least 70% of games end by escape or the round limit; at most 20% of seats go bankrupt; every profession's win rate between 20% and 45%; median game between 10 and 15 rounds.`,
+  );
   lines.push('');
   lines.push(`## Headline`);
   lines.push('');

@@ -1,16 +1,16 @@
 // Golden games (spec, Testing strategy; CLAUDE.md, Layout). Each JSON file
 // is a recorded full game: setup (seed, mode, players), the accepted action
-// log, and the final state the engine produced on 2026-10-23. Replaying the
-// log must rebuild that state exactly. Never regenerate these files to make
-// a test pass: a difference means a rule changed, and the commit that
-// changes the rule must say so and get Andre's approval first.
+// log, and the final state the engine produced. Replaying the log must
+// rebuild that state exactly. Never regenerate these files to make a test
+// pass: a difference means a rule changed, and the commit that changes the
+// rule must say so and get Andre's approval first.
 //
-// STAGE B (v2 engine rules, 2026-10-23): the three recordings are v1 games.
-// v2 changes the rules on purpose (Payday every turn, no Payday spaces, the
-// v2 board, Life Choices, growth assets, the round limit), so they cannot
-// replay until the end of Stage B, when they are regenerated once with
-// Andre's approval and the commit names every rule change. Until then this
-// suite is skipped, not deleted, so the v1 recordings stay in history.
+// Recorded 2026-10-23 at the end of Stage B (spec v2) by playing the sim bots
+// through the engine; the generator was deliberately not committed. All three
+// end at the round limit: with the 26 starter cards no bot game escapes within
+// 15 rounds, and bankruptcies are rare enough that 6,000 seeds produced none
+// with four players. Escape and last-standing recordings are added once Stage
+// C content makes them reachable.
 
 import { ActionSchema, GameStateSchema, type Action, type GameState } from '@ff/shared';
 import { z } from 'zod';
@@ -19,9 +19,10 @@ import { describe, expect, it } from 'vitest';
 import { createGame, type CreateGameOptions } from '../createGame';
 import { assertInvariants } from '../invariants';
 import { replay } from '../replay';
-import attrition from './golden/attrition-four-players.json';
-import escape from './golden/escape-two-players.json';
+import { roundLimit, roundNumber } from '../selectors';
 import kids from './golden/kids-three-players.json';
+import fourPlayers from './golden/limit-four-players.json';
+import twoPlayers from './golden/limit-two-players.json';
 
 const GoldenSchema = z
   .object({
@@ -33,7 +34,7 @@ const GoldenSchema = z
       seed: z.number().int(),
       players: z.array(z.object({ id: z.string().min(1), name: z.string().min(1), professionId: z.string().min(1) })),
     }),
-    ending: z.enum(['escape', 'lastStanding', 'finished', 'stopped']),
+    ending: z.enum(['escape', 'roundLimit', 'lastStanding']),
     actions: z.array(ActionSchema),
     expected: GameStateSchema,
   })
@@ -42,22 +43,19 @@ const GoldenSchema = z
 interface Golden {
   readonly description: string;
   readonly setup: CreateGameOptions;
-  readonly ending: 'escape' | 'lastStanding' | 'finished' | 'stopped';
+  readonly ending: 'escape' | 'roundLimit' | 'lastStanding';
   readonly actions: readonly Action[];
   readonly expected: GameState;
 }
 
-/** Parsed lazily inside each test so a skipped suite never validates the v1 recordings against the v2 schema. */
 const recordings: readonly [string, unknown][] = [
-  ['escape-two-players', escape],
-  ['attrition-four-players', attrition],
+  ['limit-two-players', twoPlayers],
+  ['limit-four-players', fourPlayers],
   ['kids-three-players', kids],
 ];
 const load = (data: unknown): Golden => GoldenSchema.parse(data);
 
-const GOLDEN_RECORDINGS_ARE_V1 = true;
-
-describe.skipIf(GOLDEN_RECORDINGS_ARE_V1).each(recordings)('golden game %s', (_name, data) => {
+describe.each(recordings)('golden game %s', (_name, data) => {
   it('replays its action log from the seed to exactly the recorded final state', () => {
     const golden = load(data);
     const final = replay(createGame(golden.setup), golden.actions);
@@ -81,33 +79,40 @@ describe.skipIf(GOLDEN_RECORDINGS_ARE_V1).each(recordings)('golden game %s', (_n
     const { expected } = golden;
     const escaped = expected.players.some((p) => p.hasEscaped);
     const inPlayers = expected.players.filter((p) => !p.isOut);
+    expect(expected.game.phase).toBe('finished');
+    expect(expected.game.log.at(-1)?.events.at(-1)).toMatchObject({ kind: 'gameEnded', reason: golden.ending, winnerId: expected.game.currentPlayerId });
     switch (golden.ending) {
       case 'escape':
         expect(escaped).toBe(true);
-        expect(expected.game.phase).toBe('finished');
+        break;
+      case 'roundLimit':
+        expect(escaped).toBe(false);
+        expect(inPlayers.length).toBeGreaterThan(1);
+        expect(roundNumber(expected)).toBe(roundLimit(expected));
         break;
       case 'lastStanding':
         expect(escaped).toBe(false);
-        expect(expected.game.phase).toBe('finished');
         expect(inPlayers).toHaveLength(1);
-        break;
-      case 'finished':
-        expect(expected.game.phase).toBe('finished');
-        break;
-      case 'stopped':
-        expect(expected.game.phase).toBe('playing');
         break;
     }
   });
+
+  it('is a v2 game: a Payday on every turn and a round number on every snapshot', () => {
+    const golden = load(data);
+    const rolls = golden.actions.filter((a) => a.type === 'ROLL').length;
+    const rounds = golden.expected.game.log.flatMap((e) => e.events).flatMap((e) => (e.kind === 'paydaySnapshot' ? [e.roundNumber] : []));
+    expect(rounds.length).toBeGreaterThanOrEqual(rolls);
+    for (const round of rounds) expect(round).toBeGreaterThanOrEqual(1);
+  });
 });
 
-describe.skipIf(GOLDEN_RECORDINGS_ARE_V1)('golden games as a set', () => {
-  it('cover both modes and both ways a Phase 1 game can end', () => {
+describe('golden games as a set', () => {
+  it('cover both modes and the round-limit ending, with two to four players', () => {
     const games = recordings.map(([, data]) => load(data));
     expect(games.map((g) => g.setup.mode)).toContain('kids');
     expect(games.map((g) => g.setup.mode)).toContain('standard');
-    expect(games.map((g) => g.ending)).toContain('escape');
-    expect(games.map((g) => g.ending)).toContain('lastStanding');
+    expect(games.map((g) => g.ending)).toContain('roundLimit');
+    expect(games.map((g) => g.setup.players.length).sort()).toEqual([2, 3, 4]);
   });
 
   it('each run long enough to pass several Paydays', () => {
