@@ -2,6 +2,23 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## Morning summary (overnight session, 2026-10-23)
+
+The session stopped when its usage limit was reached, after Stage 3 and before Stage 4. Main is green (`pnpm check`: 25 test files, 498 tests, zero lint warnings) and pushed to origin.
+
+**Completed and merged to main, one squash commit each:**
+
+- PR #4 (shared schemas and fixtures) and PR #5 (engine through BORROW), which were still open, squash-merged so the night's work could build on main.
+- Docs: Setback and bankruptcy decisions written into `docs/spec.md`, removed from the CLAUDE.md spec gaps (now 3 gaps: undo, kids mode, Freedom track); `tsx` marked approved.
+- Actions, test first: REPAY, PAY_LIFESTYLE, SELL_ASSET, ACCEPT_MARKET, DECLINE_MARKET, GIVE, SKIP_GIVE. All 13 reducer actions now exist.
+- Setback resolution, automatic bankruptcy sales, `skipsNextTurn`, and END_TURN skipping and game end with fewer than two players.
+
+**Test counts:** 267 before tonight → 498 now (231 new engine tests).
+
+**Not done (Stage 4, untouched):** 4.1 fast-check property suite (`pnpm test:props` still runs with `--passWithNoTests`; `fast-check` is listed in `packages/engine/package.json` but was not found in `node_modules`, so run `pnpm install` first), 4.2 simulator (`tsx` not yet added; `pnpm sim` is still the placeholder), 4.3 golden games. No simulator numbers exist yet.
+
+**Questions waiting for Andre:** none blocked an action. The six "Decisions made alone tonight" below are readings of the spec I made to keep moving; each is pinned by a test and written into `docs/spec.md`, so overruling one is a spec edit plus a test edit.
+
 ## Overnight session, 2026-10-23 (unattended)
 
 Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine actions), then Stage 4.1 (property suite), 4.2 (simulator), 4.3 (golden games). No UI work. One branch per action, squash-merged to main when `pnpm check` is green, main pushed after each merge.
