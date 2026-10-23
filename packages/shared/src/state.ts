@@ -138,6 +138,7 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('payday'), amount: SignedMoneySchema }).strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
+  z.object({ kind: z.literal('passed'), cardId: CardIdSchema }).strict(),
   z
     .object({
       kind: z.literal('bought'),

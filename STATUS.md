@@ -22,6 +22,7 @@ The repo is a pnpm workspace with three packages:
 | `actions/roll.ts` | Rolls, moves, credits one Payday per Payday space passed or landed on, resolves the space: Opportunity → `chooseDealSize` (kids mode draws a small deal → `buyOrPass`), Market → draw → `marketChoice`, Lifestyle → draw → `payLifestyle`, Giving → `giveOrSkip`, Payday → none, Setback → none (gap 1). |
 | `actions/chooseDealSize.ts` | Valid only when `pending` is `chooseDealSize`. Draws from `smallDeals` or `bigDeals` into `pending: buyOrPass`. A stock card gets `sharePrice` rolled inside its `priceRange` (inclusive) at draw time, advancing `rngState`, logged as `sharePriceRolled`. Empty deck → `pending: none`. |
 | `actions/buy.ts` | Valid only when `pending` is `buyOrPass`. Non-stock: pays `downPayment` (`INSUFFICIENT_CASH` if short), adds the asset with the card's numbers, adds one `mortgage` liability (`monthlyPayment: 0`, `assetId`) when financed, keeps the card as the asset. Stock: `shares` required and at most `sharesAvailable` (`INVALID_SHARES`), cost `shares × pending.sharePrice`, lot with `monthlyCashFlow = floor(shares × dividendPerShare)`, card back to the discard pile. Asset id is `${playerId}-${cardId}-${log.length}`; mortgage id is that plus `-mortgage`. Events: `cashChanged`, `bought`. |
+| `actions/pass.ts` | Valid only when `pending` is `buyOrPass`. Sends the card to its deck's discard pile and clears `pending`. Same for a stock, which is how a holder declines to buy or sell. Event: `passed`. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
 | `createGame.ts` | Initial state from `{ id, mode, seed, players }`. Starting liabilities get `monthlyPayment = pct(principal, LIABILITY_PAYMENT_PERCENT[kind])`. Shuffles every deck from the seed. Standard mode drops `requiresKidsMode` cards. |
@@ -78,9 +79,9 @@ Also resolved on 2026-10-23, written into `docs/spec.md` (Core rules "Mortgages"
 
 ## Next step
 
-Spec step 5, next action: `PASS` (valid only when `pending` is `buyOrPass`). The card goes to its deck's discard pile and `pending` becomes `none`. For a stock, pass is also how a holder declines to buy or sell. Test helper `offered(state, cardId, sharePrice?)` in `test/fixtures.ts` walks the real ROLL → CHOOSE_DEAL_SIZE path to a buyOrPass decision.
+Spec step 5, next action: `BORROW` (Core rules, turn step 4: optional, in $1,000 steps, 10% of principal added to monthly expenses). Valid when `pending` is `none` and the player has rolled this turn (it is an optional action in step 4, after the space is resolved). Adds cash and one `bank` liability with `monthlyPayment = pct(amount, 10)`. Kids mode has no bank loans (Core rules, Kids mode), so reject there. Open question for Andre: may a player BORROW while a `buyOrPass` or `payLifestyle` decision is pending, to afford it? The spec's turn order puts optional actions after resolving the space, which says no, but it makes some deals unreachable. Decide before writing the tests.
 
-Then `BORROW`, `REPAY` (reject a mortgage), `PAY_LIFESTYLE`, `SELL_ASSET` (stock lots only while `pending` is `buyOrPass` for that card; mortgage paid off first from proceeds), and on in the CLAUDE.md order.
+Then `REPAY` (reject a mortgage), `PAY_LIFESTYLE`, `SELL_ASSET` (stock lots only while `pending` is `buyOrPass` for that card; mortgage paid off first from proceeds), and on in the CLAUDE.md order. Test helper `offered(state, cardId, sharePrice?)` in `test/fixtures.ts` walks the real ROLL → CHOOSE_DEAL_SIZE path to a buyOrPass decision.
 
 ## Deferred from the scaffold
 
