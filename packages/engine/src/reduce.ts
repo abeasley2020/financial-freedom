@@ -1,5 +1,6 @@
 import type { Action, GameState, LogEntry, LogEvent } from '@ff/shared';
 
+import { borrow } from './actions/borrow';
 import { buy } from './actions/buy';
 import { chooseDealSize } from './actions/chooseDealSize';
 import { endTurn } from './actions/endTurn';
@@ -49,6 +50,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return buy(state, action);
     case 'PASS':
       return pass(state);
+    case 'BORROW':
+      return borrow(state, action);
     default:
       return rejected('NOT_IMPLEMENTED');
   }

@@ -141,6 +141,14 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('passed'), cardId: CardIdSchema }).strict(),
   z
     .object({
+      kind: z.literal('borrowed'),
+      liabilityId: LiabilityIdSchema,
+      amount: MoneySchema,
+      monthlyPayment: MoneySchema,
+    })
+    .strict(),
+  z
+    .object({
       kind: z.literal('bought'),
       assetId: AssetIdSchema,
       cardId: CardIdSchema,
