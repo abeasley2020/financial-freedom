@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+*.tsbuildinfo
+
+# test output
+coverage/
+test-results/
+playwright-report/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# deploy
+.vercel/
+
+# os
+.DS_Store
+Thumbs.db

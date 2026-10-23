@@ -4,7 +4,7 @@ Family cash-flow board game. Laptop shows the shared table, phones show private 
 
 Progress and next steps go in `STATUS.md`, not here. Read both at the start of every session.
 
-**Current state:** pre-scaffold. The repo holds only `README.md`, `docs/spec.md`, and this file. The first session follows the "First Claude Code session" list in the spec, in that order.
+**Current state:** see `STATUS.md`. Sessions follow the "First Claude Code session" list in the spec, in that order.
 
 ---
 

@@ -1,0 +1,37 @@
+{
+  "name": "financial-freedom",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Freedom Loop: a family cash-flow board game. pnpm workspace with engine, shared, and web packages.",
+  "packageManager": "pnpm@12.15.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @ff/web dev",
+    "build": "pnpm --filter @ff/web build",
+    "typecheck": "tsc -b",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:engine": "vitest run --project engine",
+    "test:props": "vitest run --project engine props.test --passWithNoTests",
+    "test:watch": "vitest",
+    "e2e": "node -e \"console.error('e2e: Playwright is not set up yet. See STATUS.md.'); process.exit(1)\"",
+    "sim": "node -e \"console.error('sim: balance simulation is not written yet. See STATUS.md.'); process.exit(1)\"",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm test:props",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.13.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
+}
