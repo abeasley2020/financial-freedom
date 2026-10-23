@@ -119,6 +119,7 @@ Stage B, unattended
 You are working unattended; Andre is not available. Read CLAUDE.md, STATUS.md, docs/spec.md (v2), and docs/plan-wealth-edition.md.
 
 Implement the v2 engine rules test-first per CLAUDE.md Rule 3. One branch per item, squash merge only on green pnpm check, push main after each merge:
+0. Payday every turn per docs/spec.md: at the start of every turn, before the roll, credit monthly cash flow, grow growth assets, and write paydaySnapshot. Remove Payday spaces from board.json and use the spec's proposed board mix. Bankruptcy still triggers on a negative Payday.
 1. Principle ids P1 to P10 in @ff/shared. A principles field on every card, every Life Choices option, and every decision log event (BUY, PASS, BORROW, REPAY, SELL_ASSET, GIVE, SKIP_GIVE, CHOOSE_LIFE_OPTION, Setback auto-loans).
 2. Life Choices deck replacing Lifestyle, exactly as docs/spec.md describes: cards with 2 or 3 options, each option a list of typed effects. New action CHOOSE_LIFE_OPTION { optionId } replaces PAY_LIFESTYLE. Subscriptions are liabilities of kind subscription with principal 0, so REPAY cancels one at no cost.
 3. Growth assets per docs/spec.md: marketValue grows at each Payday the owner receives, and their cash flow is derived from marketValue by a selector. netWorth and sales use marketValue.

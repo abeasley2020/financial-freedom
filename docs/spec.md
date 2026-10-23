@@ -265,18 +265,18 @@ Definition of done (v1, kept): engine tests and property suite pass; typecheck a
 
 ## v2 open questions
 
-Each has a recommended default. Stage B uses the default unless Andre overrules it.
+All eleven were decided by Andre on 2026-10-23. Each answer is now a rule.
 
 | # | Question | Recommended default |
 | --- | --- | --- |
 | Q1 | How often is Payday? | **Decided 2026-10-23:** every turn is a month and every player is paid at the start of every turn. No Payday spaces. |
 | Q2 | Growth asset math | **Decided 2026-10-23:** growthPercent per Payday (per month), so compounding is visible in one game; cash flow = pct(marketValue, payoutPercent). Ranges as listed under Growth assets. |
-| Q3 | Does a skipped turn count toward the round? | Yes. A Setback costs a turn, not a round. |
-| Q4 | Favor tokens | Keep earning them; still no spend action. Revisit after playtests. The debrief already rewards giving as a helped decision. |
-| Q5 | Profession numbers rule | Starting cash flow 10 to 25 percent of salary, starting cash one half to two months of totalExpenses, as written under Professions. |
-| Q6 | Kids and subscriptions | Kids may take subscriptions; bankruptcy rules apply. This keeps P7 in kids mode. |
-| Q7 | Undo (CLAUDE.md gap) | Undo is a host-side stack of states, not a reducer action, and cannot go back past the most recent ROLL or card draw. |
-| Q8 | Board order | The proposed positions above. Stage D may change the mix. |
-| Q9 | Growth asset sales | Sellable any time pending is none, at marketValue. |
-| Q10 | Debrief for a player who went out | Same seven sections; the result line names the round they ran out of money. |
-| Q11 | Life Choices "needs" | No required Life Choices cards. Needs (repairs, medical, layoffs) live in the Setback deck. |
+| Q3 | Does a skipped turn count toward the round? | **Decided 2026-10-23:** Yes. A Setback costs a turn, not a round. |
+| Q4 | Favor tokens | **Decided 2026-10-23:** Keep earning them; still no spend action. Revisit after playtests. The debrief already rewards giving as a helped decision. |
+| Q5 | Profession numbers rule | **Decided 2026-10-23:** Starting cash flow 10 to 25 percent of salary, starting cash one half to two months of totalExpenses, as written under Professions. |
+| Q6 | Kids and subscriptions | **Decided 2026-10-23:** Kids may take subscriptions; bankruptcy rules apply. This keeps P7 in kids mode. |
+| Q7 | Undo (CLAUDE.md gap) | **Decided 2026-10-23:** Undo is a host-side stack of states, not a reducer action, and cannot go back past the most recent ROLL or card draw. |
+| Q8 | Board order | **Decided 2026-10-23:** The proposed positions above. Stage D may change the mix. |
+| Q9 | Growth asset sales | **Decided 2026-10-23:** Sellable any time pending is none, at marketValue. |
+| Q10 | Debrief for a player who went out | **Decided 2026-10-23:** Same seven sections; the result line names the round they ran out of money. |
+| Q11 | Life Choices "needs" | **Decided 2026-10-23:** No required Life Choices cards. Needs (repairs, medical, layoffs) live in the Setback deck. |

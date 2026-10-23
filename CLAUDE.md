@@ -171,7 +171,7 @@ Windows notes: the first `pnpm dev --host` triggers a Windows Firewall prompt. A
 
 Each item below is a game-design decision the spec doesn't make. Where a default is listed, use it only after Andre confirms.
 
-The v2 open questions are listed at the end of `docs/spec.md` (Q1 to Q11), each with a recommended default. Stage B uses those defaults unless Andre has overruled one in the spec. The undo question is Q7 there.
+The v2 open questions at the end of `docs/spec.md` (Q1 to Q11) were all decided by Andre on 2026-10-23 and are rules now. The undo rule is Q7 there. New gaps go in STATUS.md under "Questions for Andre".
 
 Resolved by spec v2 (2026-10-23): kids who cannot pay (every Life Choices card has an option with no monthly cost, and kids Setback spaces do nothing) and the Freedom track (dropped; the 15-round limit and Freedom percentage replace it).
 
