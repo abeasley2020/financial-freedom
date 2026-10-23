@@ -66,7 +66,7 @@ No reducer action or selector is written before a failing test for it. For each 
 5. Add the action to the fast-check action generator, then run `pnpm test:props`.
 6. Run `pnpm check`. Done means green with zero warnings.
 
-v1 actions are all built. v2 work follows Stage B in `docs/plan-wealth-edition.md`: principles, then CHOOSE_LIFE_OPTION (replaces PAY_LIFESTYLE), then growth assets, then the round limit, then the decision-log events. Nothing new starts until the previous item passes.
+All 13 v2 actions are built (Stage B, 2026-10-23): ROLL, END_TURN, CHOOSE_DEAL_SIZE, BUY (shares for stocks, amount for growth assets), PASS, SELL_ASSET, BORROW, REPAY, CHOOSE_LIFE_OPTION, ACCEPT_MARKET, DECLINE_MARKET, GIVE, SKIP_GIVE. Any new action or effect follows the same six steps; the fast-check coverage property in `invariants.props.test.ts` must then reach it.
 
 ---
 
