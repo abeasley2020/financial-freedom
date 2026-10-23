@@ -4,6 +4,7 @@ import {
   isGrowthAsset,
   LIABILITY_PAYMENT_PERCENT,
   PROFESSIONS,
+  ROUND_LIMIT,
   type Asset,
   type GameState,
   type Liability,
@@ -66,6 +67,54 @@ export function netWorth(player: Player): number {
 /** The win condition: passive income covers every monthly cost. */
 export function canEscape(player: Player): boolean {
   return passiveIncome(player) >= totalExpenses(player);
+}
+
+/** Spec v2, Winning: floor(passiveIncome × 100 / totalExpenses). 100 means the player can escape. */
+export function freedomPercent(player: Player): number {
+  const costs = totalExpenses(player);
+  if (costs <= 0) return passiveIncome(player) > 0 ? 100 : 0;
+  return Math.floor((passiveIncome(player) * 100) / costs);
+}
+
+/** Rounds the game ends after if nobody escapes (spec v2: 15 standard, 10 kids). */
+export function roundLimit(state: GameState): number {
+  return ROUND_LIMIT[state.game.mode];
+}
+
+/**
+ * The round in progress: one more than the rounds END_TURN has completed.
+ * Derived from the log's roundCompleted events, never stored (CLAUDE.md, Rule 2).
+ */
+export function roundNumber(state: GameState): number {
+  let completed = 0;
+  for (const entry of state.game.log) {
+    for (const event of entry.events) if (event.kind === 'roundCompleted') completed++;
+  }
+  return completed + 1;
+}
+
+/**
+ * Players still in, best first (spec v2, Winner at the limit): highest
+ * freedomPercent, then cash, then netWorth, then the earlier seat.
+ */
+export function rankPlayers(state: GameState): readonly Player[] {
+  return state.players
+    .map((player, seat) => ({ player, seat }))
+    .filter(({ player }) => !player.isOut)
+    .sort(
+      (a, b) =>
+        freedomPercent(b.player) - freedomPercent(a.player) ||
+        b.player.cash - a.player.cash ||
+        netWorth(b.player) - netWorth(a.player) ||
+        a.seat - b.seat,
+    )
+    .map(({ player }) => player);
+}
+
+/** The winner of a finished game: whoever escaped, else the best-ranked player still in. Undefined while playing. */
+export function winner(state: GameState): Player | undefined {
+  if (state.game.phase !== 'finished') return undefined;
+  return state.players.find((p) => p.hasEscaped) ?? rankPlayers(state)[0];
 }
 
 export function playerById(state: GameState, playerId: string): Player {

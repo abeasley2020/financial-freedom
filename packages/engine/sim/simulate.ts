@@ -6,6 +6,7 @@ import { PROFESSIONS, type GameMode, type GameState } from '@ff/shared';
 import { createGame } from '../src/createGame';
 import { reduce } from '../src/reduce';
 import { nextRandom } from '../src/rng';
+import { roundNumber, winner } from '../src/selectors';
 import { decide, STRATEGIES, type Strategy } from './bots';
 
 export interface SimOptions {
@@ -23,7 +24,9 @@ export interface GameRecord {
   readonly players: number;
   readonly seats: readonly { readonly professionId: string; readonly strategy: Strategy; readonly out: boolean; readonly won: boolean }[];
   readonly turns: number;
-  readonly ending: 'escape' | 'lastStanding' | 'capped';
+  /** Rounds completed or in progress when the game ended. */
+  readonly rounds: number;
+  readonly ending: 'escape' | 'roundLimit' | 'lastStanding' | 'capped';
   readonly actions: number;
 }
 
@@ -102,8 +105,14 @@ export function playGame(seed: number, options: SimOptions): GameRecord {
   const escaped = state.players.find((p) => p.hasEscaped);
   const inPlayers = state.players.filter((p) => !p.isOut);
   const ending: GameRecord['ending'] =
-    escaped !== undefined ? 'escape' : state.game.phase === 'finished' && inPlayers.length === 1 ? 'lastStanding' : 'capped';
-  const winnerId = escaped?.id ?? (ending === 'lastStanding' ? inPlayers[0]?.id : undefined);
+    escaped !== undefined
+      ? 'escape'
+      : state.game.phase !== 'finished'
+        ? 'capped'
+        : inPlayers.length === 1
+          ? 'lastStanding'
+          : 'roundLimit';
+  const winnerId = winner(state)?.id;
 
   return {
     seed,
@@ -113,6 +122,7 @@ export function playGame(seed: number, options: SimOptions): GameRecord {
       return { ...seat, out: player?.isOut ?? false, won: player?.id === winnerId };
     }),
     turns: state.game.turnNumber,
+    rounds: roundNumber(state),
     ending,
     actions,
   };
@@ -135,7 +145,7 @@ export function simulate(options: SimOptions, onGame?: (index: number) => void):
     onGame?.(i);
   }
 
-  const endings = { escape: 0, lastStanding: 0, capped: 0 };
+  const endings = { escape: 0, roundLimit: 0, lastStanding: 0, capped: 0 };
   const byProfession = new Map<string, { seats: number; wins: number; outs: number }>();
   const byStrategy = new Map<Strategy, { seats: number; wins: number; outs: number }>();
   const byCount = new Map<number, number[]>();

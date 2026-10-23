@@ -2,13 +2,16 @@ import type { Action, GameState, LogEvent } from '@ff/shared';
 
 import { creditPayday } from '../payday';
 import { rejected, type ActionResult } from '../reduce';
-import { canEscape, currentPlayer, hasRolledThisTurn, playerById } from '../selectors';
+import { canEscape, currentPlayer, hasRolledThisTurn, playerById, rankPlayers, roundLimit, roundNumber } from '../selectors';
 
 /**
- * Spec, Core rules, turn step 5: check the win condition, then advance to the
- * next player who is still in and not sitting out a Setback. Phase 1 ends the
- * game at the first escape, and also when fewer than two players remain
- * (Core rules, Bankruptcy).
+ * Spec, Core rules, turn step 5: check escape, then the round limit, then
+ * advance to the next player who is still in and not sitting out a Setback.
+ * Escape ends the game at once (v1). A round completes when every seat still
+ * in has taken a turn (a skipped turn counts: decided 2026-10-23, Q3), and
+ * the END_TURN that completes the final round ends the game with the winner
+ * by freedomPercent, cash, netWorth, then seat (spec v2, Winning). The game
+ * also ends when fewer than two players remain (Core rules, Bankruptcy).
  */
 export function endTurn(state: GameState, action: Extract<Action, { type: 'END_TURN' }>): ActionResult {
   if (state.pending.kind !== 'none') return rejected('INVALID_FOR_PENDING');
@@ -19,41 +22,34 @@ export function endTurn(state: GameState, action: Extract<Action, { type: 'END_T
   if (!player.isOut && canEscape(player)) {
     return {
       ok: true,
-      state: {
-        ...state,
-        game: { ...state.game, phase: 'finished' },
-        players: state.players.map((p) => (p.id === action.playerId ? { ...p, hasEscaped: true } : p)),
-      },
-      events: [],
+      state: finish(
+        {
+          ...state,
+          players: state.players.map((p) => (p.id === action.playerId ? { ...p, hasEscaped: true } : p)),
+        },
+        action.playerId,
+      ),
+      events: [{ kind: 'gameEnded', reason: 'escape', winnerId: action.playerId }],
     };
   }
 
   const remaining = state.players.filter((p) => !p.isOut);
-  if (remaining.length < 2) {
-    const last = remaining[0];
-    return {
-      ok: true,
-      state: {
-        ...state,
-        game: { ...state.game, phase: 'finished', currentPlayerId: last?.id ?? state.game.currentPlayerId },
-      },
-      events: [],
-    };
-  }
+  if (remaining.length < 2) return lastStanding(state, []);
 
   const advanced = advance(state, action.playerId);
+  const events: LogEvent[] = [...advanced.events];
 
   // A skipped seat's Payday can put that player out and leave one player standing.
-  const stillIn = advanced.state.players.filter((p) => !p.isOut);
-  if (stillIn.length < 2) {
-    return {
-      ok: true,
-      state: {
-        ...advanced.state,
-        game: { ...advanced.state.game, phase: 'finished', currentPlayerId: stillIn[0]?.id ?? state.game.currentPlayerId },
-      },
-      events: advanced.events,
-    };
+  if (advanced.state.players.filter((p) => !p.isOut).length < 2) return lastStanding(advanced.state, events);
+
+  if (advanced.wrapped) {
+    const round = roundNumber(advanced.state);
+    if (round >= roundLimit(advanced.state)) {
+      const winnerId = rankPlayers(advanced.state)[0]?.id ?? advanced.nextId;
+      events.push({ kind: 'gameEnded', reason: 'roundLimit', winnerId });
+      return { ok: true, state: finish(advanced.state, winnerId), events };
+    }
+    events.push({ kind: 'roundCompleted', round });
   }
 
   return {
@@ -62,8 +58,26 @@ export function endTurn(state: GameState, action: Extract<Action, { type: 'END_T
       ...advanced.state,
       game: { ...advanced.state.game, turnNumber: state.game.turnNumber + 1, currentPlayerId: advanced.nextId },
     },
-    events: advanced.events,
+    events,
   };
+}
+
+function finish(state: GameState, winnerId: string): GameState {
+  return { ...state, game: { ...state.game, phase: 'finished', currentPlayerId: winnerId } };
+}
+
+function lastStanding(state: GameState, events: readonly LogEvent[]): ActionResult {
+  const survivor = state.players.find((p) => !p.isOut);
+  const winnerId = survivor?.id ?? state.game.currentPlayerId;
+  return { ok: true, state: finish(state, winnerId), events: [...events, { kind: 'gameEnded', reason: 'lastStanding', winnerId }] };
+}
+
+interface Advanced {
+  readonly state: GameState;
+  readonly nextId: string;
+  /** True when the next seat is at or before the ending seat: every seat still in has now taken its turn this round. */
+  readonly wrapped: boolean;
+  readonly events: LogEvent[];
 }
 
 /**
@@ -73,7 +87,7 @@ export function endTurn(state: GameState, action: Extract<Action, { type: 'END_T
  * (spec, Core rules, turn step 1), which can put it out. Every seat is tried
  * at most twice.
  */
-function advance(state: GameState, playerId: string): { state: GameState; nextId: string; events: LogEvent[] } {
+function advance(state: GameState, playerId: string): Advanced {
   const seats = state.players;
   const start = seats.findIndex((p) => p.id === playerId);
   let next = state;
@@ -91,9 +105,9 @@ function advance(state: GameState, playerId: string): { state: GameState; nextId
       if (playerById(next, candidate.id).isOut && next.players.filter((p) => !p.isOut).length < 2) break;
       continue;
     }
-    return { state: next, nextId: candidate.id, events };
+    return { state: next, nextId: candidate.id, wrapped: index <= start, events };
   }
   const survivor = next.players.find((p) => !p.isOut);
   if (survivor === undefined) throw new Error('no player left in the game');
-  return { state: next, nextId: survivor.id, events };
+  return { state: next, nextId: survivor.id, wrapped: true, events };
 }

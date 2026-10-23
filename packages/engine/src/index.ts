@@ -17,6 +17,7 @@ export {
   cheapestOption,
   currentPlayer,
   debtPayments,
+  freedomPercent,
   hasRolledThisTurn,
   largestLoan,
   monthlyCashFlow,
@@ -26,6 +27,10 @@ export {
   playerById,
   priciestOption,
   professionOf,
+  rankPlayers,
+  roundLimit,
+  roundNumber,
   totalExpenses,
+  winner,
   type OptionCost,
 } from './selectors';

@@ -197,7 +197,14 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       passiveIncome: SignedMoneySchema,
       totalExpenses: MoneySchema,
       cash: SignedMoneySchema,
+      roundNumber: z.number().int().positive(),
     })
+    .strict(),
+  /** END_TURN completed a round: every seat still in has taken (or been skipped for) a turn. roundNumber is derived by counting these. */
+  z.object({ kind: z.literal('roundCompleted'), round: z.number().int().positive() }).strict(),
+  /** The END_TURN that finished the game, and why. */
+  z
+    .object({ kind: z.literal('gameEnded'), reason: z.enum(['escape', 'roundLimit', 'lastStanding']), winnerId: PlayerIdSchema })
     .strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
@@ -341,6 +348,9 @@ export type LogEntry = DeepReadonly<z.infer<typeof LogEntrySchema>>;
 
 export const GameModeSchema = z.enum(['standard', 'kids']);
 export type GameMode = z.infer<typeof GameModeSchema>;
+
+/** Spec v2, Winning and game length: if nobody escapes, the game ends after this many rounds. */
+export const ROUND_LIMIT: Readonly<Record<GameMode, number>> = { standard: 15, kids: 10 };
 
 export const GamePhaseSchema = z.enum(['lobby', 'playing', 'finished']);
 export type GamePhase = z.infer<typeof GamePhaseSchema>;

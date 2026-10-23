@@ -84,7 +84,7 @@ describe('ROLL: Payday every turn (spec, Core rules, turn step 1; decided 2026-1
     const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
     expect(next.game.log[0]?.events.slice(0, 3)).toEqual([
       { kind: 'payday', amount: TEACHER_CASH_FLOW },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100, roundNumber: 1 },
       { kind: 'rolled', value: 1 },
     ]);
   });
@@ -257,7 +257,7 @@ describe('ROLL: log and determinism', () => {
         action: ROLL,
         events: [
           { kind: 'payday', amount: TEACHER_CASH_FLOW },
-          { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100 },
+          { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100, roundNumber: 1 },
           { kind: 'rolled', value: 1 },
           { kind: 'moved', from: 2, to: 3 },
         ],
@@ -349,7 +349,7 @@ describe('ROLL: Payday grows growth assets before crediting cash flow (spec v2, 
     expect(next.game.log[0]?.events.slice(0, 3)).toEqual([
       { kind: 'valueChanged', assetId: 'idx', delta: 80, marketValue: 2_080 },
       { kind: 'payday', amount: 720 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 20, totalExpenses: 2_600, cash: 1_120 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 20, totalExpenses: 2_600, cash: 1_120, roundNumber: 1 },
     ]);
   });
 

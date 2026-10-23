@@ -1,15 +1,20 @@
-import type { Player } from '@ff/shared';
+import { ROUND_LIMIT, type GameState, type Player } from '@ff/shared';
 import { describe, expect, it } from 'vitest';
 
 import {
   canEscape,
   currentPlayer,
   debtPayments,
+  freedomPercent,
   hasRolledThisTurn,
   monthlyCashFlow,
   netWorth,
   passiveIncome,
+  playerById,
+  roundLimit,
+  roundNumber,
   totalExpenses,
+  winner,
 } from './selectors';
 import { deepFreeze } from './test/deepFreeze';
 import { twoPlayerGame, withGame, withPlayer } from './test/fixtures';
@@ -125,5 +130,86 @@ describe('netWorth (spec v2: never stored; growth assets count at marketValue)',
       ],
     };
     expect(netWorth(owner)).toBe(400 + 2_600 + 200);
+  });
+});
+
+describe('freedomPercent (spec v2, Winning: floor(passiveIncome × 100 / totalExpenses), never stored)', () => {
+  const withPassive = (monthlyCashFlow: number): Player => ({
+    ...teacher(),
+    assets: [{ id: 'a', cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow }],
+  });
+
+  it('is 0 with no passive income', () => {
+    expect(freedomPercent(teacher())).toBe(0);
+  });
+
+  it('is passive income over totalExpenses, floored', () => {
+    // Teacher totalExpenses 2,600.
+    expect(freedomPercent(withPassive(1_300))).toBe(50);
+    expect(freedomPercent(withPassive(1_299))).toBe(49);
+    expect(freedomPercent(withPassive(2_599))).toBe(99);
+  });
+
+  it('reaches 100 exactly when the player can escape, and keeps counting past it', () => {
+    expect(freedomPercent(withPassive(2_600))).toBe(100);
+    expect(canEscape(withPassive(2_600))).toBe(true);
+    expect(freedomPercent(withPassive(5_200))).toBe(200);
+  });
+});
+
+describe('roundNumber and roundLimit (spec v2, Winning and game length)', () => {
+  it('starts at round 1 and counts completed rounds from the log', () => {
+    const state = twoPlayerGame();
+    expect(roundNumber(state)).toBe(1);
+    const completed: GameState = withGame(state, {
+      log: [
+        { turnNumber: 1, action: { type: 'END_TURN', playerId: 'p2' }, events: [{ kind: 'roundCompleted', round: 1 }] },
+        { turnNumber: 3, action: { type: 'END_TURN', playerId: 'p2' }, events: [{ kind: 'roundCompleted', round: 2 }] },
+      ],
+    });
+    expect(roundNumber(completed)).toBe(3);
+  });
+
+  it('the limit is 15 rounds in standard mode and 10 in kids mode', () => {
+    expect(ROUND_LIMIT).toEqual({ standard: 15, kids: 10 });
+    expect(roundLimit(twoPlayerGame())).toBe(15);
+    expect(roundLimit(twoPlayerGame({ mode: 'kids' }))).toBe(10);
+  });
+});
+
+describe('winner (spec v2, Winning: escape, else highest freedomPercent, then cash, then netWorth, then the earlier seat)', () => {
+  const finished = (state: GameState): GameState => withGame(state, { phase: 'finished' });
+  const asset = (monthlyCashFlow: number) => ({ id: `a-${String(monthlyCashFlow)}`, cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow }) as const;
+
+  it('is undefined while the game is playing', () => {
+    expect(winner(twoPlayerGame())).toBeUndefined();
+  });
+
+  it('is the player who escaped', () => {
+    const state = finished(withPlayer(twoPlayerGame(), 'p2', { hasEscaped: true }));
+    expect(winner(state)?.id).toBe('p2');
+  });
+
+  it('is the highest freedomPercent among players still in, even with less cash', () => {
+    // Teacher: 1,300 of 2,600 = 50%. Doctor (totalExpenses 11,340): 2,268 passive = 20%.
+    const state = finished(withPlayer(withPlayer(twoPlayerGame(), 'p1', { assets: [asset(1_300)], cash: 0 }), 'p2', { assets: [asset(2_268)], cash: 50_000 }));
+    expect(freedomPercent(playerById(state, 'p1'))).toBe(50);
+    expect(freedomPercent(playerById(state, 'p2'))).toBe(20);
+    expect(winner(state)?.id).toBe('p1');
+  });
+
+  it('ties on freedomPercent go to cash, then netWorth, then the earlier seat', () => {
+    const tied = twoPlayerGame();
+    expect(winner(finished(withPlayer(tied, 'p2', { cash: 400 + 1 })))?.id).toBe('p2');
+    // Same cash: netWorth decides (the Teacher has 20,000 of debt, the Doctor 178,000).
+    expect(winner(finished(withPlayer(tied, 'p2', { cash: 400 })))?.id).toBe('p1');
+    // Everything equal: the earlier seat.
+    const clone = finished(withPlayer(tied, 'p2', { cash: 400, liabilities: tied.players[0]?.liabilities ?? [], professionId: 'teacher', salary: 3_300 }));
+    expect(winner(clone)?.id).toBe('p1');
+  });
+
+  it('ignores players who are out', () => {
+    const state = finished(withPlayer(withPlayer(twoPlayerGame(), 'p1', { isOut: true, cash: 0 }), 'p2', { cash: 0 }));
+    expect(winner(state)?.id).toBe('p2');
   });
 });
