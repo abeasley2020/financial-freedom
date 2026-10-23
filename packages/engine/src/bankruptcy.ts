@@ -1,15 +1,20 @@
-import type { Asset, GameState, LogEvent } from '@ff/shared';
+import { isGrowthAsset, type Asset, type GameState, type LogEvent } from '@ff/shared';
 
 import { pct } from './money';
 import { liquidate } from './sales';
-import { playerById } from './selectors';
+import { assetCashFlow, playerById } from './selectors';
 
 /** Share of purchase price a bankruptcy sale fetches (spec, Core rules, Bankruptcy). */
 const BANKRUPTCY_SALE_PERCENT = 50;
 
-/** Sale order: lowest monthlyCashFlow first, ties by lowest purchasePrice, then holding order. */
+/** Sale order: lowest monthly cash flow first, ties by lowest purchasePrice, then holding order. */
 function saleOrder(a: Asset, b: Asset): number {
-  return a.monthlyCashFlow - b.monthlyCashFlow || a.purchasePrice - b.purchasePrice;
+  return assetCashFlow(a) - assetCashFlow(b) || a.purchasePrice - b.purchasePrice;
+}
+
+/** What a bankruptcy sale fetches: half the purchase price, or half the marketValue of a growth asset (spec v2, Bankruptcy). */
+export function bankruptcyPrice(asset: Asset): number {
+  return pct(isGrowthAsset(asset) ? asset.marketValue : asset.purchasePrice, BANKRUPTCY_SALE_PERCENT);
 }
 
 /**
@@ -29,7 +34,7 @@ export function resolveBankruptcy(state: GameState, playerId: string): { readonl
     if (player.cash >= 0) return { state: next, events };
     const asset = [...player.assets].sort(saleOrder)[0];
     if (asset === undefined) break;
-    const sale = liquidate(next, playerId, asset, pct(asset.purchasePrice, BANKRUPTCY_SALE_PERCENT), 'bankruptcy');
+    const sale = liquidate(next, playerId, asset, bankruptcyPrice(asset), 'bankruptcy');
     next = sale.state;
     events.push(...sale.events);
   }

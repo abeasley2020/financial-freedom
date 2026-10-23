@@ -120,15 +120,15 @@ export function offered(state: GameState, cardId: string, sharePrice?: number): 
 }
 
 /**
- * Walks the real path to a marketChoice or payLifestyle decision for
- * `cardId`: puts the card on top of its deck and rolls the current player
- * from 0 onto the first board space of the matching kind (Lifestyle is space
- * 1, Market is space 2 on the v2 board). Payday happens on the way.
+ * Walks the real path to a marketChoice or lifeChoice decision for `cardId`:
+ * puts the card on top of its deck and rolls the current player from 0 onto
+ * the first board space of the matching kind (Life Choices is space 1, Market
+ * is space 2 on the v2 board). Payday happens on the way.
  */
 export function drawn(state: GameState, cardId: string): GameState {
   const card = CARDS_BY_ID.get(cardId);
-  if (card?.deck !== 'market' && card?.deck !== 'lifestyle') {
-    throw new Error(`fixture: "${cardId}" is not a market or lifestyle card`);
+  if (card?.deck !== 'market' && card?.deck !== 'lifeChoices') {
+    throw new Error(`fixture: "${cardId}" is not a market or Life Choices card`);
   }
   const space = BOARD.indexOf(card.deck);
   if (space < 1 || space > 6) throw new Error(`fixture: no ${card.deck} space within one die roll of 0`);

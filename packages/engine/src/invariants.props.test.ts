@@ -113,11 +113,11 @@ describe('property: random games', () => {
     );
   }, PROPERTY_TIMEOUT_MS);
 
-  it('a kids game only ever gets stuck on a Lifestyle card the child cannot pay (CLAUDE.md spec gap 2)', () => {
+  it('a kids game never gets stuck: every Life Choices card has a free option (spec v2, Kids mode)', () => {
     fc.assert(
       fc.property(setupArb(fc.constant('kids')), choicesArb, (setup, choices) => {
         const played = play(setup, choices);
-        if (isStuck(played.final)) expect(played.final.pending.kind).toBe('payLifestyle');
+        expect(isStuck(played.final), 'no candidate action is accepted').toBe(false);
       }),
       { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
     );
@@ -159,10 +159,10 @@ describe('checkInvariants', () => {
 
   it('catches a card that appears twice', () => {
     const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
-    const [top] = state.decks.lifestyle.drawPile;
-    if (top === undefined) throw new Error('lifestyle deck is empty');
-    const broken: GameState = { ...state, decks: { ...state.decks, lifestyle: { ...state.decks.lifestyle, discardPile: [top] } } };
-    expect(checkInvariants(broken).join('\n')).toMatch(/deck lifestyle/);
+    const [top] = state.decks.lifeChoices.drawPile;
+    if (top === undefined) throw new Error('lifeChoices deck is empty');
+    const broken: GameState = { ...state, decks: { ...state.decks, lifeChoices: { ...state.decks.lifeChoices, discardPile: [top] } } };
+    expect(checkInvariants(broken).join('\n')).toMatch(/deck lifeChoices/);
   });
 
   it('catches a mortgage that finances no held asset', () => {
@@ -176,6 +176,43 @@ describe('checkInvariants', () => {
       ),
     };
     expect(checkInvariants(broken).join('\n')).toMatch(/finances no asset/);
+  });
+
+  it('catches a subscription with a principal (spec v2 invariant: every subscription has principal 0)', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0 ? { ...p, liabilities: [...p.liabilities, { id: 's', kind: 'subscription', principal: 5, monthlyPayment: 60, sourceCardId: 'life-004' }] } : p,
+      ),
+    };
+    expect(checkInvariants(broken).join('\n')).toMatch(/subscription/);
+  });
+
+  it('catches a growth asset with a negative marketValue (spec v2 invariant)', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0
+          ? { ...p, assets: [{ id: 'g', cardId: 'life-005', type: 'index', purchasePrice: 100, downPaid: 100, marketValue: -1, growthPercent: 4, payoutPercent: 1 }] }
+          : p,
+      ),
+    };
+    expect(checkInvariants(broken).join('\n')).toMatch(/marketValue/);
+  });
+
+  it('accepts a growth asset created from a Life Choices windfall: its card stays in the Life Choices deck', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const invested: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0
+          ? { ...p, assets: [{ id: 'g', cardId: 'life-005', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 4, payoutPercent: 1 }] }
+          : p,
+      ),
+    };
+    expect(checkInvariants(invested)).toEqual([]);
   });
 
   it('catches a current player who is out before rolling', () => {

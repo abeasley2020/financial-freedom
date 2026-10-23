@@ -91,7 +91,7 @@ describe('END_TURN: rejections', () => {
     { kind: 'chooseDealSize' },
     { kind: 'buyOrPass', cardId: 'small-001' },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('END_TURN: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

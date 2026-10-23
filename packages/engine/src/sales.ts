@@ -1,4 +1,4 @@
-import { CARDS_BY_ID, type Asset, type GameState, type LogEvent } from '@ff/shared';
+import { CARDS_BY_ID, isGrowthAsset, type Asset, type GameState, type LogEvent } from '@ff/shared';
 
 export interface Liquidation {
   readonly state: GameState;
@@ -10,7 +10,9 @@ export interface Liquidation {
  * asset leaves the player, its linked mortgage is retired first (even when
  * the proceeds fall short of it), and the player keeps the remainder. A deal
  * card returns to its deck's discard pile; a stock card never left its deck,
- * so a lot simply disappears. Used by Market sales and bankruptcy.
+ * and a growth asset's card (a deal or a Life Choices windfall) never left
+ * either, so a lot or a growth asset simply disappears. Used by Market
+ * sales, bankruptcy, and growth asset sales.
  */
 export function liquidate(state: GameState, playerId: string, asset: Asset, proceeds: number, reason: string): Liquidation {
   const player = state.players.find((p) => p.id === playerId);
@@ -21,8 +23,10 @@ export function liquidate(state: GameState, playerId: string, asset: Asset, proc
   const net = proceeds - mortgagePaid;
 
   const card = CARDS_BY_ID.get(asset.cardId);
-  if (card?.deck !== 'smallDeals' && card?.deck !== 'bigDeals') {
-    throw new Error(`asset "${asset.id}" references unknown deal card "${asset.cardId}"`);
+  if (card === undefined) throw new Error(`asset "${asset.id}" references unknown card "${asset.cardId}"`);
+  const returnsCard = asset.type !== 'stock' && !isGrowthAsset(asset);
+  if (returnsCard && card.deck !== 'smallDeals' && card.deck !== 'bigDeals') {
+    throw new Error(`asset "${asset.id}" references non-deal card "${asset.cardId}"`);
   }
 
   const { principles } = card;
@@ -33,13 +37,12 @@ export function liquidate(state: GameState, playerId: string, asset: Asset, proc
   ];
   if (net > 0) events.push({ kind: 'cashChanged', delta: net, reason });
 
-  const decks =
-    asset.type === 'stock'
-      ? state.decks
-      : {
-          ...state.decks,
-          [card.deck]: { ...state.decks[card.deck], discardPile: [...state.decks[card.deck].discardPile, card.id] },
-        };
+  const decks = returnsCard
+    ? {
+        ...state.decks,
+        [card.deck]: { ...state.decks[card.deck], discardPile: [...state.decks[card.deck].discardPile, card.id] },
+      }
+    : state.decks;
 
   return {
     state: {

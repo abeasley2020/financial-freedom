@@ -105,7 +105,7 @@ describe('PASS: rejections', () => {
     { kind: 'none' },
     { kind: 'chooseDealSize' },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('PASS: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

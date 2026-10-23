@@ -12,7 +12,7 @@ import { PRINCIPLE_IDS } from '../principles';
 import { ProfessionSchema } from '../professions';
 import rawBoard from './board.json';
 import rawBigDeals from './cards/big-deals.json';
-import rawLifestyle from './cards/lifestyle.json';
+import rawLifeChoices from './cards/life-choices.json';
 import rawMarket from './cards/market.json';
 import rawSetback from './cards/setback.json';
 import rawSmallDeals from './cards/small-deals.json';
@@ -23,7 +23,7 @@ const RAW_DECKS: Record<DeckId, unknown> = {
   smallDeals: rawSmallDeals,
   bigDeals: rawBigDeals,
   market: rawMarket,
-  lifestyle: rawLifestyle,
+  lifeChoices: rawLifeChoices,
   setback: rawSetback,
 };
 
@@ -83,9 +83,38 @@ describe('fixtures: cards/*.json', () => {
     expect(result.success, issues(result)).toBe(true);
   });
 
-  it('ships 21 starter cards across the five decks (20 from spec step 3 plus one dividend stock)', () => {
+  it('ships 23 starter cards across the five decks (the 21 v1 cards plus a subscription and a windfall for Stage B tests)', () => {
     const total = DECK_IDS.reduce((n, deck) => n + CARDS_BY_DECK[deck].length, 0);
-    expect(total).toBe(21);
+    expect(total).toBe(23);
+  });
+
+  it('every Life Choices card has an option with no monthly cost (spec, Life Choices cards)', () => {
+    for (const card of CARDS_BY_DECK.lifeChoices) {
+      if (card.deck !== 'lifeChoices') continue;
+      const noMonthly = card.options.filter((o) => !o.effects.some((e) => e.kind === 'addLoan' || e.kind === 'addSubscription'));
+      expect(noMonthly.length, card.id).toBeGreaterThan(0);
+    }
+  });
+
+  it('every Life Choices card has a free option (nothing today, nothing monthly) that kids may choose, so a kid is never stuck', () => {
+    // Stronger than the spec's "no monthly cost": see STATUS.md, Questions for Andre.
+    for (const card of CARDS_BY_DECK.lifeChoices) {
+      if (card.deck !== 'lifeChoices') continue;
+      const free = card.options.filter((o) => !o.effects.some((e) => e.kind === 'payCash' || e.kind === 'addLoan' || e.kind === 'addSubscription' || e.kind === 'investGrowth'));
+      expect(free.length, card.id).toBeGreaterThan(0);
+      if (card.kidsOk) expect(free.some((o) => o.kidsOk), `${card.id} free option for kids`).toBe(true);
+    }
+  });
+
+  it('every Life Choices option carries at least one principle and texts within limits', () => {
+    for (const card of CARDS_BY_DECK.lifeChoices) {
+      if (card.deck !== 'lifeChoices') continue;
+      for (const option of card.options) {
+        expect(option.principles.length, `${card.id}/${option.id}`).toBeGreaterThan(0);
+        expect(option.kidsText.length, `${card.id}/${option.id}`).toBeLessThanOrEqual(90);
+        expect(option.adultText.length, `${card.id}/${option.id}`).toBeLessThanOrEqual(160);
+      }
+    }
   });
 
   it('includes at least one dividend-paying stock so BUY can exercise the dividend rule', () => {
@@ -156,7 +185,7 @@ describe('fixtures: board.json', () => {
     expect(BOARD.length).toBe(24);
     const count = (kind: string) => BOARD.filter((s) => s === kind).length;
     expect(count('opportunity')).toBe(10);
-    expect(count('lifestyle')).toBe(6);
+    expect(count('lifeChoices')).toBe(6);
     expect(count('market')).toBe(4);
     expect(count('giving')).toBe(2);
     expect(count('setback')).toBe(2);
@@ -166,7 +195,7 @@ describe('fixtures: board.json', () => {
   it('places each kind at the positions the spec proposes (decided 2026-10-23, Q8)', () => {
     const positions = (kind: string) => BOARD.flatMap((s, i) => (s === kind ? [i] : []));
     expect(positions('opportunity')).toEqual([0, 3, 5, 8, 10, 13, 15, 18, 20, 23]);
-    expect(positions('lifestyle')).toEqual([1, 7, 11, 14, 19, 22]);
+    expect(positions('lifeChoices')).toEqual([1, 7, 11, 14, 19, 22]);
     expect(positions('market')).toEqual([2, 9, 16, 21]);
     expect(positions('giving')).toEqual([4, 17]);
     expect(positions('setback')).toEqual([6, 12]);

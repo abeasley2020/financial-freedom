@@ -6,20 +6,20 @@ import { BoardSchema, type Board } from '../board';
 import {
   CardSchema,
   DealCardSchema,
-  LifestyleCardSchema,
+  LifeChoicesCardSchema,
   MarketCardSchema,
   SetbackCardSchema,
   type Card,
   type DealCard,
   type DeckId,
-  type LifestyleCard,
+  type LifeChoicesCard,
   type MarketCard,
   type SetbackCard,
 } from '../cards';
 import { ProfessionSchema, type Profession } from '../professions';
 import rawBoard from './board.json';
 import rawBigDeals from './cards/big-deals.json';
-import rawLifestyle from './cards/lifestyle.json';
+import rawLifeChoices from './cards/life-choices.json';
 import rawMarket from './cards/market.json';
 import rawSetback from './cards/setback.json';
 import rawSmallDeals from './cards/small-deals.json';
@@ -30,14 +30,14 @@ export const PROFESSIONS: readonly Profession[] = ProfessionSchema.array().parse
 export const SMALL_DEALS: readonly DealCard[] = DealCardSchema.array().parse(rawSmallDeals);
 export const BIG_DEALS: readonly DealCard[] = DealCardSchema.array().parse(rawBigDeals);
 export const MARKET_CARDS: readonly MarketCard[] = MarketCardSchema.array().parse(rawMarket);
-export const LIFESTYLE_CARDS: readonly LifestyleCard[] = LifestyleCardSchema.array().parse(rawLifestyle);
+export const LIFE_CHOICES_CARDS: readonly LifeChoicesCard[] = LifeChoicesCardSchema.array().parse(rawLifeChoices);
 export const SETBACK_CARDS: readonly SetbackCard[] = SetbackCardSchema.array().parse(rawSetback);
 
 export const CARDS_BY_DECK: Readonly<Record<DeckId, readonly Card[]>> = {
   smallDeals: SMALL_DEALS,
   bigDeals: BIG_DEALS,
   market: MARKET_CARDS,
-  lifestyle: LIFESTYLE_CARDS,
+  lifeChoices: LIFE_CHOICES_CARDS,
   setback: SETBACK_CARDS,
 };
 

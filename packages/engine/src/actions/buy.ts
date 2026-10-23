@@ -24,6 +24,8 @@ export function buy(state: GameState, action: Extract<Action, { type: 'BUY' }>):
 
   if (card.type === 'stock') return buyStock(state, action, card, sharePrice, assetId);
   if (action.shares !== undefined) return rejected('INVALID_SHARES');
+  // Growth deal cards (savings, CD, index) are bought by amount: Stage B item 3.
+  if (card.type === 'savings' || card.type === 'cd' || card.type === 'index') return rejected('NOT_IMPLEMENTED');
 
   const cost = card.downPayment;
   if (player.cash < cost) return rejected('INSUFFICIENT_CASH');

@@ -66,7 +66,7 @@ export function candidateActions(state: GameState, choice: number): readonly Act
           actions.push({ type: 'BUY', playerId, shares: 1 + (Math.floor(choice / 3) % max) });
           actions.push({ type: 'BUY', playerId, shares: max + 1 });
           const lot = pick(player.assets.filter((a) => a.cardId === card.id), Math.floor(choice / 11));
-          if (lot?.shares !== undefined) {
+          if (lot?.type === 'stock') {
             actions.push({ type: 'SELL_ASSET', playerId, assetId: lot.id });
             actions.push({ type: 'SELL_ASSET', playerId, assetId: lot.id, shares: 1 + (Math.floor(choice / 13) % (lot.shares + 1)) });
           }
@@ -83,12 +83,15 @@ export function candidateActions(state: GameState, choice: number): readonly Act
       const named: Action[] = asset === undefined ? [] : [{ type: 'ACCEPT_MARKET', playerId, assetId: asset.id }];
       return [{ type: 'ACCEPT_MARKET', playerId }, { type: 'DECLINE_MARKET', playerId }, ...named];
     }
-    case 'payLifestyle':
-      return [
-        { type: 'PAY_LIFESTYLE', playerId, method: 'cash' },
-        { type: 'PAY_LIFESTYLE', playerId, method: 'loan' },
-        borrow,
-      ];
+    case 'lifeChoice': {
+      const card = CARDS_BY_ID.get(pending.cardId);
+      const options = card?.deck === 'lifeChoices' ? card.options : [];
+      const picked = pick(options, Math.floor(choice / 3));
+      const actions: Action[] = options.map((o) => ({ type: 'CHOOSE_LIFE_OPTION', playerId, optionId: o.id }));
+      if (picked !== undefined) actions.push({ type: 'CHOOSE_LIFE_OPTION', playerId, optionId: picked.id });
+      actions.push({ type: 'CHOOSE_LIFE_OPTION', playerId, optionId: 'nope' }, borrow);
+      return actions;
+    }
     case 'giveOrSkip':
       return [{ type: 'GIVE', playerId }, { type: 'SKIP_GIVE', playerId }];
   }

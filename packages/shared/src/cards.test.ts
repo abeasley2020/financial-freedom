@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CardSchema, DealCardSchema, LifestyleCardSchema, MarketCardSchema, SetbackCardSchema } from './cards';
+import { CardSchema, DealCardSchema, MarketCardSchema, SetbackCardSchema } from './cards';
 
 /** Copy of `obj` without the named keys. */
 function without<T extends object, K extends keyof T>(obj: T, ...keys: K[]): Omit<T, K> {
@@ -161,43 +161,6 @@ describe('MarketCardSchema', () => {
       { kind: 'splitShares', ratio: 2 },
     ];
     expect(MarketCardSchema.safeParse({ ...buyer, effects }).success).toBe(true);
-  });
-});
-
-describe('LifestyleCardSchema', () => {
-  const truck = {
-    id: 'life-001',
-    deck: 'lifestyle',
-    title: 'New Truck',
-    principles: ['P4', 'P5', 'P6'],
-    adultText: 'Pay cash or finance it.',
-    kidsText: 'Pay cash or take a loan.',
-    kidsOk: true,
-    cashCost: 4_000,
-    monthlyCost: 380,
-    loanPrincipal: 12_000,
-  };
-
-  it('accepts cash-or-loan', () => {
-    expect(LifestyleCardSchema.safeParse(truck).success).toBe(true);
-  });
-
-  it('accepts cash only', () => {
-    expect(LifestyleCardSchema.safeParse(without(truck, 'monthlyCost', 'loanPrincipal')).success).toBe(true);
-  });
-
-  it('accepts loan only', () => {
-    expect(LifestyleCardSchema.safeParse(without(truck, 'cashCost')).success).toBe(true);
-  });
-
-  it('rejects a loan with a monthly cost but no principal', () => {
-    expect(LifestyleCardSchema.safeParse(without(truck, 'loanPrincipal')).success).toBe(false);
-  });
-
-  it('rejects a card with neither a cash cost nor a loan', () => {
-    expect(
-      LifestyleCardSchema.safeParse(without(truck, 'cashCost', 'monthlyCost', 'loanPrincipal')).success,
-    ).toBe(false);
   });
 });
 

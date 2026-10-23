@@ -3,12 +3,12 @@ import { z } from 'zod';
 import { MoneySchema } from './money';
 import type { DeepReadonly } from './readonly';
 
-export const LIABILITY_KINDS = ['student', 'car', 'credit', 'mortgage', 'bank', 'lifestyle'] as const;
+export const LIABILITY_KINDS = ['student', 'car', 'credit', 'mortgage', 'bank', 'lifestyle', 'subscription'] as const;
 export const LiabilityKindSchema = z.enum(LIABILITY_KINDS);
 export type LiabilityKind = z.infer<typeof LiabilityKindSchema>;
 
-/** Liability kinds a profession may start with. Lifestyle loans only come from cards. */
-export const StartingLiabilityKindSchema = LiabilityKindSchema.exclude(['lifestyle']);
+/** Liability kinds a profession may start with. Lifestyle loans and subscriptions only come from Life Choices cards. */
+export const StartingLiabilityKindSchema = LiabilityKindSchema.exclude(['lifestyle', 'subscription']);
 export type StartingLiabilityKind = z.infer<typeof StartingLiabilityKindSchema>;
 
 /**
