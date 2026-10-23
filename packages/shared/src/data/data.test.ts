@@ -92,6 +92,11 @@ describe('fixtures: cards/*.json', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it('every small deal has downPayment <= 5000', () => {
+    const over = SMALL_DEALS.filter((c) => c.downPayment > 5_000).map((c) => `${c.id} (${String(c.downPayment)})`);
+    expect(over).toEqual([]);
+  });
+
   it('includes at least one stock card so the engine can exercise price ranges', () => {
     const stocks = SMALL_DEALS.filter((c) => c.type === 'stock');
     expect(stocks.length).toBeGreaterThan(0);

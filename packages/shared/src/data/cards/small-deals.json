@@ -5,10 +5,10 @@
     "title": "Duplex in Decatur",
     "description": "Two units on a quiet street, both rented to long-term tenants. The bank will carry most of it.",
     "type": "rental",
-    "price": 80000,
-    "downPayment": 8000,
-    "mortgage": 72000,
-    "monthlyCashFlow": 220,
+    "price": 50000,
+    "downPayment": 5000,
+    "mortgage": 45000,
+    "monthlyCashFlow": 160,
     "requiresKidsMode": false
   },
   {

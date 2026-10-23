@@ -37,7 +37,7 @@ Schema decisions worth knowing before step 4:
 - `game` stores both `rngSeed` (never changes) and `rngState` (advanced on every draw).
 - `LogEntry` is `{ turnNumber, action, events[] }`. Event kinds so far: `rolled`, `moved`, `payday`, `drewCard`, `cashChanged`. Add kinds as actions need them.
 - `board.json` order is a first pass: Payday at 0 and 12, Setback at 11. The spec gives only the mix, not the order.
-- The spec's "Duplex in Decatur" example has an $8,000 down payment although it describes small deals as under $5,000 down. The fixture keeps the spec's numbers.
+- Small deals cap `downPayment` at $5,000. A fixture test enforces it. The spec's Duplex example was changed to price 50,000, down 5,000, cash flow +160/mo to fit.
 
 Tooling in place: TypeScript strict (plus `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `erasableSyntaxOnly`), ESLint flat config with type-aware rules, the engine purity rules from CLAUDE.md Rule 1 enforced by ESLint, `id-denylist` on bare `expenses`, Vitest projects (`shared`, `engine`, `web`), Husky pre-commit running `pnpm typecheck` and `pnpm lint`, `.gitattributes` forcing LF.
 
