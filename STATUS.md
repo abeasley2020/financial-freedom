@@ -36,7 +36,7 @@ Engine decisions made in step 4 that Andre should confirm or overrule:
 - **Kids mode** draws from `smallDeals` on Opportunity and skips `chooseDealSize`. Gap 4 still blocks the rest of kids mode.
 - **Rolling twice is rejected** with `ALREADY_ROLLED`; ending the turn before rolling is rejected with `MUST_ROLL_FIRST`. Both come from `hasRolledThisTurn`, which scans the log for the current turn.
 - **Escape ends the game** at `END_TURN` (phase `finished`, `currentPlayerId` stays on the winner). Phase 1 has no Freedom track (gap 5).
-- **Stock prices are rolled at draw time, not at BUY**, so the player sees the price before deciding. `pending.buyOrPass.sharePrice` holds it; `BUY` must use that, never re-roll. The kids-mode path in `ROLL` (Opportunity draws a small deal directly) does not roll a price yet; fix when kids mode is specified (gap 4), or exclude stocks from the kids deck.
+- **Stock prices are rolled at draw time, not at BUY**, so the player sees the price before deciding. `pending.buyOrPass.sharePrice` holds it; `BUY` must use that, never re-roll. Kids mode never draws a stock: `createGame` removes stock cards from the small deals deck in kids mode (spec, Kids mode), and a ROLL test draws the whole kids deck twice across 25 seeds to prove it.
 - The fast-check action generator (CLAUDE.md Rule 3, step 5) does not exist yet. It lands with spec step 6.
 
 `@ff/shared` now holds (all in `packages/shared/src/`):
@@ -54,11 +54,12 @@ Engine decisions made in step 4 that Andre should confirm or overrule:
 
 Schema decisions worth knowing before step 4:
 
-- Deal cards must satisfy `downPayment + mortgage === price`. Stocks must carry `priceRange` and `sharesAvailable`; non-stocks must not.
+- Deal cards must satisfy `downPayment + mortgage === price`. Stocks must carry `priceRange` and `sharesAvailable`, may carry `dividendPerShare` (absent means 0), and must have `mortgage: 0` because stocks are cash only; non-stocks carry none of those.
 - The spec's Market `effect` field is named `effects` because it is an array. Effect kinds: `offerBuyout`, `changeCashFlow`, `forceSale`, `splitShares`. Buyout and forced-sale prices are a whole-number `percentOfPurchasePrice`, so they go through `pct()`.
 - Lifestyle cards carry `cashCost`, a loan (`monthlyCost` + `loanPrincipal`, both or neither), or both.
-- `Liability` has an `id` (not in the spec) so `REPAY` can name one loan among several of the same kind. `monthlyPayment` is stored per the spec; profession JSON stores principal only and the engine derives starting payments with `LIABILITY_PAYMENT_PERCENT`.
-- `Asset` is keyed by `cardId`; `SELL_ASSET` and `ACCEPT_MARKET` use `cardId` to name an asset.
+- `Liability` has an `id` so `REPAY` can name one loan among several of the same kind. `monthlyPayment` is stored per the spec; profession JSON stores principal only and the engine derives starting payments with `LIABILITY_PAYMENT_PERCENT`. A `mortgage` liability must carry `assetId` and `monthlyPayment: 0` (`LIABILITY_PAYMENT_PERCENT.mortgage` is 0; the deal card's cash flow is already net of it). REPAY cannot target a mortgage; a sale pays it off first.
+- `Asset` has its own `id`. One asset per BUY, so a stock bought twice is two lots. `SELL_ASSET` takes `assetId` plus optional `shares` (stock lots only); `ACCEPT_MARKET` takes optional `assetId`.
+- Stock rules (spec, Card decks, "Stock rules"): cash only; whole shares up to `sharesAvailable`; `purchasePrice = shares × sharePrice`; `monthlyCashFlow = floor(shares × dividendPerShare)`; sold only by the current player when the same card is drawn again, at the new `sharePrice`, from one lot; the card goes back to the discard pile after the decision, so lots do not count toward the deck-size invariant.
 - `game` stores both `rngSeed` (never changes) and `rngState` (advanced on every draw).
 - `LogEntry` is `{ turnNumber, action, events[] }`. Event kinds so far: `rolled`, `moved`, `payday`, `drewCard`, `cashChanged`. Add kinds as actions need them.
 - `board.json` order is a first pass: Payday at 0 and 12, Setback at 11. The spec gives only the mix, not the order.
@@ -72,11 +73,17 @@ Package manager note: `corepack enable` fails with EPERM on this machine because
 
 Spec gaps resolved on 2026-10-23 and written into `docs/spec.md`: liability monthly payments (fixed percent of principal per kind, under the profession table), Payday timing (credit each Payday passed or landed on, then resolve the space), the `lifestyle` liability kind with `sourceCardId`, and the `giveOrSkip` pending state. The remaining CLAUDE.md spec gaps are renumbered 1–5 (Setback, undo, bankruptcy sale, kids mode, Freedom track).
 
+Also resolved on 2026-10-23, written into `docs/spec.md` (Core rules "Mortgages", Card decks "Stock rules", Game engine design state model and invariants): stocks are cash only with per-lot assets, dividends, and sell-on-redraw; each financed deal creates one 0%-payment mortgage liability linked by `assetId`, paid off first on sale, never by REPAY; kids mode removes stock cards from the small deals.
+
 ## Next step
 
-Spec step 5, next action: `BUY` (valid only when `pending` is `buyOrPass`). Pays `downPayment` from cash (reject `INSUFFICIENT_CASH`), adds a `mortgage` liability when `mortgage > 0`, adds the asset with `purchasePrice`, `downPaid`, `monthlyCashFlow`. For stocks, `action.shares` × `pending.sharePrice` is the cash cost and the asset stores `shares`; cap at `sharesAvailable`. The card leaves `pending` and is held as an asset, so deck counts still balance. Then `PASS` (card to the discard pile), `BORROW`, and so on in the CLAUDE.md order.
+Spec step 5, next action: `BUY` (valid only when `pending` is `buyOrPass`).
 
-Before `BUY`: the spec does not say what `purchasePrice` and `monthlyCashFlow` mean for a stock (per share × shares?), or whether `mortgage` on a deal becomes one liability per asset. Ask Andre.
+- Non-stock deal: pay `downPayment` from cash (reject `INSUFFICIENT_CASH`), add the asset (`id`, `cardId`, `type`, `purchasePrice = price`, `downPaid = downPayment`, `monthlyCashFlow` from the card), and when `mortgage > 0` add one `mortgage` liability with `principal = mortgage`, `monthlyPayment: 0`, `assetId`. The card is held as the asset (not discarded), so the deck-size invariant counts it.
+- Stock: `action.shares` is required, whole, at most `sharesAvailable`; cost is `shares × pending.sharePrice` (reject `INSUFFICIENT_CASH`); add a lot with `purchasePrice = downPaid = cost`, `monthlyCashFlow = floor(shares × (dividendPerShare ?? 0))`, `shares`. The card goes to the discard pile.
+- Asset ids need a deterministic scheme (no `crypto`): for example `${playerId}-${cardId}-${log.length}`.
+
+Then `PASS` (card to the discard pile; for a stock, pass is also how a holder declines to buy or sell), `BORROW`, `REPAY` (reject a mortgage), `PAY_LIFESTYLE`, `SELL_ASSET` (stock lots only while `pending` is `buyOrPass` for that card; mortgage paid off first from proceeds), and on in the CLAUDE.md order.
 
 ## Deferred from the scaffold
 

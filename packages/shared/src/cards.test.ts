@@ -58,6 +58,30 @@ describe('DealCardSchema', () => {
 
   it('rejects a non-stock that carries stock-only fields', () => {
     expect(DealCardSchema.safeParse({ ...duplex, sharesAvailable: 10 }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...duplex, dividendPerShare: 1 }).success).toBe(false);
+  });
+
+  const stock = {
+    ...duplex,
+    type: 'stock',
+    price: 20,
+    downPayment: 20,
+    mortgage: 0,
+    monthlyCashFlow: 0,
+    priceRange: { min: 5, max: 40 },
+    sharesAvailable: 500,
+  };
+
+  it('accepts a stock with an optional whole-dollar dividendPerShare', () => {
+    expect(DealCardSchema.safeParse(stock).success).toBe(true);
+    expect(DealCardSchema.safeParse({ ...stock, dividendPerShare: 0 }).success).toBe(true);
+    expect(DealCardSchema.safeParse({ ...stock, dividendPerShare: 2 }).success).toBe(true);
+    expect(DealCardSchema.safeParse({ ...stock, dividendPerShare: 0.5 }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...stock, dividendPerShare: -1 }).success).toBe(false);
+  });
+
+  it('rejects a stock with a mortgage: stocks are cash only', () => {
+    expect(DealCardSchema.safeParse({ ...stock, price: 30, downPayment: 20, mortgage: 10 }).success).toBe(false);
   });
 
   it('allows negative monthly cash flow (land that costs taxes)', () => {

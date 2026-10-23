@@ -14,13 +14,14 @@ export type StartingLiabilityKind = z.infer<typeof StartingLiabilityKindSchema>;
 /**
  * Monthly payment as a percent of principal, floored to whole dollars (spec,
  * Core rules). Lifestyle loans are absent on purpose: their payment is the
- * card's stated monthlyCost.
+ * card's stated monthlyCost. Mortgage is 0 because a deal card's
+ * monthlyCashFlow is already net of the mortgage payment.
  */
 export const LIABILITY_PAYMENT_PERCENT: Readonly<Record<StartingLiabilityKind, number>> = {
   student: 1,
   car: 2,
   credit: 3,
-  mortgage: 1,
+  mortgage: 0,
   bank: 10,
 };
 

@@ -5,6 +5,7 @@ import {
   MAX_PLAYERS,
   MIN_PLAYERS,
   PROFESSIONS,
+  type Card,
   type DeckId,
   type DeckPiles,
   type GameMode,
@@ -21,6 +22,16 @@ export interface CreateGameOptions {
   readonly mode: GameMode;
   readonly seed: number;
   readonly players: readonly { readonly id: string; readonly name: string; readonly professionId: string }[];
+}
+
+/**
+ * Which cards a mode plays with (spec, Core rules, Kids mode). Standard mode
+ * drops kids-only cards. Kids mode drops stock cards from the small deals.
+ */
+function inDeckForMode(card: Card, mode: GameMode): boolean {
+  if (card.deck !== 'smallDeals' && card.deck !== 'bigDeals') return true;
+  if (mode === 'kids') return card.type !== 'stock';
+  return !card.requiresKidsMode;
 }
 
 /**
@@ -72,7 +83,7 @@ export function createGame(options: CreateGameOptions): GameState {
   const decks = {} as Record<DeckId, DeckPiles>;
   for (const deck of DECK_IDS) {
     const cardIds = CARDS_BY_DECK[deck]
-      .filter((card) => mode === 'kids' || !('requiresKidsMode' in card && card.requiresKidsMode))
+      .filter((card) => inDeckForMode(card, mode))
       .map((card) => card.id);
     const shuffled = shuffle(cardIds, rngState);
     rngState = shuffled.state;

@@ -21,8 +21,8 @@ describe('selectors: income statement', () => {
     const owner: Player = {
       ...teacher(),
       assets: [
-        { cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 },
-        { cardId: 'big-003', type: 'land', purchasePrice: 60_000, downPaid: 12_000, monthlyCashFlow: -50 },
+        { id: 'a1', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 },
+        { id: 'a2', cardId: 'big-003', type: 'land', purchasePrice: 60_000, downPaid: 12_000, monthlyCashFlow: -50 },
       ],
     };
     expect(passiveIncome(owner)).toBe(110);
@@ -50,7 +50,7 @@ describe('selectors: canEscape', () => {
   it('is true when passiveIncome equals totalExpenses (boundary)', () => {
     const p: Player = {
       ...teacher(),
-      assets: [{ cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_600 }],
+      assets: [{ id: 'a1', cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_600 }],
     };
     expect(canEscape(p)).toBe(true);
   });
@@ -58,7 +58,7 @@ describe('selectors: canEscape', () => {
   it('is false one dollar below totalExpenses', () => {
     const p: Player = {
       ...teacher(),
-      assets: [{ cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_599 }],
+      assets: [{ id: 'a1', cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_599 }],
     };
     expect(canEscape(p)).toBe(false);
   });

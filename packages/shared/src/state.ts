@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ActionSchema, LiabilityIdSchema, PlayerIdSchema } from './actions';
+import { ActionSchema, AssetIdSchema, LiabilityIdSchema, PlayerIdSchema } from './actions';
 import { BOARD_SIZE } from './board';
 import { AssetTypeSchema, CardIdSchema, DECK_IDS, DeckIdSchema } from './cards';
 import { MoneySchema, SignedMoneySchema } from './money';
@@ -18,10 +18,12 @@ export const MAX_PLAYERS = 6;
 
 export const AssetSchema = z
   .object({
-    /** The deal card this asset came from. One asset per card, so this is the asset's identity. */
+    /** One asset per BUY. A stock bought twice is two lots with different ids. */
+    id: AssetIdSchema,
+    /** The deal card this asset came from. */
     cardId: CardIdSchema,
     type: AssetTypeSchema,
-    /** What the player agreed to pay in total (down payment plus mortgage). Market offers are a percent of this. */
+    /** What the player agreed to pay in total (down payment plus mortgage; shares × sharePrice for a stock). Market offers are a percent of this. */
     purchasePrice: MoneySchema,
     /** Cash paid at purchase. */
     downPaid: MoneySchema,
@@ -39,10 +41,12 @@ export const LiabilitySchema = z
     id: LiabilityIdSchema,
     kind: LiabilityKindSchema,
     principal: MoneySchema,
-    /** Stored because lifestyle loans take their payment from the card, not from a percent. */
+    /** Stored because lifestyle loans take their payment from the card, not from a percent. Always 0 for a mortgage. */
     monthlyPayment: MoneySchema,
     /** Lifestyle loans only: the card that created the loan. */
     sourceCardId: CardIdSchema.optional(),
+    /** Mortgages only: the asset this loan finances. Paid off first from that asset's sale proceeds. */
+    assetId: AssetIdSchema.optional(),
   })
   .strict()
   .superRefine((liability, ctx) => {
@@ -56,6 +60,20 @@ export const LiabilitySchema = z
         message: 'only a lifestyle liability may carry sourceCardId',
         path: ['sourceCardId'],
       });
+    }
+    const isMortgage = liability.kind === 'mortgage';
+    if (isMortgage && liability.assetId === undefined) {
+      ctx.addIssue({ code: 'custom', message: 'a mortgage needs assetId', path: ['assetId'] });
+    }
+    if (isMortgage && liability.monthlyPayment !== 0) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'a mortgage has monthlyPayment 0: the deal card cash flow is already net of it',
+        path: ['monthlyPayment'],
+      });
+    }
+    if (!isMortgage && liability.assetId !== undefined) {
+      ctx.addIssue({ code: 'custom', message: 'only a mortgage may carry assetId', path: ['assetId'] });
     }
   });
 export type Liability = DeepReadonly<z.infer<typeof LiabilitySchema>>;

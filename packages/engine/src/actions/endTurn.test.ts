@@ -57,7 +57,7 @@ describe('END_TURN: advancing', () => {
 describe('END_TURN: win condition', () => {
   const escaping = (monthlyCashFlow: number) =>
     withPlayer(twoPlayerGame(), 'p1', {
-      assets: [{ cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow }],
+      assets: [{ id: 'a1', cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow }],
     });
 
   it('END_TURN: marks hasEscaped and finishes the game when passiveIncome equals totalExpenses', () => {

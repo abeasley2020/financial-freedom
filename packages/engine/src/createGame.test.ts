@@ -70,6 +70,22 @@ describe('createGame', () => {
     expect(a.decks.smallDeals.drawPile).not.toEqual(b.decks.smallDeals.drawPile);
   });
 
+  it('kids mode removes stock cards from the small deals deck and nothing else', () => {
+    const kids = createGame({ ...options, mode: 'kids' });
+    const smallDeals = CARDS_BY_DECK.smallDeals;
+    const stockIds = smallDeals.filter((c) => c.deck === 'smallDeals' && c.type === 'stock').map((c) => c.id);
+    const nonStockIds = smallDeals.filter((c) => !stockIds.includes(c.id)).map((c) => c.id);
+    expect(stockIds.length).toBeGreaterThan(0);
+    expect([...kids.decks.smallDeals.drawPile].sort()).toEqual(nonStockIds.sort());
+    for (const deck of DECK_IDS.filter((d) => d !== 'smallDeals')) {
+      expect([...kids.decks[deck].drawPile].sort(), deck).toEqual(CARDS_BY_DECK[deck].map((c) => c.id).sort());
+    }
+  });
+
+  it('standard mode keeps stock cards in the small deals deck', () => {
+    expect(createGame(options).decks.smallDeals.drawPile).toContain('small-005');
+  });
+
   it('throws on an unknown professionId', () => {
     expect(() =>
       createGame({ ...options, players: [{ id: 'p3', name: 'A', professionId: 'astronaut' }, ...options.players] }),

@@ -1,4 +1,4 @@
-import { BOARD, CARDS_BY_DECK, type Action, type GameState, type Pending } from '@ff/shared';
+import { BOARD, CARDS_BY_DECK, CARDS_BY_ID, type Action, type GameState, type Pending } from '@ff/shared';
 import { describe, expect, it } from 'vitest';
 
 import { reduce } from '../reduce';
@@ -63,7 +63,7 @@ describe('ROLL: Payday', () => {
 
   it('ROLL: Payday includes passive income from assets', () => {
     const owner = withPlayer(twoPlayerGame(), 'p1', {
-      assets: [{ cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 }],
+      assets: [{ id: 'a1', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 }],
     });
     const next = apply(aboutToRoll(owner, 10, 3), ROLL);
     expect(p1(next).cash).toBe(400 + 700 + 160);
@@ -129,6 +129,37 @@ describe('ROLL: resolving the landed space', () => {
     const next = apply(aboutToRoll(kids, 0, 1), ROLL);
     expect(next.pending).toEqual({ kind: 'buyOrPass', cardId: top });
     expect(next.decks.smallDeals.drawPile).toEqual(rest);
+  });
+
+  it('ROLL: in kids mode, Opportunity never produces a stock buyOrPass', () => {
+    // Draw the whole kids small-deals deck, plus a full reshuffle cycle, across many seeds.
+    for (let seed = 0; seed < 25; seed++) {
+      let state = twoPlayerGame({ mode: 'kids', seed });
+      const deckSize = state.decks.smallDeals.drawPile.length;
+      expect(deckSize).toBeGreaterThan(0);
+      for (let draw = 0; draw < deckSize * 2; draw++) {
+        const next = apply(aboutToRoll(state, 0, 1), ROLL);
+        expect(next.pending.kind).toBe('buyOrPass');
+        const cardId = (next.pending as { cardId: string }).cardId;
+        const card = CARDS_BY_ID.get(cardId);
+        expect(card?.deck).toBe('smallDeals');
+        expect(card?.deck === 'smallDeals' && card.type, cardId).not.toBe('stock');
+        expect(next.pending).not.toHaveProperty('sharePrice');
+        // Return the card to the discard pile and clear the turn so the next draw reshuffles when needed.
+        state = {
+          ...next,
+          pending: { kind: 'none' },
+          game: { ...next.game, log: [] },
+          decks: {
+            ...next.decks,
+            smallDeals: {
+              drawPile: next.decks.smallDeals.drawPile,
+              discardPile: [...next.decks.smallDeals.discardPile, cardId],
+            },
+          },
+        };
+      }
+    }
   });
 });
 
