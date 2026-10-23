@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { LifeOptionIdSchema } from './cards';
 import { MoneySchema } from './money';
 import type { DeepReadonly } from './readonly';
 
@@ -46,7 +47,8 @@ export const ActionSchema = z.discriminatedUnion('type', [
     })
     .strict(),
   z.object({ type: z.literal('REPAY'), ...acting, liabilityId: LiabilityIdSchema }).strict(),
-  z.object({ type: z.literal('PAY_LIFESTYLE'), ...acting, method: z.enum(['cash', 'loan']) }).strict(),
+  /** Spec v2: picks one option on the drawn Life Choices card. Replaces PAY_LIFESTYLE. */
+  z.object({ type: z.literal('CHOOSE_LIFE_OPTION'), ...acting, optionId: LifeOptionIdSchema }).strict(),
   /** `assetId` names the lot the market effect is applied to when the player owns more than one that qualifies. */
   z.object({ type: z.literal('ACCEPT_MARKET'), ...acting, assetId: AssetIdSchema.optional() }).strict(),
   z.object({ type: z.literal('DECLINE_MARKET'), ...acting }).strict(),

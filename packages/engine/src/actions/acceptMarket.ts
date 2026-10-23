@@ -1,4 +1,4 @@
-import { CARDS_BY_ID, type Action, type Asset, type GameState, type LogEvent, type MarketCard } from '@ff/shared';
+import { CARDS_BY_ID, isGrowthAsset, type Action, type Asset, type GameState, type LogEvent, type MarketCard } from '@ff/shared';
 
 import { pct } from '../money';
 import { rejected, type ActionResult } from '../reduce';
@@ -68,20 +68,19 @@ export function acceptMarket(state: GameState, action: Extract<Action, { type: '
         break;
       }
       case 'changeCashFlow': {
-        const ids = new Set(targets.map((a) => a.id));
-        next = updateAssets(next, playerId, (a) => (ids.has(a.id) ? { ...a, monthlyCashFlow: a.monthlyCashFlow + effect.delta } : a));
+        // Growth assets derive their cash flow from marketValue, so only stored cash flows can move.
+        const ids = new Set(targets.filter((a) => !isGrowthAsset(a)).map((a) => a.id));
+        next = updateAssets(next, playerId, (a) => (ids.has(a.id) && !isGrowthAsset(a) ? { ...a, monthlyCashFlow: a.monthlyCashFlow + effect.delta } : a));
         for (const a of playerById(next, playerId).assets) {
-          if (ids.has(a.id)) events.push({ kind: 'cashFlowChanged', assetId: a.id, delta: effect.delta, monthlyCashFlow: a.monthlyCashFlow });
+          if (ids.has(a.id) && !isGrowthAsset(a)) events.push({ kind: 'cashFlowChanged', assetId: a.id, delta: effect.delta, monthlyCashFlow: a.monthlyCashFlow });
         }
         break;
       }
       case 'splitShares': {
-        const ids = new Set(targets.filter((a) => a.shares !== undefined).map((a) => a.id));
-        next = updateAssets(next, playerId, (a) =>
-          ids.has(a.id) && a.shares !== undefined ? { ...a, shares: a.shares * effect.ratio } : a,
-        );
+        const ids = new Set(targets.filter((a) => a.type === 'stock').map((a) => a.id));
+        next = updateAssets(next, playerId, (a) => (ids.has(a.id) && a.type === 'stock' ? { ...a, shares: a.shares * effect.ratio } : a));
         for (const a of playerById(next, playerId).assets) {
-          if (ids.has(a.id) && a.shares !== undefined) {
+          if (ids.has(a.id) && a.type === 'stock') {
             events.push({ kind: 'sharesSplit', assetId: a.id, ratio: effect.ratio, shares: a.shares });
           }
         }

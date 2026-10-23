@@ -1,4 +1,4 @@
-import { CARDS_BY_ID, type Action, type Asset, type GameState } from '@ff/shared';
+import { CARDS_BY_ID, type Action, type GameState, type StockAsset } from '@ff/shared';
 
 import { rejected, type ActionResult } from '../reduce';
 import { currentPlayer } from '../selectors';
@@ -25,7 +25,7 @@ export function sellAsset(state: GameState, action: Extract<Action, { type: 'SEL
 
   const player = currentPlayer(state);
   const lot = player.assets.find((a) => a.id === action.assetId);
-  if (lot?.cardId !== card.id || lot.type !== 'stock' || lot.shares === undefined) return rejected('INVALID_ASSET');
+  if (lot?.cardId !== card.id || lot.type !== 'stock') return rejected('INVALID_ASSET');
 
   const shares = action.shares ?? lot.shares;
   if (shares > lot.shares) return rejected('INVALID_SHARES');
@@ -33,7 +33,7 @@ export function sellAsset(state: GameState, action: Extract<Action, { type: 'SEL
   const proceeds = shares * sharePrice;
   const remaining = lot.shares - shares;
   const dividend = card.dividendPerShare ?? 0;
-  const kept: Asset | undefined =
+  const kept: StockAsset | undefined =
     remaining === 0
       ? undefined
       : {

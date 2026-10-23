@@ -6,7 +6,7 @@
 import { CARDS_BY_ID, type Action, type GameState, type MarketCard } from '@ff/shared';
 
 import { pct } from '../src/money';
-import { currentPlayer, hasRolledThisTurn, monthlyCashFlow } from '../src/selectors';
+import { assetCashFlow, currentPlayer, hasRolledThisTurn, monthlyCashFlow, optionCost } from '../src/selectors';
 
 export const STRATEGIES = ['cautious', 'balanced', 'aggressive'] as const;
 export type Strategy = (typeof STRATEGIES)[number];
@@ -62,8 +62,8 @@ export function decide(state: GameState, strategy: Strategy): readonly Action[] 
 
       if (card.type === 'stock') {
         const price = pending.sharePrice ?? card.price;
-        const lot = player.assets.find((a) => a.cardId === card.id && a.shares !== undefined);
-        if (lot?.shares !== undefined) {
+        const lot = player.assets.find((a) => a.cardId === card.id && a.type === 'stock');
+        if (lot?.type === 'stock') {
           const costPerShare = lot.purchasePrice / lot.shares;
           if (price >= costPerShare * 1.3) return [{ type: 'SELL_ASSET', playerId, assetId: lot.id }, pass];
         }
@@ -96,9 +96,9 @@ export function decide(state: GameState, strategy: Strategy): readonly Action[] 
       const qualifying = player.assets.filter((a) => card.appliesTo.includes(a.type));
       const offer = buyoutOffer(card);
       // Sell the weakest qualifying asset to a generous buyer; otherwise keep the cash flow.
-      const [target] = [...qualifying].sort((a, b) => a.monthlyCashFlow - b.monthlyCashFlow);
+      const [target] = [...qualifying].sort((a, b) => assetCashFlow(a) - assetCashFlow(b));
       if (offer !== undefined && target !== undefined) {
-        const generous = offer >= 150 || target.monthlyCashFlow <= 0;
+        const generous = offer >= 150 || assetCashFlow(target) <= 0;
         return generous
           ? [{ type: 'ACCEPT_MARKET', playerId, assetId: target.id }, { type: 'DECLINE_MARKET', playerId }]
           : [{ type: 'DECLINE_MARKET', playerId }, { type: 'ACCEPT_MARKET', playerId, assetId: target.id }];
@@ -106,16 +106,19 @@ export function decide(state: GameState, strategy: Strategy): readonly Action[] 
       return [{ type: 'ACCEPT_MARKET', playerId }, { type: 'DECLINE_MARKET', playerId }];
     }
 
-    case 'payLifestyle': {
+    case 'lifeChoice': {
+      // v2 Life Choices: cautious and balanced bots take the option with the smallest monthly change
+      // (then the smallest cost today); the aggressive bot takes the priciest option it can afford.
       const card = CARDS_BY_ID.get(pending.cardId);
-      const cash: Action = { type: 'PAY_LIFESTYLE', playerId, method: 'cash' };
-      const loan: Action = { type: 'PAY_LIFESTYLE', playerId, method: 'loan' };
-      if (card?.deck !== 'lifestyle') return [cash, loan];
-      const canPayCash = card.cashCost !== undefined && player.cash - card.cashCost >= profile.cushion;
-      const moves: Action[] = canPayCash ? [cash, loan] : [loan, cash];
-      if (standard && card.cashCost !== undefined && player.cash < card.cashCost) {
-        moves.push({ type: 'BORROW', playerId, amount: roundUpToStep(card.cashCost - player.cash) });
-      }
+      if (card?.deck !== 'lifeChoices') return [];
+      const ranked = card.options
+        .filter((o) => state.game.mode === 'standard' || o.kidsOk)
+        .map((o) => ({ o, cost: optionCost(o, player) }))
+        .sort((a, b) => a.cost.monthlyChange - b.cost.monthlyChange || a.cost.costToday - b.cost.costToday);
+      const affordable = ranked.filter(({ cost }) => cost.costToday <= player.cash - (strategy === 'aggressive' ? 0 : profile.cushion));
+      const order = strategy === 'aggressive' ? [...affordable].reverse() : affordable;
+      const moves: Action[] = order.map(({ o }) => ({ type: 'CHOOSE_LIFE_OPTION', playerId, optionId: o.id }));
+      for (const { o } of ranked) moves.push({ type: 'CHOOSE_LIFE_OPTION', playerId, optionId: o.id });
       return moves;
     }
 

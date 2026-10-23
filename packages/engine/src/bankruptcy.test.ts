@@ -17,7 +17,8 @@ const p1 = (state: GameState) => playerById(state, 'p1');
 
 const bigLoan: Liability = { id: 'l-boat', kind: 'lifestyle', principal: 30_000, monthlyPayment: 1_500, sourceCardId: 'life-001' };
 const lawn: Asset = { id: 'lawn', cardId: 'small-003', type: 'business', purchasePrice: 3_000, downPaid: 3_000, monthlyCashFlow: 150 };
-const fund: Asset = { id: 'fund', cardId: 'small-004', type: 'fund', purchasePrice: 2_000, downPaid: 2_000, monthlyCashFlow: 10 };
+/** A growth asset from a windfall: 2,000 at 1% payout = 20/mo, sold in bankruptcy at half its marketValue. */
+const fund: Asset = { id: 'fund', cardId: 'life-005', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 4, payoutPercent: 1 };
 const vending: Asset = { id: 'vend', cardId: 'small-006', type: 'business', purchasePrice: 4_500, downPaid: 4_500, monthlyCashFlow: 180 };
 const duplex: Asset = { id: 'dup', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 };
 const duplexMortgage: Liability = { id: 'dup-mortgage', kind: 'mortgage', principal: 45_000, monthlyPayment: 0, assetId: 'dup' };
@@ -66,14 +67,24 @@ describe('Bankruptcy: a Payday that would take cash below zero', () => {
   });
 
   it('bankruptcy: sells the asset with the lowest monthly cash flow first and stops once covered', () => {
-    // passive 160 → flow -640; 500 cash → -140. Fund (+10) goes before lawn (+150): +1,000 → 860.
+    // passive 170 → flow -630; 500 cash → -130. Fund (+20) goes before lawn (+150): half of marketValue 2,000 → +1,000 → 870.
     const next = payday(500, [lawn, fund]);
     expect(p1(next).assets).toEqual([lawn]);
-    expect(p1(next).cash).toBe(500 - 640 + 1_000);
+    expect(p1(next).cash).toBe(500 - 630 + 1_000);
+  });
+
+  it('bankruptcy: a growth asset sells at half its marketValue, not its purchase price', () => {
+    const grown: Asset = { ...fund, marketValue: 2_600 };
+    // passive 26 → flow -774; 500 → -274; sale 1,300 → 1,026.
+    const next = payday(500, [grown]);
+    expect(p1(next).assets).toEqual([]);
+    expect(p1(next).cash).toBe(500 - 774 + 1_300);
+    // A sale carries the card's principles; the windfall option's own tags live on the bought event.
+    expect(next.game.log.at(-1)?.events).toContainEqual({ kind: 'sold', assetId: 'fund', cardId: 'life-005', proceeds: 1_300, principles: ['P4', 'P5', 'P8'] });
   });
 
   it('bankruptcy: ties on cash flow are broken by the lowest purchase price', () => {
-    const cheap: Asset = { ...fund, id: 'cheap', monthlyCashFlow: 0, purchasePrice: 2_000 };
+    const cheap: Asset = { ...fund, id: 'cheap', payoutPercent: 0, purchasePrice: 2_000 };
     const dear: Asset = { ...lawn, id: 'dear', monthlyCashFlow: 0, purchasePrice: 3_000 };
     const next = payday(500, [dear, cheap]);
     expect(p1(next).assets).toEqual([dear]);
@@ -83,10 +94,10 @@ describe('Bankruptcy: a Payday that would take cash below zero', () => {
   it('bankruptcy: keeps selling until the deficit is covered', () => {
     // passive 160 → flow -640; 0 cash → -640. Fund +1,000 covers it in one sale? No: -640 + 1,000 = 360. Use a deeper hole.
     const deeper: Liability = { ...bigLoan, id: 'l-2', monthlyPayment: 1_200 };
-    // flow = 700 + 160 - 1,500 - 1,200 = -1,840; 0 cash → -1,840; fund +1,000 → -840; lawn +1,500 → 660.
+    // flow = 700 + 170 - 1,500 - 1,200 = -1,830; 0 cash → -1,830; fund +1,000 → -830; lawn +1,500 → 670.
     const next = payday(0, [lawn, fund], [deeper]);
     expect(p1(next).assets).toEqual([]);
-    expect(p1(next).cash).toBe(660);
+    expect(p1(next).cash).toBe(670);
     expect(p1(next).isOut).toBe(false);
   });
 

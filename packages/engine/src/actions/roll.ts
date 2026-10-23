@@ -80,8 +80,8 @@ function resolveSpace(state: GameState, space: SpaceKind): Resolution {
       return { state, pending: { kind: 'chooseDealSize' }, events: [] };
     case 'market':
       return drawInto(state, 'market', 'marketChoice');
-    case 'lifestyle':
-      return drawInto(state, 'lifestyle', 'payLifestyle');
+    case 'lifeChoices':
+      return drawInto(state, 'lifeChoices', 'lifeChoice');
     case 'giving':
       return { state, pending: { kind: 'giveOrSkip' }, events: [] };
     case 'setback':
@@ -93,8 +93,8 @@ function resolveSpace(state: GameState, space: SpaceKind): Resolution {
 
 function drawInto(
   state: GameState,
-  deck: 'smallDeals' | 'market' | 'lifestyle',
-  kind: 'buyOrPass' | 'marketChoice' | 'payLifestyle',
+  deck: 'smallDeals' | 'market' | 'lifeChoices',
+  kind: 'buyOrPass' | 'marketChoice' | 'lifeChoice',
 ): Resolution {
   const draw = drawCard(state, deck);
   if (draw.cardId === undefined) return nothing(state);

@@ -4,10 +4,12 @@ import { rejected, type ActionResult } from '../reduce';
 import { currentPlayer, hasRolledThisTurn } from '../selectors';
 
 /**
- * Spec, Core rules, turn step 4: repay a loan in full. Legal only after the
- * roll with no decision pending. Pays the liability's principal from cash and
- * removes it. A mortgage is never repaid this way (Core rules, Mortgages); it
- * is retired only by selling the asset it finances.
+ * Spec, Core rules, turn step 4: repay a loan in full, or cancel a
+ * subscription (v2, Life Choices: a subscription has principal 0, so REPAY
+ * removes it at no cost). Legal only after the roll with no decision pending.
+ * Pays the liability's principal from cash and removes it. A mortgage is
+ * never repaid this way (Core rules, Mortgages); it is retired only by
+ * selling the asset it finances.
  */
 export function repay(state: GameState, action: Extract<Action, { type: 'REPAY' }>): ActionResult {
   if (state.pending.kind !== 'none') return rejected('INVALID_FOR_PENDING');
@@ -29,8 +31,13 @@ export function repay(state: GameState, action: Extract<Action, { type: 'REPAY' 
       ),
     },
     events: [
-      { kind: 'cashChanged', delta: -loan.principal, reason: 'repay' },
-      { kind: 'repaid', liabilityId: loan.id, principal: loan.principal, principles: DECISION_PRINCIPLES.repayLoan },
+      ...(loan.principal > 0 ? [{ kind: 'cashChanged', delta: -loan.principal, reason: 'repay' } as const] : []),
+      {
+        kind: 'repaid',
+        liabilityId: loan.id,
+        principal: loan.principal,
+        principles: loan.kind === 'subscription' ? DECISION_PRINCIPLES.cancelSubscription : DECISION_PRINCIPLES.repayLoan,
+      },
     ],
   };
 }

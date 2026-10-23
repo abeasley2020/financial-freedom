@@ -83,7 +83,7 @@ describe('DECLINE_MARKET: mandatory effects', () => {
     const before = facing('market-002', [duplex], [duplexMortgage]);
     expect(reject(before, DECLINE)).toBe('MARKET_EFFECT_MANDATORY');
     const next = apply(before, { type: 'ACCEPT_MARKET', playerId: 'p1' });
-    expect(p1(next).assets[0]?.monthlyCashFlow).toBe(60);
+    expect(p1(next).assets[0]).toMatchObject({ monthlyCashFlow: 60 });
   });
 });
 
@@ -130,7 +130,7 @@ describe('DECLINE_MARKET: rejections', () => {
     { kind: 'none' },
     { kind: 'chooseDealSize' },
     { kind: 'buyOrPass', cardId: 'small-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('DECLINE_MARKET: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

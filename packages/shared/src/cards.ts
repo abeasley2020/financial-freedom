@@ -8,7 +8,7 @@ import type { DeepReadonly } from './readonly';
 // Decks and asset types
 // ---------------------------------------------------------------------------
 
-export const DECK_IDS = ['smallDeals', 'bigDeals', 'market', 'lifestyle', 'setback'] as const;
+export const DECK_IDS = ['smallDeals', 'bigDeals', 'market', 'lifeChoices', 'setback'] as const;
 export const DeckIdSchema = z.enum(DECK_IDS);
 export type DeckId = z.infer<typeof DeckIdSchema>;
 
@@ -16,7 +16,13 @@ export const DEAL_DECK_IDS = ['smallDeals', 'bigDeals'] as const;
 export const DealDeckIdSchema = z.enum(DEAL_DECK_IDS);
 export type DealDeckId = z.infer<typeof DealDeckIdSchema>;
 
-export const ASSET_TYPES = ['stock', 'fund', 'rental', 'business', 'land'] as const;
+/** Growth assets (spec v2, Growth assets): bought with cash, they compound at every Payday. */
+export const GROWTH_ASSET_TYPES = ['savings', 'cd', 'index'] as const;
+export const GrowthAssetTypeSchema = z.enum(GROWTH_ASSET_TYPES);
+export type GrowthAssetType = z.infer<typeof GrowthAssetTypeSchema>;
+
+/** `fund` is the v1 index-fund deal type; Stage B item 3 turns it into a growth type. */
+export const ASSET_TYPES = ['stock', 'fund', 'rental', 'business', 'land', ...GROWTH_ASSET_TYPES] as const;
 export const AssetTypeSchema = z.enum(ASSET_TYPES);
 export type AssetType = z.infer<typeof AssetTypeSchema>;
 
@@ -26,7 +32,7 @@ export type CardId = z.infer<typeof CardIdSchema>;
 /** Spec v2, Card decks: kidsText 90 characters or fewer, adultText 160 or fewer, no em dashes anywhere. */
 export const KIDS_TEXT_MAX = 90;
 export const ADULT_TEXT_MAX = 160;
-const NO_EM_DASH = { pattern: /^[^\u2014]*$/u, message: 'no em dashes in card text' };
+const NO_EM_DASH = { pattern: /^[^—]*$/u, message: 'no em dashes in card text' };
 
 export const KidsTextSchema = z.string().min(1).max(KIDS_TEXT_MAX).regex(NO_EM_DASH.pattern, NO_EM_DASH.message);
 export const AdultTextSchema = z.string().min(1).max(ADULT_TEXT_MAX).regex(NO_EM_DASH.pattern, NO_EM_DASH.message);
@@ -72,7 +78,7 @@ export const DealCardSchema = z
     sharesAvailable: z.number().int().positive().optional(),
     /** Stocks only: the engine rolls a price in this range on each draw. */
     priceRange: PriceRangeSchema.optional(),
-    /** Stocks only: whole dollars per share per month. Absent means 0. A lot's monthlyCashFlow is floor(shares × this). */
+    /** Stocks only: whole dollars per share per month. Absent means 0. A lot's monthlyCashFlow is floor(shares × dividendPerShare). */
     dividendPerShare: MoneySchema.optional(),
   })
   .strict()
@@ -143,37 +149,93 @@ export const MarketCardSchema = z
 export type MarketCard = DeepReadonly<z.infer<typeof MarketCardSchema>>;
 
 // ---------------------------------------------------------------------------
-// Lifestyle cards
+// Life Choices cards (spec v2; replaces the v1 Lifestyle deck)
 // ---------------------------------------------------------------------------
 
+export const LIFE_CHOICE_CATEGORIES = ['vehicle', 'clothing', 'gadget', 'subscription', 'bigLife', 'windfall'] as const;
+export const LifeChoiceCategorySchema = z.enum(LIFE_CHOICE_CATEGORIES);
+export type LifeChoiceCategory = z.infer<typeof LifeChoiceCategorySchema>;
+
+/** Loan kinds a Life Choices option can add. Bank loans come only from BORROW and Setbacks. */
+export const LIFE_LOAN_KINDS = ['car', 'lifestyle'] as const;
+
 /**
- * A lifestyle card offers a cash price, a loan, or both (the player picks).
- * A loan always carries both `monthlyCost` and `loanPrincipal`.
+ * What choosing an option does, applied in order (spec v2, Life Choices
+ * cards). The spec names the loan kind `kind` and the growth type `type`;
+ * they are `loanKind` and `assetType` here because `kind` is the discriminator.
  */
-export const LifestyleCardSchema = z
+export const LifeEffectSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('payCash'), amount: MoneySchema.positive() }).strict(),
+  /** Windfalls. */
+  z.object({ kind: z.literal('gainCash'), amount: MoneySchema.positive() }).strict(),
+  z
+    .object({
+      kind: z.literal('addLoan'),
+      loanKind: z.enum(LIFE_LOAN_KINDS),
+      principal: MoneySchema.positive(),
+      /** The option's stated payment, not a percent of principal. */
+      monthlyPayment: MoneySchema.positive(),
+    })
+    .strict(),
+  /** A subscription liability: principal 0, charged every Payday until REPAY cancels it. */
+  z.object({ kind: z.literal('addSubscription'), monthlyCost: MoneySchema.positive() }).strict(),
+  /** A windfall option that invests directly into a growth asset. */
+  z
+    .object({
+      kind: z.literal('investGrowth'),
+      assetType: GrowthAssetTypeSchema,
+      amount: MoneySchema.positive(),
+      growthPercent: PercentSchema,
+      payoutPercent: PercentSchema,
+    })
+    .strict(),
+  /** A windfall option that pays the player's highest-payment loan (never a mortgage or a subscription) down by up to `amount`. */
+  z.object({ kind: z.literal('repayLargestLoan'), amount: MoneySchema.positive() }).strict(),
+]);
+export type LifeEffect = DeepReadonly<z.infer<typeof LifeEffectSchema>>;
+
+/** True when the option adds nothing to the player's monthly costs. */
+export function hasNoMonthlyCost(option: { readonly effects: readonly { readonly kind: string }[] }): boolean {
+  return !option.effects.some((e) => e.kind === 'addLoan' || e.kind === 'addSubscription');
+}
+
+export const LifeOptionIdSchema = z.string().min(1);
+
+export const LifeOptionSchema = z
+  .object({
+    id: LifeOptionIdSchema,
+    /** Short button text. */
+    label: z.string().min(1).regex(NO_EM_DASH.pattern, NO_EM_DASH.message),
+    principles: PrinciplesSchema,
+    kidsText: KidsTextSchema,
+    adultText: AdultTextSchema,
+    /** Kids mode offers only options marked kidsOk. */
+    kidsOk: z.boolean(),
+    /** Empty means "keep what you have". */
+    effects: z.array(LifeEffectSchema),
+  })
+  .strict();
+export type LifeOption = DeepReadonly<z.infer<typeof LifeOptionSchema>>;
+
+export const LifeChoicesCardSchema = z
   .object({
     ...cardBase,
-    deck: z.literal('lifestyle'),
-    cashCost: MoneySchema.optional(),
-    monthlyCost: MoneySchema.optional(),
-    loanPrincipal: MoneySchema.optional(),
+    deck: z.literal('lifeChoices'),
+    category: LifeChoiceCategorySchema,
+    /** Two or three real choices. At least one has no monthly cost: temptation is only a lesson when saying no is possible. */
+    options: z.array(LifeOptionSchema).min(2).max(3),
   })
   .strict()
   .superRefine((card, ctx) => {
-    const hasMonthly = card.monthlyCost !== undefined;
-    const hasPrincipal = card.loanPrincipal !== undefined;
-    if (hasMonthly !== hasPrincipal) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'monthlyCost and loanPrincipal must appear together',
-        path: [hasMonthly ? 'loanPrincipal' : 'monthlyCost'],
-      });
+    const ids = new Set(card.options.map((o) => o.id));
+    if (ids.size !== card.options.length) {
+      ctx.addIssue({ code: 'custom', message: 'option ids must be unique within a card', path: ['options'] });
     }
-    if (card.cashCost === undefined && !hasMonthly) {
-      ctx.addIssue({ code: 'custom', message: 'a lifestyle card needs a cashCost or a loan', path: ['cashCost'] });
+    if (!card.options.some(hasNoMonthlyCost)) {
+      ctx.addIssue({ code: 'custom', message: 'every Life Choices card needs an option with no monthly cost', path: ['options'] });
     }
   });
-export type LifestyleCard = DeepReadonly<z.infer<typeof LifestyleCardSchema>>;
+export type LifeChoicesCard = DeepReadonly<z.infer<typeof LifeChoicesCardSchema>>;
 
 // ---------------------------------------------------------------------------
 // Setback cards
@@ -196,7 +258,7 @@ export type SetbackCard = DeepReadonly<z.infer<typeof SetbackCardSchema>>;
 export const CardSchema = z.discriminatedUnion('deck', [
   DealCardSchema,
   MarketCardSchema,
-  LifestyleCardSchema,
+  LifeChoicesCardSchema,
   SetbackCardSchema,
 ]);
 export type Card = DeepReadonly<z.infer<typeof CardSchema>>;

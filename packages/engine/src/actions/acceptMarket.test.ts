@@ -149,7 +149,7 @@ describe('ACCEPT_MARKET: cash flow changes', () => {
 
   it('ACCEPT_MARKET: changeCashFlow can take an asset negative', () => {
     const next = apply(facing('market-002', [{ ...duplex, monthlyCashFlow: 40 }]), ACCEPT);
-    expect(p1(next).assets[0]?.monthlyCashFlow).toBe(-60);
+    expect(p1(next).assets[0]).toMatchObject({ monthlyCashFlow: -60 });
   });
 
   it('ACCEPT_MARKET: changeCashFlow with no qualifying asset changes nothing', () => {
@@ -254,7 +254,7 @@ describe('ACCEPT_MARKET: log and determinism', () => {
 
   it('ACCEPT_MARKET: works in kids mode', () => {
     const next = apply(facing('market-002', [duplex], [duplexMortgage], twoPlayerGame({ mode: 'kids' })), ACCEPT);
-    expect(p1(next).assets[0]?.monthlyCashFlow).toBe(60);
+    expect(p1(next).assets[0]).toMatchObject({ monthlyCashFlow: 60 });
   });
 });
 
@@ -267,7 +267,7 @@ describe('ACCEPT_MARKET: rejections', () => {
     { kind: 'none' },
     { kind: 'chooseDealSize' },
     { kind: 'buyOrPass', cardId: 'small-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('ACCEPT_MARKET: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

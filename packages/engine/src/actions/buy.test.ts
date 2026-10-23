@@ -127,7 +127,7 @@ describe('BUY: a stock', () => {
 
   it('BUY: a stock with no dividend earns nothing', () => {
     const next = apply(offered(withCash(400), 'small-005', 20), buyShares(10));
-    expect(p1(next).assets[0]?.monthlyCashFlow).toBe(0);
+    expect(p1(next).assets[0]).toMatchObject({ monthlyCashFlow: 0 });
   });
 
   it('BUY: accepts at exactly shares × price and rejects one dollar short', () => {
@@ -141,7 +141,7 @@ describe('BUY: a stock', () => {
   });
 
   it('BUY: accepts all of sharesAvailable and rejects one more', () => {
-    expect(p1(apply(offered(withCash(10_000), 'small-005', 20), buyShares(500))).assets[0]?.shares).toBe(500);
+    expect(p1(apply(offered(withCash(10_000), 'small-005', 20), buyShares(500))).assets[0]).toMatchObject({ shares: 500 });
     expect(reject(offered(withCash(20_000), 'small-005', 20), buyShares(501))).toBe('INVALID_SHARES');
   });
 
@@ -216,7 +216,7 @@ describe('BUY: rejections', () => {
     { kind: 'none' },
     { kind: 'chooseDealSize' },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('BUY: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

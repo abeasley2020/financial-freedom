@@ -6,7 +6,7 @@ import type { DeepReadonly } from './readonly';
 export const BOARD_SIZE = 24;
 
 /** v2 (spec, Core rules, Board): there are no Payday spaces. Payday happens at the start of every turn. */
-export const SPACE_KINDS = ['opportunity', 'market', 'lifestyle', 'giving', 'setback'] as const;
+export const SPACE_KINDS = ['opportunity', 'market', 'lifeChoices', 'giving', 'setback'] as const;
 export const SpaceKindSchema = z.enum(SPACE_KINDS);
 export type SpaceKind = z.infer<typeof SpaceKindSchema>;
 

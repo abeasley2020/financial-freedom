@@ -5,7 +5,7 @@ import { reduce } from '../reduce';
 import { debtPayments, monthlyCashFlow, playerById, totalExpenses } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, offered, rolledClean, twoPlayerGame, withGame } from '../test/fixtures';
+import { aboutToRoll, drawn, offered, rolledClean, twoPlayerGame, withGame } from '../test/fixtures';
 
 const borrow = (amount: number, playerId = 'p1'): Action => ({ type: 'BORROW', playerId, amount });
 const p1 = (state: GameState) => playerById(state, 'p1');
@@ -107,11 +107,10 @@ describe('BORROW: while a decision is open', () => {
     expect(monthlyCashFlow(p1(bought))).toBe(700 + 160 - 500);
   });
 
-  it('BORROW: allowed during payLifestyle and leaves the decision open', () => {
-    // PAY_LIFESTYLE is not written yet, so the pending state is set by hand.
-    const before: GameState = { ...afterRoll(), pending: { kind: 'payLifestyle', cardId: 'life-001' } };
+  it('BORROW: allowed during lifeChoice and leaves the decision open (spec, turn step 4)', () => {
+    const before = drawn(twoPlayerGame(), 'life-001');
     const next = apply(before, borrow(4_000));
-    expect(next.pending).toEqual({ kind: 'payLifestyle', cardId: 'life-001' });
+    expect(next.pending).toEqual({ kind: 'lifeChoice', cardId: 'life-001' });
     expect(p1(next).cash).toBe(1_100 + 4_000);
   });
 
@@ -173,7 +172,7 @@ describe('BORROW: rejections', () => {
   });
 
   // Spec, Core rules, turn step 4: BORROW is legal with pending none, buyOrPass,
-  // or payLifestyle, and rejected in every other pending state.
+  // or lifeChoice, and rejected in every other pending state.
   const pendings: Pending[] = [
     { kind: 'chooseDealSize' },
     { kind: 'marketChoice', cardId: 'market-001' },

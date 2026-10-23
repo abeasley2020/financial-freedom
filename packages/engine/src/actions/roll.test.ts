@@ -8,7 +8,7 @@ import { deepFreeze } from '../test/deepFreeze';
 import { aboutToRoll, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
 // v2 board (spec, Core rules, Board; decided 2026-10-23, Q8): opportunity at
-// 0, 3, 5, 8, 10, 13, 15, 18, 20, 23; lifestyle (Life Choices) at 1, 7, 11,
+// 0, 3, 5, 8, 10, 13, 15, 18, 20, 23; lifeChoices at 1, 7, 11,
 // 14, 19, 22; market at 2, 9, 16, 21; giving at 4, 17; setback at 6, 12.
 // There are no Payday spaces: Payday happens at the start of every turn.
 // Tests pin position and die roll with aboutToRoll so landing spaces are exact.
@@ -142,13 +142,13 @@ describe('ROLL: resolving the landed space', () => {
     expect(next.decks.market.discardPile).toEqual([]);
   });
 
-  it('ROLL: landing on Lifestyle draws the top lifestyle card into pending payLifestyle', () => {
+  it('ROLL: landing on Life Choices draws the top Life Choices card into pending lifeChoice', () => {
     const before = twoPlayerGame();
-    const [top, ...rest] = before.decks.lifestyle.drawPile;
+    const [top, ...rest] = before.decks.lifeChoices.drawPile;
     const next = apply(aboutToRoll(before, 0, 1), ROLL);
-    expect(BOARD[1]).toBe('lifestyle');
-    expect(next.pending).toEqual({ kind: 'payLifestyle', cardId: top });
-    expect(next.decks.lifestyle.drawPile).toEqual(rest);
+    expect(BOARD[1]).toBe('lifeChoices');
+    expect(next.pending).toEqual({ kind: 'lifeChoice', cardId: top });
+    expect(next.decks.lifeChoices.drawPile).toEqual(rest);
   });
 
   it('ROLL: landing on Giving sets pending giveOrSkip', () => {
@@ -298,7 +298,7 @@ describe('ROLL: rejections', () => {
     { kind: 'chooseDealSize' },
     { kind: 'buyOrPass', cardId: 'small-001' },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('ROLL: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

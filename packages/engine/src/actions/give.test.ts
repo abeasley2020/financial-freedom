@@ -112,7 +112,7 @@ describe('GIVE: rejections', () => {
     { kind: 'chooseDealSize' },
     { kind: 'buyOrPass', cardId: 'small-001' },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
   ];
   it.each(pendings)('GIVE: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {
     expect(reject({ ...twoPlayerGame(), pending }, GIVE)).toBe('INVALID_FOR_PENDING');

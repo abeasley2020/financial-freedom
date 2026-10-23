@@ -1,0 +1,293 @@
+[
+  {
+    "id": "life-001",
+    "deck": "lifeChoices",
+    "category": "vehicle",
+    "title": "Your Truck Is Nine Years Old",
+    "principles": [
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "kidsText": "Your old truck still runs. Keep it, buy a used one, or get a new one?",
+    "adultText": "The old one still runs, but the new ones have heated seats. Keep it, pay cash for a used one, or finance new?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep the old truck",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Keep driving it. It still works.",
+        "adultText": "It still runs. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "used",
+        "label": "Buy a used truck for cash",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $4,000 cash for a used one.",
+        "adultText": "A three-year-old truck, paid in full. No monthly payment.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 4000
+          }
+        ]
+      },
+      {
+        "id": "new",
+        "label": "Finance a new truck",
+        "principles": [
+          "P5",
+          "P6"
+        ],
+        "kidsText": "Take a loan. Pay $380 every month.",
+        "adultText": "The dealer's loan: 12,000 at 380 a month. Heated seats included.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "car",
+            "principal": 12000,
+            "monthlyPayment": 380
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-002",
+    "deck": "lifeChoices",
+    "category": "bigLife",
+    "title": "Family Beach Week",
+    "principles": [
+      "P3",
+      "P4"
+    ],
+    "kidsText": "A week at the beach for the whole family. Go, or stay home this year?",
+    "adultText": "Seven nights, four people, one rented house by the ocean. Memories are not a monthly bill, but the trip is.",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "stay",
+        "label": "Stay home this year",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Stay home and keep the money.",
+        "adultText": "A week of day trips instead. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "go",
+        "label": "Book the beach house",
+        "principles": [
+          "P3",
+          "P4"
+        ],
+        "kidsText": "Pay $2,500 for the trip.",
+        "adultText": "Pay 2,500 in cash for the week.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 2500
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-003",
+    "deck": "lifeChoices",
+    "category": "gadget",
+    "title": "Big Screen and Sound System",
+    "principles": [
+      "P4",
+      "P6",
+      "P7"
+    ],
+    "kidsText": "A giant TV and big speakers. Keep your old TV, pay cash, or pay a little each month?",
+    "adultText": "Wall-sized television and speakers you can feel. The store offers no-money-down financing.",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep the old TV",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Your old TV still works. Keep it.",
+        "adultText": "It still works. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "cash",
+        "label": "Pay cash",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $1,800 cash.",
+        "adultText": "Pay 1,800 in cash. No monthly payment.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 1800
+          }
+        ]
+      },
+      {
+        "id": "finance",
+        "label": "Finance it",
+        "principles": [
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $90 every month for a long time.",
+        "adultText": "No money down, 90 a month on 1,800 of principal.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "lifestyle",
+            "principal": 1800,
+            "monthlyPayment": 90
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-004",
+    "deck": "lifeChoices",
+    "category": "subscription",
+    "title": "Streaming Bundle",
+    "principles": [
+      "P7"
+    ],
+    "kidsText": "Four streaming apps in one bundle for $60 a month. Sign up, or skip it?",
+    "adultText": "Four streaming services in one bundle, 60 a month, cancel any time. Will you?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Skip it and keep your money.",
+        "adultText": "Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "subscribe",
+        "label": "Subscribe for 60 a month",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $60 every month until you cancel.",
+        "adultText": "A subscription liability of 60 a month. REPAY cancels it at no cost.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-005",
+    "deck": "lifeChoices",
+    "category": "windfall",
+    "title": "Tax Refund",
+    "principles": [
+      "P4",
+      "P5",
+      "P8"
+    ],
+    "kidsText": "A $2,000 tax refund! Spend it, invest it, or pay off debt?",
+    "adultText": "A 2,000 refund lands in your account. Spend it, invest it in an index fund, or pay down your most expensive loan?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "spend",
+        "label": "Spend it",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Buy stuff with the whole $2,000.",
+        "adultText": "A shopping weekend. The 2,000 is gone by Monday.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 2000
+          },
+          {
+            "kind": "payCash",
+            "amount": 2000
+          }
+        ]
+      },
+      {
+        "id": "invest",
+        "label": "Invest it in an index fund",
+        "principles": [
+          "P4",
+          "P8"
+        ],
+        "kidsText": "Put the $2,000 in an index fund. It grows every month.",
+        "adultText": "Index fund: grows 4 percent a month and pays out 1 percent of its value each Payday.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 2000
+          },
+          {
+            "kind": "investGrowth",
+            "assetType": "index",
+            "amount": 2000,
+            "growthPercent": 4,
+            "payoutPercent": 1
+          }
+        ]
+      },
+      {
+        "id": "payDebt",
+        "label": "Pay down your biggest loan",
+        "principles": [
+          "P5"
+        ],
+        "kidsText": "Pay $2,000 toward your loan with the biggest payment.",
+        "adultText": "Pays up to 2,000 toward the loan with the highest monthly payment. Mortgages are not loans here.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 2000
+          },
+          {
+            "kind": "repayLargestLoan",
+            "amount": 2000
+          }
+        ]
+      }
+    ]
+  }
+]

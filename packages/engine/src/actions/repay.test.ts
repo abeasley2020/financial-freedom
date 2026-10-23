@@ -102,6 +102,34 @@ describe('REPAY: paying off a loan in full', () => {
   });
 });
 
+describe('REPAY: cancelling a subscription (spec v2, Life Choices: REPAY removes a subscription at no cost)', () => {
+  const sub: Liability = { id: 'p1-sub', kind: 'subscription', principal: 0, monthlyPayment: 60, sourceCardId: 'life-004' };
+  const subscribed = (cash = 0) => {
+    const fresh = twoPlayerGame();
+    return afterRoll(withPlayer(fresh, 'p1', { liabilities: [...p1(fresh).liabilities, sub] }), cash);
+  };
+
+  it('REPAY: removes the subscription and charges nothing, even with zero cash', () => {
+    const before = subscribed(0);
+    expect(p1(before).cash).toBe(700 - 60);
+    const next = apply(before, repay('p1-sub'));
+    expect(p1(next).cash).toBe(p1(before).cash);
+    expect(p1(next).liabilities.find((l) => l.id === 'p1-sub')).toBeUndefined();
+    expect(debtPayments(p1(next))).toBe(300);
+  });
+
+  it('REPAY: logs the cancellation with principal 0 under P7, small costs add up', () => {
+    const next = apply(subscribed(), repay('p1-sub'));
+    expect(next.game.log.at(-1)?.events).toEqual([{ kind: 'repaid', liabilityId: 'p1-sub', principal: 0, principles: ['P7'] }]);
+  });
+
+  it('REPAY: works in kids mode, so a kid can cancel too', () => {
+    const fresh = twoPlayerGame({ mode: 'kids' });
+    const before = afterRoll(withPlayer(fresh, 'p1', { liabilities: [...p1(fresh).liabilities, sub] }));
+    expect(p1(apply(before, repay('p1-sub'))).liabilities.some((l) => l.kind === 'subscription')).toBe(false);
+  });
+});
+
 describe('REPAY: which loans', () => {
   it('REPAY: rejected with INVALID_LIABILITY for a mortgage (Core rules, Mortgages: retired only by sale)', () => {
     const bought = apply(offered(withPlayer(twoPlayerGame(), 'p1', { cash: 100_000 }), 'small-001'), {
@@ -170,7 +198,7 @@ describe('REPAY: rejections', () => {
     { kind: 'buyOrPass', cardId: 'small-001' },
     { kind: 'buyOrPass', cardId: 'small-005', sharePrice: 20 },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
+    { kind: 'lifeChoice', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('REPAY: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {

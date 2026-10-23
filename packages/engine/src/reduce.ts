@@ -4,11 +4,11 @@ import { acceptMarket } from './actions/acceptMarket';
 import { borrow } from './actions/borrow';
 import { buy } from './actions/buy';
 import { chooseDealSize } from './actions/chooseDealSize';
+import { chooseLifeOption } from './actions/chooseLifeOption';
 import { declineMarket } from './actions/declineMarket';
 import { endTurn } from './actions/endTurn';
 import { give } from './actions/give';
 import { pass } from './actions/pass';
-import { payLifestyle } from './actions/payLifestyle';
 import { repay } from './actions/repay';
 import { roll } from './actions/roll';
 import { sellAsset } from './actions/sellAsset';
@@ -61,8 +61,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return borrow(state, action);
     case 'REPAY':
       return repay(state, action);
-    case 'PAY_LIFESTYLE':
-      return payLifestyle(state, action);
+    case 'CHOOSE_LIFE_OPTION':
+      return chooseLifeOption(state, action);
     case 'SELL_ASSET':
       return sellAsset(state, action);
     case 'ACCEPT_MARKET':

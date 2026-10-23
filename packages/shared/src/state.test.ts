@@ -37,7 +37,7 @@ const state: GameState = {
     smallDeals: emptyPile,
     bigDeals: emptyPile,
     market: emptyPile,
-    lifestyle: emptyPile,
+    lifeChoices: emptyPile,
     setback: emptyPile,
   },
   pending: { kind: 'none' },
@@ -102,6 +102,22 @@ describe('GameStateSchema', () => {
     expect(PlayerSchema.safeParse(bad).success).toBe(false);
   });
 
+  it('a growth asset stores marketValue and percents and never a monthlyCashFlow (spec, Growth assets)', () => {
+    const index = { id: 'g1', cardId: 'life-005', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 4, payoutPercent: 1 };
+    expect(PlayerSchema.safeParse({ ...player, assets: [index] }).success).toBe(true);
+    expect(PlayerSchema.safeParse({ ...player, assets: [{ ...index, monthlyCashFlow: 20 }] }).success).toBe(false);
+    expect(PlayerSchema.safeParse({ ...player, assets: [{ ...index, marketValue: -1 }] }).success).toBe(false);
+    const noValue = Object.fromEntries(Object.entries(index).filter(([k]) => k !== 'marketValue'));
+    expect(PlayerSchema.safeParse({ ...player, assets: [noValue] }).success).toBe(false);
+  });
+
+  it('a rental stores monthlyCashFlow and never growth fields', () => {
+    const duplex = { id: 'd', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 };
+    expect(PlayerSchema.safeParse({ ...player, assets: [duplex] }).success).toBe(true);
+    expect(PlayerSchema.safeParse({ ...player, assets: [{ ...duplex, marketValue: 1 }] }).success).toBe(false);
+    expect(PlayerSchema.safeParse({ ...player, assets: [{ ...duplex, shares: 1 }] }).success).toBe(false);
+  });
+
   it('every asset has its own id so two lots of one stock can coexist', () => {
     const lot = (id: string, shares: number) => ({
       id,
@@ -126,7 +142,7 @@ describe('PendingSchema', () => {
       { kind: 'buyOrPass', cardId: 'small-001' },
       { kind: 'buyOrPass', cardId: 'small-005', sharePrice: 17 },
       { kind: 'marketChoice', cardId: 'market-001' },
-      { kind: 'payLifestyle', cardId: 'life-001' },
+      { kind: 'lifeChoice', cardId: 'life-001' },
       { kind: 'giveOrSkip' },
     ];
     for (const pending of kinds) {
@@ -151,7 +167,7 @@ describe('ActionSchema', () => {
       { type: 'SELL_ASSET', playerId: 'p1', assetId: 'a1', shares: 25 },
       { type: 'BORROW', playerId: 'p1', amount: 1_000 },
       { type: 'REPAY', playerId: 'p1', liabilityId: 'l1' },
-      { type: 'PAY_LIFESTYLE', playerId: 'p1', method: 'cash' },
+      { type: 'CHOOSE_LIFE_OPTION', playerId: 'p1', optionId: 'keep' },
       { type: 'ACCEPT_MARKET', playerId: 'p1' },
       { type: 'ACCEPT_MARKET', playerId: 'p1', assetId: 'a1' },
       { type: 'DECLINE_MARKET', playerId: 'p1' },

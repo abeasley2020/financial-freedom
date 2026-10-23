@@ -2,7 +2,7 @@
 // `checkInvariants` after every accepted action; `assertInvariants` throws
 // with every violation listed so a failing run names the rule that broke.
 
-import { CARDS_BY_DECK, CARDS_BY_ID, DECK_IDS, GameStateSchema, type DeckId, type GameState } from '@ff/shared';
+import { CARDS_BY_DECK, CARDS_BY_ID, DECK_IDS, GameStateSchema, isGrowthAsset, type DeckId, type GameState } from '@ff/shared';
 
 import { inDeckForMode } from './createGame';
 import { hasRolledThisTurn } from './selectors';
@@ -40,14 +40,23 @@ export function checkInvariants(state: GameState): readonly string[] {
       if (liability.kind === 'mortgage' && !player.assets.some((a) => a.id === liability.assetId)) {
         violations.push(`mortgage "${liability.id}" on player "${player.id}" finances no asset they hold`);
       }
+      if (liability.kind === 'subscription' && liability.principal !== 0) {
+        violations.push(`subscription "${liability.id}" on player "${player.id}" has principal ${String(liability.principal)}, must be 0`);
+      }
     }
     for (const asset of player.assets) {
       if (assetIds.has(asset.id)) violations.push(`duplicate asset id "${asset.id}"`);
       assetIds.add(asset.id);
       const card = CARDS_BY_ID.get(asset.cardId);
-      if (card?.deck !== 'smallDeals' && card?.deck !== 'bigDeals') violations.push(`asset "${asset.id}" references non-deal card "${asset.cardId}"`);
-      else if ((card.type === 'stock') !== (asset.shares !== undefined)) violations.push(`asset "${asset.id}" share count does not match its card type`);
-      if (asset.type === 'stock' && asset.shares !== undefined && asset.shares <= 0) violations.push(`lot "${asset.id}" has no shares`);
+      if (isGrowthAsset(asset)) {
+        // A growth asset comes from a deal card or a Life Choices windfall; its card never leaves its deck.
+        if (card === undefined) violations.push(`asset "${asset.id}" references unknown card "${asset.cardId}"`);
+        if (asset.marketValue < 0) violations.push(`growth asset "${asset.id}" has marketValue ${String(asset.marketValue)}`);
+      } else if (card?.deck !== 'smallDeals' && card?.deck !== 'bigDeals') {
+        violations.push(`asset "${asset.id}" references non-deal card "${asset.cardId}"`);
+      } else if ((card.type === 'stock') !== (asset.type === 'stock')) {
+        violations.push(`asset "${asset.id}" type does not match its card type`);
+      }
     }
   }
 
@@ -59,11 +68,14 @@ export function checkInvariants(state: GameState): readonly string[] {
     violations.push(`current player "${current.id}" is out while the game is playing`);
   }
 
-  // Decks: drawPile + discardPile + cards held as non-stock assets + the card awaiting a decision = the deck, with no duplicates.
+  // Decks: drawPile + discardPile + cards held as assets + the card awaiting a decision = the deck, with no duplicates.
+  // Stock lots and growth assets never take their card out of its deck.
   const pendingCardId = 'cardId' in state.pending ? state.pending.cardId : undefined;
   for (const deck of DECK_IDS) {
     const piles = state.decks[deck];
-    const held = state.players.flatMap((p) => p.assets.filter((a) => a.type !== 'stock' && CARDS_BY_ID.get(a.cardId)?.deck === deck).map((a) => a.cardId));
+    const held = state.players.flatMap((p) =>
+      p.assets.filter((a) => a.type !== 'stock' && !isGrowthAsset(a) && CARDS_BY_ID.get(a.cardId)?.deck === deck).map((a) => a.cardId),
+    );
     const pending = pendingCardId !== undefined && CARDS_BY_ID.get(pendingCardId)?.deck === deck ? [pendingCardId] : [];
     const all = [...piles.drawPile, ...piles.discardPile, ...held, ...pending];
     const expected = [...fullDeck(state, deck)].sort();
@@ -83,7 +95,7 @@ export function checkInvariants(state: GameState): readonly string[] {
     else if ((card.type === 'stock') !== (pending.sharePrice !== undefined)) violations.push(`buyOrPass sharePrice does not match card type for "${pending.cardId}"`);
   }
   if (pending.kind === 'marketChoice' && CARDS_BY_ID.get(pending.cardId)?.deck !== 'market') violations.push(`marketChoice names non-market card "${pending.cardId}"`);
-  if (pending.kind === 'payLifestyle' && CARDS_BY_ID.get(pending.cardId)?.deck !== 'lifestyle') violations.push(`payLifestyle names non-lifestyle card "${pending.cardId}"`);
+  if (pending.kind === 'lifeChoice' && CARDS_BY_ID.get(pending.cardId)?.deck !== 'lifeChoices') violations.push(`lifeChoice names non-Life-Choices card "${pending.cardId}"`);
 
   // Log turn numbers never decrease and never exceed the current turn.
   let lastTurn = 0;

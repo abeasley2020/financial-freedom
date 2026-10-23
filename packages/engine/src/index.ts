@@ -11,13 +11,19 @@ export { reduce, type ReduceResult } from './reduce';
 export { replay } from './replay';
 export { nextRandom, rollDie, shuffle } from './rng';
 export {
+  assetCashFlow,
   canEscape,
+  cheapestOption,
   currentPlayer,
   debtPayments,
   hasRolledThisTurn,
+  largestLoan,
   monthlyCashFlow,
+  optionCost,
   passiveIncome,
   playerById,
+  priciestOption,
   professionOf,
   totalExpenses,
+  type OptionCost,
 } from './selectors';
