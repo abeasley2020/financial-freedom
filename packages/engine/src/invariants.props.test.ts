@@ -3,7 +3,7 @@
 // checked after every accepted action. On failure fast-check prints a seed
 // and path; paste them into fc.assert's options to replay.
 
-import { PROFESSIONS, type Action, type GameState } from '@ff/shared';
+import { ACTION_TYPES, CARDS_BY_ID, isGrowthAsset, PROFESSIONS, type Action, type GameState } from '@ff/shared';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
@@ -27,11 +27,56 @@ const PROPERTY_TIMEOUT_MS = 120_000;
 
 const choicesArb = fc.array(fc.nat({ max: 1_000_000 }), { minLength: 20, maxLength: 250 });
 
+/** Long enough for a small table to reach the 15-round limit (about 4 choices a turn, 2 to 3 players). */
+const longChoicesArb = fc.array(fc.nat({ max: 1_000_000 }), { minLength: 150, maxLength: 600 });
+const smallTableArb: fc.Arbitrary<WalkSetup> = fc.record({
+  seed: fc.integer(),
+  mode: fc.constant('standard' as const),
+  professions: fc.array(fc.nat({ max: PROFESSIONS.length - 1 }), { minLength: 2, maxLength: 3 }),
+});
+
 interface Played {
   readonly initial: GameState;
   readonly final: GameState;
   readonly accepted: readonly Action[];
   readonly steps: number;
+}
+
+/** What the random walks reached, across every run of a property (spec v2: the generator must exercise every action and effect). */
+const coverage = {
+  actionTypes: new Set<string>(),
+  lifeEffectKinds: new Set<string>(),
+  marketEffectKinds: new Set<string>(),
+  endings: new Set<string>(),
+};
+
+function recordCoverage(before: GameState, action: Action, after: GameState): void {
+  coverage.actionTypes.add(action.type);
+  if (action.type === 'CHOOSE_LIFE_OPTION' && before.pending.kind === 'lifeChoice') {
+    const card = CARDS_BY_ID.get(before.pending.cardId);
+    const option = card?.deck === 'lifeChoices' ? card.options.find((o) => o.id === action.optionId) : undefined;
+    for (const effect of option?.effects ?? []) coverage.lifeEffectKinds.add(effect.kind);
+  }
+  if (action.type === 'ACCEPT_MARKET' && before.pending.kind === 'marketChoice') {
+    const card = CARDS_BY_ID.get(before.pending.cardId);
+    if (card?.deck === 'market') for (const effect of card.effects) coverage.marketEffectKinds.add(effect.kind);
+  }
+  for (const event of after.game.log.at(-1)?.events ?? []) if (event.kind === 'gameEnded') coverage.endings.add(event.reason);
+}
+
+/** Spec v2, Growth assets: marketValue only ever falls through a Market card. */
+function expectGrowthMonotonic(before: GameState, action: Action, after: GameState): void {
+  if (action.type === 'ACCEPT_MARKET') return;
+  for (const player of after.players) {
+    const was = before.players.find((p) => p.id === player.id);
+    for (const asset of player.assets) {
+      if (!isGrowthAsset(asset)) continue;
+      const earlier = was?.assets.find((a) => a.id === asset.id);
+      if (earlier !== undefined && isGrowthAsset(earlier)) {
+        expect(asset.marketValue, `growth asset ${asset.id} shrank on ${action.type}`).toBeGreaterThanOrEqual(earlier.marketValue);
+      }
+    }
+  }
 }
 
 /**
@@ -57,6 +102,8 @@ function play(setup: WalkSetup, choices: readonly number[]): Played {
     expect(result.state.game.log, 'every accepted action appends exactly one log entry').toHaveLength(frozen.game.log.length + 1);
     expect(result.state.game.log.at(-1)?.action).toEqual(action);
     assertInvariants(result.state);
+    recordCoverage(frozen, action, result.state);
+    expectGrowthMonotonic(frozen, action, result.state);
     accepted.push(action);
     state = result.state;
   }
@@ -72,6 +119,19 @@ describe('property: random games', () => {
       }),
       { numRuns: NUM_RUNS },
     );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('the random walks reach every action, every Life Choices effect, every Market effect, and a round-limit ending (spec v2: generators cover every new action and effect)', () => {
+    fc.assert(
+      fc.property(smallTableArb, longChoicesArb, (setup, choices) => {
+        play(setup, choices);
+      }),
+      { numRuns: Math.max(100, Math.floor(NUM_RUNS / 2)) },
+    );
+    expect([...coverage.actionTypes].sort()).toEqual([...ACTION_TYPES].sort());
+    expect([...coverage.lifeEffectKinds].sort()).toEqual(['addLoan', 'addSubscription', 'gainCash', 'investGrowth', 'payCash', 'repayLargestLoan']);
+    expect([...coverage.marketEffectKinds].sort()).toEqual(['changeCashFlow', 'changeMarketValue', 'forceSale', 'offerBuyout', 'splitShares']);
+    expect(coverage.endings).toContain('roundLimit');
   }, PROPERTY_TIMEOUT_MS);
 
   it('every invariant holds after every accepted action, in kids mode', () => {
@@ -245,6 +305,35 @@ describe('checkInvariants', () => {
     }));
     const broken: GameState = { ...state, game: { ...state.game, turnNumber: 10, log: events } };
     expect(checkInvariants(broken).join('\n')).toMatch(/round limit/);
+  });
+
+  it('catches a growth asset whose card is not a growth deal or an investing Life Choices option', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const fromRental: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0 ? { ...p, assets: [{ id: 'g', cardId: 'small-001', type: 'index', purchasePrice: 100, downPaid: 100, marketValue: 100, growthPercent: 4, payoutPercent: 1 }] } : p,
+      ),
+    };
+    expect(checkInvariants(fromRental).join('\n')).toMatch(/growth asset "g"/);
+    const wrongType: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0 ? { ...p, assets: [{ id: 'g', cardId: 'small-004', type: 'savings', purchasePrice: 500, downPaid: 500, marketValue: 500, growthPercent: 1, payoutPercent: 0 }] } : p,
+      ),
+    };
+    expect(checkInvariants(wrongType).join('\n')).toMatch(/growth asset "g"/);
+  });
+
+  it('catches a card liability whose source is not a Life Choices card', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0 ? { ...p, liabilities: [...p.liabilities, { id: 's', kind: 'subscription', principal: 0, monthlyPayment: 60, sourceCardId: 'market-001' }] } : p,
+      ),
+    };
+    expect(checkInvariants(broken).join('\n')).toMatch(/sourceCardId/);
   });
 
   it('catches a current player who is out before rolling', () => {

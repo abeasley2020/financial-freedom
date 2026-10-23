@@ -52,7 +52,9 @@ export function candidateActions(state: GameState, choice: number): readonly Act
       const repay: Action[] = loan === undefined ? [] : [{ type: 'REPAY', playerId, liabilityId: loan.id }];
       const growth = pick(player.assets.filter(isGrowthAsset), Math.floor(choice / 13));
       const sellGrowth: Action[] = growth === undefined ? [] : [{ type: 'SELL_ASSET', playerId, assetId: growth.id }];
-      return [{ type: 'END_TURN', playerId }, { type: 'END_TURN', playerId }, borrow, ...repay, ...sellGrowth, { type: 'REPAY', playerId, liabilityId: 'nope' }];
+      // A loan on every fifth idle turn at most: random walks that borrow more never see the round limit, only bankruptcies.
+      const idleBorrow: Action[] = choice % 5 === 0 ? [borrow] : [];
+      return [{ type: 'END_TURN', playerId }, { type: 'END_TURN', playerId }, ...idleBorrow, ...repay, ...sellGrowth, { type: 'REPAY', playerId, liabilityId: 'nope' }];
     }
     case 'chooseDealSize':
       return [
