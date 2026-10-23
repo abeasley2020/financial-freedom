@@ -323,3 +323,53 @@ describe('ROLL: rejections', () => {
     expect(p1(before).cash).toBe(400);
   });
 });
+
+describe('ROLL: Payday grows growth assets before crediting cash flow (spec v2, Growth assets; decided Q2)', () => {
+  const index = { id: 'idx', cardId: 'small-004', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 4, payoutPercent: 1 } as const;
+  const savings = { id: 'sav', cardId: 'small-008', type: 'savings', purchasePrice: 100, downPaid: 100, marketValue: 100, growthPercent: 1, payoutPercent: 0 } as const;
+
+  it('ROLL: marketValue grows by pct(marketValue, growthPercent) and the payout uses the grown value', () => {
+    const owner = withPlayer(twoPlayerGame(), 'p1', { assets: [index] });
+    const next = apply(aboutToRoll(owner, 2, 1), ROLL);
+    expect(p1(next).assets[0]).toMatchObject({ marketValue: 2_080 });
+    // 700 base cash flow + pct(2,080, 1) = 20.
+    expect(p1(next).cash).toBe(400 + 700 + 20);
+  });
+
+  it('ROLL: growth is floored and a 0 payout pays nothing', () => {
+    const owner = withPlayer(twoPlayerGame(), 'p1', { assets: [savings, { ...index, marketValue: 1_050, growthPercent: 1 }] });
+    const next = apply(aboutToRoll(owner, 2, 1), ROLL);
+    expect(p1(next).assets.map((a) => (a.type === 'savings' || a.type === 'index' ? a.marketValue : 0))).toEqual([101, 1_060]);
+    expect(p1(next).cash).toBe(400 + 700 + 10);
+  });
+
+  it('ROLL: logs one valueChanged per growth asset before the payday event, and the snapshot shows the grown passive income', () => {
+    const owner = withPlayer(twoPlayerGame(), 'p1', { assets: [index] });
+    const next = apply(aboutToRoll(owner, 2, 1), ROLL);
+    expect(next.game.log[0]?.events.slice(0, 3)).toEqual([
+      { kind: 'valueChanged', assetId: 'idx', delta: 80, marketValue: 2_080 },
+      { kind: 'payday', amount: 720 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 20, totalExpenses: 2_600, cash: 1_120 },
+    ]);
+  });
+
+  it('ROLL: growth compounds: a second Payday grows the grown value', () => {
+    const owner = withPlayer(twoPlayerGame(), 'p1', { assets: [index] });
+    const first = apply(aboutToRoll(owner, 0, 4), ROLL); // Giving
+    const cleared = apply(first, { type: 'SKIP_GIVE', playerId: 'p1' });
+    const nextTurn = withGame(apply(cleared, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
+    const second = apply(aboutToRoll(nextTurn, 0, 4), ROLL);
+    // 2,000 → 2,080 → 2,080 + floor(83.2) = 2,163.
+    expect(p1(second).assets[0]).toMatchObject({ marketValue: 2_163 });
+  });
+
+  it('END_TURN: a skipped seat still has its growth assets grow at its Payday', () => {
+    const flagged = withPlayer(withPlayer(twoPlayerGame(), 'p1', { skipsNextTurn: true, assets: [index] }), 'p2', { cash: 5_000 });
+    const p2Turn = withGame(flagged, { currentPlayerId: 'p2' });
+    const p2Rolled = apply(aboutToRoll(p2Turn, 3, 1), { type: 'ROLL', playerId: 'p2' });
+    const p2Done = apply(p2Rolled, { type: 'SKIP_GIVE', playerId: 'p2' });
+    const next = apply(p2Done, { type: 'END_TURN', playerId: 'p2' });
+    expect(p1(next).assets[0]).toMatchObject({ marketValue: 2_080 });
+    expect(p1(next).cash).toBe(400 + 720);
+  });
+});

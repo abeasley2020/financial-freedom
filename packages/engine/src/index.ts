@@ -12,6 +12,7 @@ export { replay } from './replay';
 export { nextRandom, rollDie, shuffle } from './rng';
 export {
   assetCashFlow,
+  assetValue,
   canEscape,
   cheapestOption,
   currentPlayer,
@@ -19,6 +20,7 @@ export {
   hasRolledThisTurn,
   largestLoan,
   monthlyCashFlow,
+  netWorth,
   optionCost,
   passiveIncome,
   playerById,

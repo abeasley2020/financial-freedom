@@ -53,6 +53,16 @@ export function monthlyCashFlow(player: Player): number {
   return player.salary + passiveIncome(player) - totalExpenses(player);
 }
 
+/** What an asset is worth on paper: a growth asset's marketValue, otherwise what was paid for it. */
+export function assetValue(asset: Asset): number {
+  return isGrowthAsset(asset) ? asset.marketValue : asset.purchasePrice;
+}
+
+/** Cash plus asset values minus every liability principal (spec v2: a tie-breaker at the round limit, never stored). */
+export function netWorth(player: Player): number {
+  return player.cash + player.assets.reduce((sum, a) => sum + assetValue(a), 0) - player.liabilities.reduce((sum, l) => sum + l.principal, 0);
+}
+
 /** The win condition: passive income covers every monthly cost. */
 export function canEscape(player: Player): boolean {
   return passiveIncome(player) >= totalExpenses(player);

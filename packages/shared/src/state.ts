@@ -28,11 +28,11 @@ const assetBase = {
   downPaid: MoneySchema,
 };
 
-/** A rental, business, land, or the v1 fund: its cash flow is stored because Market cards change it. */
+/** A rental, business, or land: its cash flow is stored because Market cards change it. */
 export const PropertyAssetSchema = z
   .object({
     ...assetBase,
-    type: z.enum(['rental', 'business', 'land', 'fund']),
+    type: z.enum(['rental', 'business', 'land']),
     /** Stored, not copied from the card, because Market cards change it. */
     monthlyCashFlow: SignedMoneySchema,
   })
@@ -291,6 +291,8 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       monthlyCashFlow: SignedMoneySchema,
     })
     .strict(),
+  /** A growth asset's marketValue moved: Payday growth or a Market card. `marketValue` is the value after the change. */
+  z.object({ kind: z.literal('valueChanged'), assetId: AssetIdSchema, delta: SignedMoneySchema, marketValue: MoneySchema }).strict(),
   z
     .object({
       kind: z.literal('sharesSplit'),

@@ -21,8 +21,14 @@ export const GROWTH_ASSET_TYPES = ['savings', 'cd', 'index'] as const;
 export const GrowthAssetTypeSchema = z.enum(GROWTH_ASSET_TYPES);
 export type GrowthAssetType = z.infer<typeof GrowthAssetTypeSchema>;
 
-/** `fund` is the v1 index-fund deal type; Stage B item 3 turns it into a growth type. */
-export const ASSET_TYPES = ['stock', 'fund', 'rental', 'business', 'land', ...GROWTH_ASSET_TYPES] as const;
+export const ASSET_TYPES = ['stock', 'rental', 'business', 'land', ...GROWTH_ASSET_TYPES] as const;
+
+/** Growth assets are bought in steps of this many dollars (spec v2, Growth assets). */
+export const INVEST_STEP = 100;
+
+export function isGrowthAssetType(type: string): type is GrowthAssetType {
+  return (GROWTH_ASSET_TYPES as readonly string[]).includes(type);
+}
 export const AssetTypeSchema = z.enum(ASSET_TYPES);
 export type AssetType = z.infer<typeof AssetTypeSchema>;
 
@@ -80,9 +86,29 @@ export const DealCardSchema = z
     priceRange: PriceRangeSchema.optional(),
     /** Stocks only: whole dollars per share per month. Absent means 0. A lot's monthlyCashFlow is floor(shares × dividendPerShare). */
     dividendPerShare: MoneySchema.optional(),
+    /** Growth assets only: marketValue grows by this percent at every Payday. Spec range 1 to 6. */
+    growthPercent: PercentSchema.optional(),
+    /** Growth assets only: the asset pays pct(marketValue, payoutPercent) a month. Spec range 0 to 2. */
+    payoutPercent: PercentSchema.optional(),
   })
   .strict()
   .superRefine((card, ctx) => {
+    // Growth cards (spec v2, Growth assets): price is the minimum investment, in $100 steps; cash only; no cash flow of their own.
+    const isGrowth = isGrowthAssetType(card.type);
+    if (isGrowth) {
+      if (card.growthPercent === undefined) ctx.addIssue({ code: 'custom', message: 'a growth card needs growthPercent', path: ['growthPercent'] });
+      if (card.payoutPercent === undefined) ctx.addIssue({ code: 'custom', message: 'a growth card needs payoutPercent', path: ['payoutPercent'] });
+      if (card.mortgage !== 0) ctx.addIssue({ code: 'custom', message: 'growth assets are cash only: mortgage must be 0', path: ['mortgage'] });
+      if (card.monthlyCashFlow !== 0) {
+        ctx.addIssue({ code: 'custom', message: 'a growth card has monthlyCashFlow 0: its cash flow is derived from marketValue', path: ['monthlyCashFlow'] });
+      }
+      if (card.price <= 0 || card.price % INVEST_STEP !== 0) {
+        ctx.addIssue({ code: 'custom', message: `a growth card price is its minimum investment, a positive multiple of ${String(INVEST_STEP)}`, path: ['price'] });
+      }
+    } else {
+      if (card.growthPercent !== undefined) ctx.addIssue({ code: 'custom', message: 'only a growth card may carry growthPercent', path: ['growthPercent'] });
+      if (card.payoutPercent !== undefined) ctx.addIssue({ code: 'custom', message: 'only a growth card may carry payoutPercent', path: ['payoutPercent'] });
+    }
     if (card.downPayment + card.mortgage !== card.price) {
       ctx.addIssue({
         code: 'custom',
@@ -133,6 +159,8 @@ export const MarketEffectSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('forceSale'), percentOfPurchasePrice: PercentSchema }).strict(),
   /** Each share becomes `ratio` shares. */
   z.object({ kind: z.literal('splitShares'), ratio: z.number().int().min(2) }).strict(),
+  /** v2: each qualifying growth asset's marketValue moves by pct(marketValue, percent), never below $0. A crash is negative. */
+  z.object({ kind: z.literal('changeMarketValue'), percent: z.number().int() }).strict(),
 ]);
 export type MarketEffect = DeepReadonly<z.infer<typeof MarketEffectSchema>>;
 

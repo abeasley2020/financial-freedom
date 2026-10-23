@@ -83,9 +83,37 @@ describe('fixtures: cards/*.json', () => {
     expect(result.success, issues(result)).toBe(true);
   });
 
-  it('ships 23 starter cards across the five decks (the 21 v1 cards plus a subscription and a windfall for Stage B tests)', () => {
+  it('ships 26 starter cards across the five decks (21 v1 cards plus the Stage B fixtures: subscription, windfall, savings, two market value moves)', () => {
     const total = DECK_IDS.reduce((n, deck) => n + CARDS_BY_DECK[deck].length, 0);
-    expect(total).toBe(23);
+    expect(total).toBe(26);
+  });
+
+  it('growth deal cards stay inside the spec ranges: growthPercent 1 to 6, payoutPercent 0 to 2', () => {
+    const growth = [...CARDS_BY_DECK.smallDeals, ...CARDS_BY_DECK.bigDeals].filter(
+      (c) => c.deck !== 'market' && c.deck !== 'lifeChoices' && c.deck !== 'setback' && (c.type === 'savings' || c.type === 'cd' || c.type === 'index'),
+    );
+    expect(growth.length).toBeGreaterThan(0);
+    for (const card of growth) {
+      if (card.deck !== 'smallDeals' && card.deck !== 'bigDeals') continue;
+      expect(card.growthPercent, card.id).toBeGreaterThanOrEqual(1);
+      expect(card.growthPercent, card.id).toBeLessThanOrEqual(6);
+      expect(card.payoutPercent, card.id).toBeGreaterThanOrEqual(0);
+      expect(card.payoutPercent, card.id).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it('the v1 index fund is now a growth asset and a savings account exists for kids', () => {
+    const index = SMALL_DEALS.find((c) => c.id === 'small-004');
+    expect(index).toMatchObject({ type: 'index', price: 500, downPayment: 500, mortgage: 0, monthlyCashFlow: 0, growthPercent: 4, payoutPercent: 1 });
+    expect(SMALL_DEALS.some((c) => c.type === 'savings' && c.kidsOk)).toBe(true);
+  });
+
+  it('includes Market cards that move marketValue both ways', () => {
+    const percents = CARDS_BY_DECK.market
+      .flatMap((c) => (c.deck === 'market' ? c.effects : []))
+      .flatMap((e) => (e.kind === 'changeMarketValue' ? [e.percent] : []));
+    expect(percents.some((p) => p < 0)).toBe(true);
+    expect(percents.some((p) => p > 0)).toBe(true);
   });
 
   it('every Life Choices card has an option with no monthly cost (spec, Life Choices cards)', () => {

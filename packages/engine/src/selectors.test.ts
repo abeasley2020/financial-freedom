@@ -7,6 +7,7 @@ import {
   debtPayments,
   hasRolledThisTurn,
   monthlyCashFlow,
+  netWorth,
   passiveIncome,
   totalExpenses,
 } from './selectors';
@@ -96,5 +97,33 @@ describe('selectors: turn bookkeeping', () => {
   it('withPlayer patches one player and leaves the rest alone', () => {
     const state = withPlayer(twoPlayerGame(), 'p2', { cash: 9 });
     expect(state.players.map((p) => p.cash)).toEqual([400, 9]);
+  });
+});
+
+describe('netWorth (spec v2: never stored; growth assets count at marketValue)', () => {
+  it('is cash plus asset values minus every liability principal', () => {
+    // Teacher: 400 cash, 20,000 of starting debt.
+    expect(netWorth(teacher())).toBe(400 - 20_000);
+  });
+
+  it('counts a rental at its purchase price and subtracts its mortgage', () => {
+    const owner: Player = {
+      ...teacher(),
+      assets: [{ id: 'd', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 }],
+      liabilities: [...teacher().liabilities, { id: 'm', kind: 'mortgage', principal: 45_000, monthlyPayment: 0, assetId: 'd' }],
+    };
+    expect(netWorth(owner)).toBe(400 - 20_000 + 50_000 - 45_000);
+  });
+
+  it('counts a growth asset at marketValue and a stock lot at its cost basis', () => {
+    const owner: Player = {
+      ...teacher(),
+      liabilities: [],
+      assets: [
+        { id: 'g', cardId: 'small-004', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_600, growthPercent: 4, payoutPercent: 1 },
+        { id: 's', cardId: 'small-005', type: 'stock', purchasePrice: 200, downPaid: 200, monthlyCashFlow: 0, shares: 10 },
+      ],
+    };
+    expect(netWorth(owner)).toBe(400 + 2_600 + 200);
   });
 });

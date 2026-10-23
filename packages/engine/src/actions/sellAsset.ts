@@ -1,16 +1,21 @@
-import { CARDS_BY_ID, type Action, type GameState, type StockAsset } from '@ff/shared';
+import { CARDS_BY_ID, isGrowthAsset, type Action, type GameState, type StockAsset } from '@ff/shared';
 
 import { rejected, type ActionResult } from '../reduce';
-import { currentPlayer } from '../selectors';
+import { liquidate } from '../sales';
+import { currentPlayer, hasRolledThisTurn } from '../selectors';
 
 /**
- * Spec, Card decks, Stock rules: shares are sold only when the same stock
- * card is drawn again, at the newly rolled sharePrice, from one lot the
- * current player holds. Omitting `shares` sells the whole lot. A partial sale
- * shrinks the lot's cost basis in proportion (floored) and recomputes its
- * dividend. Non-stock assets are sold only through Market cards.
+ * Two sales live here. Spec, Card decks, Stock rules: shares are sold only
+ * when the same stock card is drawn again, at the newly rolled sharePrice,
+ * from one lot the current player holds; omitting `shares` sells the whole
+ * lot, and a partial sale shrinks the lot's cost basis in proportion
+ * (floored) and recomputes its dividend. Spec v2, Growth assets (decided
+ * Q9): a growth asset is sold whole at its marketValue any time nothing is
+ * pending, after the roll. Rentals, businesses, and land are sold only
+ * through Market cards.
  */
 export function sellAsset(state: GameState, action: Extract<Action, { type: 'SELL_ASSET' }>): ActionResult {
+  if (state.pending.kind === 'none') return sellGrowth(state, action);
   if (state.pending.kind !== 'buyOrPass') return rejected('INVALID_FOR_PENDING');
 
   const { cardId, sharePrice } = state.pending;
@@ -66,4 +71,18 @@ export function sellAsset(state: GameState, action: Extract<Action, { type: 'SEL
       { kind: 'sold', assetId: lot.id, cardId: card.id, proceeds, shares, remainingShares: remaining, principles: card.principles },
     ],
   };
+}
+
+function sellGrowth(state: GameState, action: Extract<Action, { type: 'SELL_ASSET' }>): ActionResult {
+  if (!hasRolledThisTurn(state)) return rejected('MUST_ROLL_FIRST');
+  const player = currentPlayer(state);
+  const asset = player.assets.find((a) => a.id === action.assetId);
+  if (asset === undefined) return rejected('INVALID_ASSET');
+  if (!isGrowthAsset(asset)) return rejected('INVALID_FOR_PENDING');
+  if (action.shares !== undefined) return rejected('INVALID_SHARES');
+
+  const sale = liquidate(state, player.id, asset, asset.marketValue, 'sell');
+  // liquidate logs sold then cashChanged; keep the engine-wide order of cash first for a voluntary sale.
+  const events = [...sale.events].sort((a, b) => Number(b.kind === 'cashChanged') - Number(a.kind === 'cashChanged'));
+  return { ok: true, state: sale.state, events };
 }

@@ -12,6 +12,8 @@ import { drawn, offered, twoPlayerGame, withGame, withPlayer, withZeroCashFlow }
 //   market-002 Tenant Moves Out: changeCashFlow -100, rentals
 //   market-003 Stock Split:      splitShares ×2, stocks
 //   market-004 Highway:          forceSale 150% of purchase price, land
+//   market-005 Market Dip:       changeMarketValue -20, index funds
+//   market-006 Bull Run:         changeMarketValue +10, index funds and CDs
 // Deal fixtures: small-001 Duplex (rental 50,000, mortgage 45,000, +160),
 //   small-002 Condo (rental 45,000, mortgage 41,000, +120), big-003 Forty Acres
 //   (land 60,000, mortgage 48,000, -50), small-005 Birchwood (stock).
@@ -31,6 +33,9 @@ const acres: Asset = { id: 'acr', cardId: 'big-003', type: 'land', purchasePrice
 const acresMortgage: Liability = { id: 'acr-mortgage', kind: 'mortgage', principal: 48_000, monthlyPayment: 0, assetId: 'acr' };
 const robotics: Asset = { id: 'rob', cardId: 'small-005', type: 'stock', purchasePrice: 200, downPaid: 200, monthlyCashFlow: 0, shares: 10 };
 const utilities: Asset = { id: 'uti', cardId: 'small-007', type: 'stock', purchasePrice: 1_500, downPaid: 1_500, monthlyCashFlow: 25, shares: 25 };
+// Growth percents are pinned to 0 here so the Payday on the way to the card does not move marketValue before the Market effect.
+const index: Asset = { id: 'idx', cardId: 'small-004', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 0, payoutPercent: 1 };
+const savings: Asset = { id: 'sav', cardId: 'small-008', type: 'savings', purchasePrice: 100, downPaid: 100, marketValue: 100, growthPercent: 0, payoutPercent: 0 };
 
 /** p1 holds `assets` (plus the matching mortgages), has a Payday of $0, and has just drawn `cardId`. */
 function facing(cardId: string, assets: readonly Asset[], mortgages: readonly Liability[] = [], state = twoPlayerGame()): GameState {
@@ -288,5 +293,44 @@ describe('ACCEPT_MARKET: rejections', () => {
     const logBefore = before.game.log.length;
     expect(reduce(before, ACCEPT).ok).toBe(false);
     expect(before.game.log).toHaveLength(logBefore);
+  });
+});
+
+describe('ACCEPT_MARKET: market value moves (spec v2, Market cards: changeMarketValue)', () => {
+  it('ACCEPT_MARKET: a crash cuts every qualifying growth asset by pct(marketValue, percent) and lowers its payout', () => {
+    const before = facing('market-005', [index, savings, duplex], [duplexMortgage]);
+    expect(passiveIncome(p1(before))).toBe(20 + 0 + 160);
+    const next = apply(before, ACCEPT);
+    expect(p1(next).assets).toEqual([{ ...index, marketValue: 1_600 }, savings, duplex]);
+    expect(passiveIncome(p1(next))).toBe(16 + 160);
+    expect(p1(next).cash).toBe(400);
+  });
+
+  it('ACCEPT_MARKET: a boom raises marketValue', () => {
+    const next = apply(facing('market-006', [index]), ACCEPT);
+    expect(p1(next).assets).toEqual([{ ...index, marketValue: 2_200 }]);
+  });
+
+  it('ACCEPT_MARKET: marketValue never falls below $0', () => {
+    const tiny: Asset = { ...index, marketValue: 1 };
+    const next = apply(facing('market-005', [tiny]), ACCEPT);
+    expect(p1(next).assets).toEqual([{ ...index, marketValue: 0 }]);
+    expect(passiveIncome(p1(next))).toBe(0);
+  });
+
+  it('ACCEPT_MARKET: a market value move never touches a stock or a rental', () => {
+    const before = facing('market-005', [robotics, duplex], [duplexMortgage]);
+    const next = apply(before, ACCEPT);
+    expect(next.players).toEqual(before.players);
+  });
+
+  it('ACCEPT_MARKET: logs one valueChanged per asset moved', () => {
+    const next = apply(facing('market-005', [index]), ACCEPT);
+    expect(next.game.log.at(-1)?.events).toEqual([{ kind: 'valueChanged', assetId: 'idx', delta: -400, marketValue: 1_600 }]);
+  });
+
+  it('DECLINE_MARKET: a market value move is mandatory when the player owns a qualifying growth asset', () => {
+    expect(reject(facing('market-005', [index]), { type: 'DECLINE_MARKET', playerId: 'p1' })).toBe('MARKET_EFFECT_MANDATORY');
+    expect(apply(facing('market-005', [savings]), { type: 'DECLINE_MARKET', playerId: 'p1' }).pending).toEqual({ kind: 'none' });
   });
 });
