@@ -8,6 +8,7 @@ import { pass } from './actions/pass';
 import { payLifestyle } from './actions/payLifestyle';
 import { repay } from './actions/repay';
 import { roll } from './actions/roll';
+import { sellAsset } from './actions/sellAsset';
 import type { EngineError } from './errors';
 
 export type ReduceResult = { readonly ok: true; readonly state: GameState } | { readonly ok: false; readonly error: EngineError };
@@ -58,6 +59,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return repay(state, action);
     case 'PAY_LIFESTYLE':
       return payLifestyle(state, action);
+    case 'SELL_ASSET':
+      return sellAsset(state, action);
     default:
       return rejected('NOT_IMPLEMENTED');
   }

@@ -14,8 +14,8 @@ Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine ac
 | CHOOSE_DEAL_SIZE, BUY, PASS, BORROW | merged (#5) | before tonight |
 | REPAY | merged | `INVALID_LIABILITY` for a mortgage, an unknown id, or another player's loan |
 | PAY_LIFESTYLE | merged | `INVALID_METHOD` when the card does not offer that method; loan allowed in kids mode |
-| SELL_ASSET | next | |
-| ACCEPT_MARKET, DECLINE_MARKET | todo | |
+| SELL_ASSET | merged | stock lots only, at redraw; `INVALID_ASSET` for any other asset |
+| ACCEPT_MARKET, DECLINE_MARKET | next | |
 | GIVE, SKIP_GIVE | todo | |
 | Setback resolution + bankruptcy | todo | decided tonight; lands as its own branch after the actions |
 | Stage 4.1 property suite | todo | |
@@ -59,6 +59,7 @@ The repo is a pnpm workspace with three packages:
 | `actions/borrow.ts` | Legal when `pending` is `none`, `buyOrPass`, or `payLifestyle` (spec, turn step 4), after a ROLL this turn, standard mode only (`NOT_ALLOWED_IN_KIDS_MODE`). Never changes `pending`. Amount must be a positive multiple of `BORROW_STEP` (`INVALID_AMOUNT`). Adds cash and one `bank` liability with `monthlyPayment = pct(amount, 10)`, id `${playerId}-bank-${log.length}`. Events: `cashChanged`, `borrowed`. |
 | `actions/repay.ts` | Legal only with `pending: none` after a ROLL this turn (spec, turn step 4). Pays the liability's `principal` from cash (`INSUFFICIENT_CASH`) and removes it. `INVALID_LIABILITY` for a mortgage, an id the player does not hold, or another player's loan. Starting loans, bank loans, and lifestyle loans are all repayable. Allowed in kids mode. Events: `cashChanged`, `repaid`. |
 | `actions/payLifestyle.ts` | Valid only when `pending` is `payLifestyle`. `cash` pays `cashCost` (`INSUFFICIENT_CASH`); `loan` adds a `lifestyle` liability (`principal: loanPrincipal`, `monthlyPayment: monthlyCost`, `sourceCardId`), id `${playerId}-lifestyle-${log.length}`. `INVALID_METHOD` when the card lacks that option. Card to the lifestyle discard pile. Events: `cashChanged` + `paidLifestyle` (cash), `paidLifestyle` with `liabilityId` (loan). |
+| `actions/sellAsset.ts` | Valid only when `pending` is `buyOrPass` for a stock card (any other offer → `INVALID_FOR_PENDING`). `assetId` must be the current player's lot of that stock (`INVALID_ASSET`); `shares` defaults to the whole lot and may not exceed it (`INVALID_SHARES`). Proceeds `shares × pending.sharePrice`. A partial sale keeps the lot with `purchasePrice`/`downPaid` scaled down (floored) and `monthlyCashFlow = floor(remaining × dividendPerShare)`. Card to the discard pile. Events: `cashChanged`, `sold`. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
 | `createGame.ts` | Initial state from `{ id, mode, seed, players }`. Starting liabilities get `monthlyPayment = pct(principal, LIABILITY_PAYMENT_PERCENT[kind])`. Shuffles every deck from the seed. Standard mode drops `requiresKidsMode` cards; kids mode drops stock cards. |
@@ -95,7 +96,7 @@ Schema decisions worth knowing:
 - `Liability` has an `id` so `REPAY` can name one loan among several of the same kind. A `mortgage` liability must carry `assetId` and `monthlyPayment: 0`. A `lifestyle` liability must carry `sourceCardId`.
 - `Asset` has its own `id`. One asset per BUY, so a stock bought twice is two lots. `SELL_ASSET` takes `assetId` plus optional `shares`; `ACCEPT_MARKET` takes optional `assetId`.
 - `game` stores both `rngSeed` (never changes) and `rngState` (advanced on every draw).
-- `LogEntry` is `{ turnNumber, action, events[] }`. Event kinds: `rolled`, `moved`, `payday`, `drewCard`, `sharePriceRolled`, `passed`, `borrowed`, `repaid`, `paidLifestyle`, `bought`, `cashChanged`. Add kinds as actions need them.
+- `LogEntry` is `{ turnNumber, action, events[] }`. Event kinds: `rolled`, `moved`, `payday`, `drewCard`, `sharePriceRolled`, `passed`, `borrowed`, `repaid`, `paidLifestyle`, `bought`, `sold`, `cashChanged`. Add kinds as actions need them.
 - `board.json` order is a first pass: Payday at 0 and 12, Setback at 11. The spec gives only the mix, not the order.
 - Small deals cap `downPayment` at $5,000. A fixture test enforces it.
 

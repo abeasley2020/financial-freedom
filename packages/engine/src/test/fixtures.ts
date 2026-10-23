@@ -85,11 +85,11 @@ export function offered(state: GameState, cardId: string, sharePrice?: number): 
   const onTop = onTopOfDeck(state, deck, cardId);
   const playerId = state.game.currentPlayerId;
   const rolled = mustApply(aboutToRoll(onTop, 0, 1), { type: 'ROLL', playerId });
-  const chosen = mustApply(rolled, {
-    type: 'CHOOSE_DEAL_SIZE',
-    playerId,
-    size: deck === 'smallDeals' ? 'small' : 'big',
-  });
+  // Kids mode draws the small deal on landing, with no size to choose.
+  const chosen =
+    rolled.pending.kind === 'buyOrPass'
+      ? rolled
+      : mustApply(rolled, { type: 'CHOOSE_DEAL_SIZE', playerId, size: deck === 'smallDeals' ? 'small' : 'big' });
   if (sharePrice === undefined || chosen.pending.kind !== 'buyOrPass') return chosen;
   return { ...chosen, pending: { kind: 'buyOrPass', cardId, sharePrice } };
 }
