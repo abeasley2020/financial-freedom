@@ -76,6 +76,25 @@ export function acceptMarket(state: GameState, action: Extract<Action, { type: '
         }
         break;
       }
+      case 'changeMarketValue': {
+        // Spec v2, Market cards: pct(marketValue, percent) added to each qualifying growth asset, never below $0.
+        const moves = new Map(
+          targets.flatMap((a) => {
+            if (!isGrowthAsset(a)) return [];
+            const delta = Math.max(pct(a.marketValue, effect.percent), -a.marketValue);
+            return [[a.id, delta] as const];
+          }),
+        );
+        next = updateAssets(next, playerId, (a) => {
+          const delta = moves.get(a.id);
+          return delta !== undefined && isGrowthAsset(a) ? { ...a, marketValue: a.marketValue + delta } : a;
+        });
+        for (const a of playerById(next, playerId).assets) {
+          const delta = moves.get(a.id);
+          if (delta !== undefined && isGrowthAsset(a)) events.push({ kind: 'valueChanged', assetId: a.id, delta, marketValue: a.marketValue });
+        }
+        break;
+      }
       case 'splitShares': {
         const ids = new Set(targets.filter((a) => a.type === 'stock').map((a) => a.id));
         next = updateAssets(next, playerId, (a) => (ids.has(a.id) && a.type === 'stock' ? { ...a, shares: a.shares * effect.ratio } : a));

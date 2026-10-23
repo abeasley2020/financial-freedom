@@ -60,14 +60,16 @@
       "P1",
       "P8"
     ],
-    "kidsText": "A tiny piece of many companies. It grows slowly and pays a little every month.",
-    "adultText": "A slice of every big company at once. Slow, boring, and it pays a small dividend every month.",
+    "kidsText": "A tiny piece of many companies. It grows a little every month.",
+    "adultText": "A slice of every big company at once. Slow and boring, it grows a little every month and pays out a sliver of its value.",
     "kidsOk": true,
-    "type": "fund",
-    "price": 2000,
-    "downPayment": 2000,
+    "type": "index",
+    "price": 500,
+    "downPayment": 500,
     "mortgage": 0,
-    "monthlyCashFlow": 10
+    "monthlyCashFlow": 0,
+    "growthPercent": 4,
+    "payoutPercent": 1
   },
   {
     "id": "small-005",
@@ -130,5 +132,24 @@
       "max": 90
     },
     "dividendPerShare": 1
+  },
+  {
+    "id": "small-008",
+    "deck": "smallDeals",
+    "title": "High-Yield Savings Account",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "A safe place for your money. It grows a tiny bit every month.",
+    "adultText": "Online bank, no fees, insured. It will never make you rich, but it grows every month and it is there when the furnace dies.",
+    "kidsOk": true,
+    "type": "savings",
+    "price": 100,
+    "downPayment": 100,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 1,
+    "payoutPercent": 0
   }
 ]

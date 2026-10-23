@@ -17,8 +17,8 @@ const p1 = (state: GameState) => playerById(state, 'p1');
 
 const bigLoan: Liability = { id: 'l-boat', kind: 'lifestyle', principal: 30_000, monthlyPayment: 1_500, sourceCardId: 'life-001' };
 const lawn: Asset = { id: 'lawn', cardId: 'small-003', type: 'business', purchasePrice: 3_000, downPaid: 3_000, monthlyCashFlow: 150 };
-/** A growth asset from a windfall: 2,000 at 1% payout = 20/mo, sold in bankruptcy at half its marketValue. */
-const fund: Asset = { id: 'fund', cardId: 'life-005', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 4, payoutPercent: 1 };
+/** A growth asset from a windfall: 2,000 at 1% payout = 20/mo, sold in bankruptcy at half its marketValue. growthPercent is pinned to 0 so the Payday that opens the turn does not move the numbers. */
+const fund: Asset = { id: 'fund', cardId: 'life-005', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 0, payoutPercent: 1 };
 const vending: Asset = { id: 'vend', cardId: 'small-006', type: 'business', purchasePrice: 4_500, downPaid: 4_500, monthlyCashFlow: 180 };
 const duplex: Asset = { id: 'dup', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 };
 const duplexMortgage: Liability = { id: 'dup-mortgage', kind: 'mortgage', principal: 45_000, monthlyPayment: 0, assetId: 'dup' };

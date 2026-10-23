@@ -2,7 +2,7 @@
 // choice numbers so fast-check can shrink a failing game to a short one.
 // Production code never imports from src/test/.
 
-import { CARDS_BY_ID, PROFESSIONS, type Action, type GameMode, type GameState } from '@ff/shared';
+import { CARDS_BY_ID, isGrowthAsset, isGrowthAssetType, PROFESSIONS, type Action, type GameMode, type GameState } from '@ff/shared';
 
 import { createGame } from '../createGame';
 import { reduce, type ReduceResult } from '../reduce';
@@ -50,7 +50,9 @@ export function candidateActions(state: GameState, choice: number): readonly Act
         Math.floor(choice / 7),
       );
       const repay: Action[] = loan === undefined ? [] : [{ type: 'REPAY', playerId, liabilityId: loan.id }];
-      return [{ type: 'END_TURN', playerId }, { type: 'END_TURN', playerId }, borrow, ...repay, { type: 'REPAY', playerId, liabilityId: 'nope' }];
+      const growth = pick(player.assets.filter(isGrowthAsset), Math.floor(choice / 13));
+      const sellGrowth: Action[] = growth === undefined ? [] : [{ type: 'SELL_ASSET', playerId, assetId: growth.id }];
+      return [{ type: 'END_TURN', playerId }, { type: 'END_TURN', playerId }, borrow, ...repay, ...sellGrowth, { type: 'REPAY', playerId, liabilityId: 'nope' }];
     }
     case 'chooseDealSize':
       return [
@@ -70,6 +72,11 @@ export function candidateActions(state: GameState, choice: number): readonly Act
             actions.push({ type: 'SELL_ASSET', playerId, assetId: lot.id });
             actions.push({ type: 'SELL_ASSET', playerId, assetId: lot.id, shares: 1 + (Math.floor(choice / 13) % (lot.shares + 1)) });
           }
+        } else if (isGrowthAssetType(card.type)) {
+          const steps = Math.floor(choice / 3) % 20;
+          actions.push({ type: 'BUY', playerId, amount: card.price + 100 * steps });
+          actions.push({ type: 'BUY', playerId, amount: card.price });
+          actions.push({ type: 'BUY', playerId, amount: card.price - 100 });
         } else {
           actions.push({ type: 'BUY', playerId }, { type: 'BUY', playerId });
         }

@@ -5,7 +5,7 @@ import { reduce } from '../reduce';
 import { passiveIncome, playerById } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { offered, rolledClean, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
 // Fixtures used here:
 //   small-005 Birchwood Robotics: stock, 500 shares, price range 5-40, no dividend
@@ -211,7 +211,6 @@ describe('SELL_ASSET: rejections', () => {
   });
 
   const pendings: Pending[] = [
-    { kind: 'none' },
     { kind: 'chooseDealSize' },
     { kind: 'marketChoice', cardId: 'market-001' },
     { kind: 'lifeChoice', cardId: 'life-001' },
@@ -220,6 +219,11 @@ describe('SELL_ASSET: rejections', () => {
   it.each(pendings)('SELL_ASSET: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {
     const base = withPlayer(twoPlayerGame(), 'p1', { assets: [lot('lot-a', 'small-005', 10, 20)] });
     expect(reject({ ...base, pending }, sell('lot-a'))).toBe('INVALID_FOR_PENDING');
+  });
+
+  it('SELL_ASSET: a stock lot cannot be sold with nothing pending; it waits for its card to be drawn', () => {
+    const holder = withPlayer(twoPlayerGame(), 'p1', { assets: [lot('lot-a', 'small-005', 10, 20)] });
+    expect(reject(rolledClean(holder, 'p1'), sell('lot-a'))).toBe('INVALID_FOR_PENDING');
   });
 
   it.each(['lobby', 'finished'] as const)('SELL_ASSET: rejected with GAME_NOT_PLAYING when phase is %s', (phase) => {
@@ -238,5 +242,66 @@ describe('SELL_ASSET: rejections', () => {
     const logBefore = before.game.log.length;
     expect(reduce(before, sell('lot-a', 11)).ok).toBe(false);
     expect(before.game.log).toHaveLength(logBefore);
+  });
+});
+
+describe('SELL_ASSET: a growth asset sells any time nothing is pending (spec v2, Growth assets; decided Q9)', () => {
+  // growthPercent is pinned to 0 so the Payday inside rolledClean does not move the value before the sale.
+  const index: Asset = { id: 'idx', cardId: 'small-004', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_550, growthPercent: 0, payoutPercent: 1 };
+  const holding = (state = twoPlayerGame()) => rolledClean(withPlayer(state, 'p1', { assets: [index], cash: 1_000 }), 'p1');
+
+  it('SELL_ASSET: pays the marketValue, removes the asset, and leaves the deck alone', () => {
+    const before = holding();
+    expect(before.pending).toEqual({ kind: 'none' });
+    const next = apply(before, sell('idx'));
+    expect(p1(next).cash).toBe(p1(before).cash + 2_550);
+    expect(p1(next).assets).toEqual([]);
+    expect(next.decks).toEqual(before.decks);
+    expect(passiveIncome(p1(next))).toBe(0);
+  });
+
+  it('SELL_ASSET: logs cashChanged and sold with the marketValue as proceeds', () => {
+    const next = apply(holding(), sell('idx'));
+    expect(next.game.log.at(-1)?.events).toEqual([
+      { kind: 'cashChanged', delta: 2_550, reason: 'sell' },
+      { kind: 'sold', assetId: 'idx', cardId: 'small-004', proceeds: 2_550, principles: ['P1', 'P8'] },
+    ]);
+  });
+
+  it('SELL_ASSET: a growth asset from a windfall sells the same way', () => {
+    const fromWindfall: Asset = { ...index, id: 'w', cardId: 'life-005' };
+    const before = rolledClean(withPlayer(twoPlayerGame(), 'p1', { assets: [fromWindfall] }), 'p1');
+    const next = apply(before, sell('w'));
+    expect(p1(next).cash).toBe(p1(before).cash + 2_550);
+    expect(next.decks).toEqual(before.decks);
+  });
+
+  it('SELL_ASSET: works in kids mode', () => {
+    const next = apply(holding(twoPlayerGame({ mode: 'kids' })), sell('idx'));
+    expect(p1(next).assets).toEqual([]);
+  });
+
+  it('SELL_ASSET: rejected with MUST_ROLL_FIRST before the roll (optional actions come in turn step 4)', () => {
+    expect(reject(withPlayer(twoPlayerGame(), 'p1', { assets: [index] }), sell('idx'))).toBe('MUST_ROLL_FIRST');
+  });
+
+  it('SELL_ASSET: rejected with INVALID_SHARES when shares are named for a growth asset', () => {
+    expect(reject(holding(), sell('idx', 5))).toBe('INVALID_SHARES');
+  });
+
+  it('SELL_ASSET: rejected with INVALID_ASSET for an unknown id or another player\'s asset', () => {
+    expect(reject(holding(), sell('nope'))).toBe('INVALID_ASSET');
+    const other = withPlayer(twoPlayerGame(), 'p2', { assets: [{ ...index, id: 'p2-idx' }] });
+    expect(reject(holding(other), sell('p2-idx'))).toBe('INVALID_ASSET');
+  });
+
+  it('SELL_ASSET: a rental cannot be sold this way (only Market cards sell those)', () => {
+    const duplex: Asset = { id: 'dup', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 };
+    const before = rolledClean(withPlayer(twoPlayerGame(), 'p1', { assets: [duplex] }), 'p1');
+    expect(reject(before, sell('dup'))).toBe('INVALID_FOR_PENDING');
+  });
+
+  it('SELL_ASSET: the turn can end afterwards', () => {
+    expect(reduce(deepFreeze(apply(holding(), sell('idx'))), { type: 'END_TURN', playerId: 'p1' }).ok).toBe(true);
   });
 });

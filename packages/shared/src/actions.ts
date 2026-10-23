@@ -27,8 +27,10 @@ const acting = { playerId: PlayerIdSchema };
 export const ActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('ROLL'), ...acting }).strict(),
   z.object({ type: z.literal('CHOOSE_DEAL_SIZE'), ...acting, size: z.enum(['small', 'big']) }).strict(),
-  /** `shares` applies to stock cards only; other deals are all-or-nothing. */
-  z.object({ type: z.literal('BUY'), ...acting, shares: z.number().int().positive().optional() }).strict(),
+  /** `shares` applies to stock cards only; `amount` (in $100 steps, at least the card minimum) to growth assets only; other deals are all-or-nothing. */
+  z
+    .object({ type: z.literal('BUY'), ...acting, shares: z.number().int().positive().optional(), amount: z.number().int().optional() })
+    .strict(),
   z.object({ type: z.literal('PASS'), ...acting }).strict(),
   /** Names one lot by its asset id. `shares` applies to stock lots only; other assets sell whole. */
   z

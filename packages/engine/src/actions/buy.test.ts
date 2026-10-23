@@ -13,11 +13,14 @@ import { offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 //   big-001   Laundromat: business, price 120,000, down 30,000, mortgage 90,000, +1,400/mo
 //   small-005 Birchwood Robotics: stock, 500 shares, price range 5-40, no dividend
 //   small-007 Lakeshore Utilities: stock, 200 shares, price range 50-90, dividend 1/share
+//   small-004 Total Market Index Fund: index, minimum 500, grows 4%/mo, pays 1%/mo
+//   small-008 High-Yield Savings: savings, minimum 100, grows 1%/mo, pays 0
 // Ada the Teacher starts with 400 cash and 700/mo cash flow. Every ROLL credits
 // that Payday before the die, so `offered(withCash(x), ...)` leaves her holding x + 700.
 
 const BUY: Action = { type: 'BUY', playerId: 'p1' };
 const buyShares = (shares: number): Action => ({ type: 'BUY', playerId: 'p1', shares });
+const invest = (amount: number): Action => ({ type: 'BUY', playerId: 'p1', amount });
 const p1 = (state: GameState) => playerById(state, 'p1');
 const withCash = (cash: number) => withPlayer(twoPlayerGame(), 'p1', { cash });
 
@@ -237,5 +240,88 @@ describe('BUY: rejections', () => {
     const logBefore = before.game.log.length;
     expect(reduce(before, BUY).ok).toBe(false);
     expect(before.game.log).toHaveLength(logBefore);
+  });
+});
+
+describe('BUY: a growth asset (spec v2, Growth assets)', () => {
+  it('BUY: invests a chosen amount in $100 steps and creates a growth asset at that marketValue', () => {
+    const before = offered(withCash(3_000), 'small-004');
+    expect(before.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-004' });
+    const next = apply(before, invest(2_000));
+    expect(p1(next).cash).toBe(3_700 - 2_000);
+    expect(p1(next).assets).toEqual([
+      {
+        id: expect.any(String) as string,
+        cardId: 'small-004',
+        type: 'index',
+        purchasePrice: 2_000,
+        downPaid: 2_000,
+        marketValue: 2_000,
+        growthPercent: 4,
+        payoutPercent: 1,
+      },
+    ]);
+    expect(p1(next).liabilities).toEqual(p1(before).liabilities);
+    expect(passiveIncome(p1(next))).toBe(20);
+    expect(next.pending).toEqual({ kind: 'none' });
+  });
+
+  it('BUY: returns the growth card to the discard pile so others can invest too', () => {
+    const before = offered(withCash(3_000), 'small-004');
+    const next = apply(before, invest(500));
+    expect(next.decks.smallDeals.drawPile).toEqual(before.decks.smallDeals.drawPile);
+    expect(next.decks.smallDeals.discardPile).toEqual([...before.decks.smallDeals.discardPile, 'small-004']);
+  });
+
+  it('BUY: accepts the card minimum and the whole cash balance', () => {
+    expect(p1(apply(offered(withCash(3_000), 'small-004'), invest(500))).assets[0]).toMatchObject({ marketValue: 500 });
+    expect(p1(apply(offered(withCash(1_300), 'small-004'), invest(2_000))).cash).toBe(0);
+  });
+
+  it('BUY: rejected with INSUFFICIENT_CASH when the amount exceeds cash', () => {
+    const before = offered(withCash(1_200), 'small-004');
+    expect(p1(before).cash).toBe(1_900);
+    expect(reject(before, invest(2_000))).toBe('INSUFFICIENT_CASH');
+    expect(before.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-004' });
+  });
+
+  it.each([400, 550, 0, -100])('BUY: rejected with INVALID_AMOUNT for %d (below the minimum or not a $100 step)', (amount) => {
+    expect(reject(offered(withCash(3_000), 'small-004'), invest(amount))).toBe('INVALID_AMOUNT');
+  });
+
+  it('BUY: rejected with INVALID_AMOUNT when a growth purchase names no amount', () => {
+    expect(reject(offered(withCash(3_000), 'small-004'), BUY)).toBe('INVALID_AMOUNT');
+  });
+
+  it('BUY: rejected with INVALID_SHARES when shares are named for a growth asset', () => {
+    expect(reject(offered(withCash(3_000), 'small-004'), buyShares(10))).toBe('INVALID_SHARES');
+  });
+
+  it('BUY: rejected with INVALID_AMOUNT when an amount is named for a non-growth deal', () => {
+    expect(reject(offered(withCash(10_000), 'small-001'), invest(500))).toBe('INVALID_AMOUNT');
+  });
+
+  it('BUY: two investments in the same fund are separate assets', () => {
+    const first = apply(offered(withCash(5_000), 'small-004'), invest(1_000));
+    const nextTurn = withGame(apply(first, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
+    const second = apply(offered(nextTurn, 'small-004'), invest(500));
+    expect(p1(second).assets).toHaveLength(2);
+    expect(p1(second).assets[0]?.id).not.toBe(p1(second).assets[1]?.id);
+  });
+
+  it('BUY: kids can open a savings account', () => {
+    const kids = offered(withPlayer(twoPlayerGame({ mode: 'kids' }), 'p1', { cash: 300 }), 'small-008');
+    const next = apply(kids, invest(1_000));
+    expect(p1(next).assets[0]).toMatchObject({ type: 'savings', marketValue: 1_000, growthPercent: 1, payoutPercent: 0 });
+    expect(passiveIncome(p1(next))).toBe(0);
+  });
+
+  it('BUY: logs cashChanged and bought with the amount as the cost', () => {
+    const next = apply(offered(withCash(3_000), 'small-004'), invest(2_000));
+    const assetId = p1(next).assets[0]?.id;
+    expect(next.game.log.at(-1)?.events).toEqual([
+      { kind: 'cashChanged', delta: -2_000, reason: 'buy' },
+      { kind: 'bought', assetId, cardId: 'small-004', cost: 2_000, principles: ['P1', 'P8'] },
+    ]);
   });
 });

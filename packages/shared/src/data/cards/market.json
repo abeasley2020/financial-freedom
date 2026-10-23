@@ -81,5 +81,47 @@
     "appliesTo": [
       "land"
     ]
+  },
+  {
+    "id": "market-005",
+    "deck": "market",
+    "title": "Market Dip",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "The stock market drops. Your index funds are worth 20 percent less today.",
+    "adultText": "A rough quarter. Every index fund you hold loses 20 percent of its value. The ones who stay in usually get it back.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeMarketValue",
+        "percent": -20
+      }
+    ],
+    "appliesTo": [
+      "index"
+    ]
+  },
+  {
+    "id": "market-006",
+    "deck": "market",
+    "title": "Bull Run",
+    "principles": [
+      "P8"
+    ],
+    "kidsText": "The market climbs. Your index funds and CDs are worth 10 percent more.",
+    "adultText": "A strong year for everyone who stayed invested. Index funds and CDs gain 10 percent of their value.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeMarketValue",
+        "percent": 10
+      }
+    ],
+    "appliesTo": [
+      "index",
+      "cd"
+    ]
   }
 ]

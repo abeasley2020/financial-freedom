@@ -3,7 +3,7 @@
 // actions to reduce() like a UI would. Each bot returns its moves in order
 // of preference; the runner applies the first one the engine accepts.
 
-import { CARDS_BY_ID, type Action, type GameState, type MarketCard } from '@ff/shared';
+import { CARDS_BY_ID, INVEST_STEP, isGrowthAssetType, type Action, type GameState, type MarketCard } from '@ff/shared';
 
 import { pct } from '../src/money';
 import { assetCashFlow, currentPlayer, hasRolledThisTurn, monthlyCashFlow, optionCost } from '../src/selectors';
@@ -74,6 +74,12 @@ export function decide(state: GameState, strategy: Strategy): readonly Action[] 
         const affordable = Math.floor((player.cash - profile.cushion) / price);
         const shares = Math.min(affordable, card.sharesAvailable ?? 0);
         return shares > 0 ? [{ type: 'BUY', playerId, shares }, pass] : [pass];
+      }
+
+      if (isGrowthAssetType(card.type)) {
+        // v2 growth assets: invest what is left above the cushion, in $100 steps, if that meets the card minimum.
+        const spare = Math.floor((player.cash - profile.cushion) / INVEST_STEP) * INVEST_STEP;
+        return spare >= card.price ? [{ type: 'BUY', playerId, amount: spare }, pass] : [pass];
       }
 
       if (card.monthlyCashFlow <= 0) return [pass];

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CardSchema, DealCardSchema, MarketCardSchema, SetbackCardSchema } from './cards';
+import { ASSET_TYPES, CardSchema, DealCardSchema, GROWTH_ASSET_TYPES, MarketCardSchema, MarketEffectSchema, SetbackCardSchema } from './cards';
 
 /** Copy of `obj` without the named keys. */
 function without<T extends object, K extends keyof T>(obj: T, ...keys: K[]): Omit<T, K> {
@@ -208,5 +208,51 @@ describe('CardSchema (union)', () => {
 
   it('rejects an unknown deck', () => {
     expect(CardSchema.safeParse({ ...duplex, deck: 'bonus' }).success).toBe(false);
+  });
+});
+
+describe('growth deal cards (spec v2, Growth assets)', () => {
+  const index = {
+    ...duplex,
+    id: 'small-004',
+    title: 'Total Market Index Fund',
+    principles: ['P1', 'P8'],
+    type: 'index',
+    price: 500,
+    downPayment: 500,
+    mortgage: 0,
+    monthlyCashFlow: 0,
+    growthPercent: 4,
+    payoutPercent: 1,
+  };
+
+  it('accepts an index fund whose price is the minimum investment, with growth and payout percents', () => {
+    const result = DealCardSchema.safeParse(index);
+    expect(result.success, result.success ? '' : JSON.stringify(result.error.issues)).toBe(true);
+  });
+
+  it('the three growth types replace the v1 fund type', () => {
+    expect(GROWTH_ASSET_TYPES).toEqual(['savings', 'cd', 'index']);
+    expect(ASSET_TYPES).not.toContain('fund');
+    expect(DealCardSchema.safeParse({ ...duplex, type: 'fund' }).success).toBe(false);
+  });
+
+  it('requires growthPercent and payoutPercent on a growth card and forbids them elsewhere', () => {
+    expect(DealCardSchema.safeParse(without(index, 'growthPercent')).success).toBe(false);
+    expect(DealCardSchema.safeParse(without(index, 'payoutPercent')).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...duplex, growthPercent: 4 }).success).toBe(false);
+  });
+
+  it('a growth card is cash only, carries no cash flow of its own, and its minimum is a $100 step', () => {
+    expect(DealCardSchema.safeParse({ ...index, price: 1_000, downPayment: 500, mortgage: 500 }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...index, monthlyCashFlow: 10 }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...index, price: 550, downPayment: 550 }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...index, price: 0, downPayment: 0 }).success).toBe(false);
+  });
+
+  it('a Market card can move marketValue with a signed percent', () => {
+    expect(MarketEffectSchema.safeParse({ kind: 'changeMarketValue', percent: -20 }).success).toBe(true);
+    expect(MarketEffectSchema.safeParse({ kind: 'changeMarketValue', percent: 10 }).success).toBe(true);
+    expect(MarketEffectSchema.safeParse({ kind: 'changeMarketValue', percent: 2.5 }).success).toBe(false);
   });
 });
