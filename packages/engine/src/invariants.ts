@@ -43,14 +43,20 @@ export function checkInvariants(state: GameState): readonly string[] {
       if (liability.kind === 'subscription' && liability.principal !== 0) {
         violations.push(`subscription "${liability.id}" on player "${player.id}" has principal ${String(liability.principal)}, must be 0`);
       }
+      if (liability.sourceCardId !== undefined && CARDS_BY_ID.get(liability.sourceCardId)?.deck !== 'lifeChoices') {
+        violations.push(`liability "${liability.id}" on player "${player.id}" has sourceCardId "${liability.sourceCardId}", which is not a Life Choices card`);
+      }
     }
     for (const asset of player.assets) {
       if (assetIds.has(asset.id)) violations.push(`duplicate asset id "${asset.id}"`);
       assetIds.add(asset.id);
       const card = CARDS_BY_ID.get(asset.cardId);
       if (isGrowthAsset(asset)) {
-        // A growth asset comes from a deal card or a Life Choices windfall; its card never leaves its deck.
-        if (card === undefined) violations.push(`asset "${asset.id}" references unknown card "${asset.cardId}"`);
+        // A growth asset comes from a growth deal card of the same type or from a Life Choices option that invests in that type; its card never leaves its deck.
+        const fromDeal = (card?.deck === 'smallDeals' || card?.deck === 'bigDeals') && card.type === asset.type;
+        const fromOption =
+          card?.deck === 'lifeChoices' && card.options.some((o) => o.effects.some((e) => e.kind === 'investGrowth' && e.assetType === asset.type));
+        if (!fromDeal && !fromOption) violations.push(`growth asset "${asset.id}" of type ${asset.type} cannot come from card "${asset.cardId}"`);
         if (asset.marketValue < 0) violations.push(`growth asset "${asset.id}" has marketValue ${String(asset.marketValue)}`);
       } else if (card?.deck !== 'smallDeals' && card?.deck !== 'bigDeals') {
         violations.push(`asset "${asset.id}" references non-deal card "${asset.cardId}"`);
