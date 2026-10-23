@@ -203,6 +203,9 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       shares: z.number().int().positive(),
     })
     .strict(),
+  /** `favorTokens` is the player's total after the gift. */
+  z.object({ kind: z.literal('gave'), amount: MoneySchema.positive(), favorTokens: z.number().int().positive() }).strict(),
+  z.object({ kind: z.literal('skippedGive') }).strict(),
   z.object({ kind: z.literal('cashChanged'), delta: SignedMoneySchema, reason: z.string().min(1) }).strict(),
 ]);
 export type LogEvent = DeepReadonly<z.infer<typeof LogEventSchema>>;

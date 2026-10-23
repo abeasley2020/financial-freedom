@@ -6,6 +6,7 @@ import { buy } from './actions/buy';
 import { chooseDealSize } from './actions/chooseDealSize';
 import { declineMarket } from './actions/declineMarket';
 import { endTurn } from './actions/endTurn';
+import { give } from './actions/give';
 import { pass } from './actions/pass';
 import { payLifestyle } from './actions/payLifestyle';
 import { repay } from './actions/repay';
@@ -67,6 +68,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return acceptMarket(state, action);
     case 'DECLINE_MARKET':
       return declineMarket(state);
+    case 'GIVE':
+      return give(state);
     default:
       return rejected('NOT_IMPLEMENTED');
   }
