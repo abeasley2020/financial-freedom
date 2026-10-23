@@ -4,15 +4,38 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 
 ## Current state (2026-10-23)
 
-**Shared types, schemas, and fixtures done. No game logic yet.** Spec "First Claude Code session" steps 1, 2, and 3 are done.
+**ROLL and END_TURN work, with Payday crediting.** Spec "First Claude Code session" steps 1 through 4 are done.
 
 The repo is a pnpm workspace with three packages:
 
 | Package | Purpose | Contents today |
 | --- | --- | --- |
 | `@ff/shared` | types, Zod schemas, card and profession JSON, `formatMoney` | schemas, types, and fixtures listed below; `formatMoney` not yet written |
-| `@ff/engine` | pure reducer, selectors, rng, invariants, sim | empty `index.ts`, `src/test/deepFreeze.ts` helper with tests |
+| `@ff/engine` | pure reducer, selectors, rng, invariants, sim | `reduce`, `createGame`, `ROLL`, `END_TURN`, selectors, `rng`, `pct`, `decks` (draw + reshuffle); test helpers in `src/test/` |
 | `@ff/web` | React 18 + Vite, routes `/table` and `/player` | placeholder `App`, one render test, `@` alias |
+
+`@ff/engine` today (all in `packages/engine/src/`):
+
+| File | Contents |
+| --- | --- |
+| `reduce.ts` | `reduce(state, action)`. Guards phase and `NOT_YOUR_TURN`, dispatches to `actions/`, appends the log entry with the pre-action `turnNumber`. Unlisted actions return `NOT_IMPLEMENTED`. |
+| `actions/roll.ts` | Rolls, moves, credits one Payday per Payday space passed or landed on, resolves the space: Opportunity → `chooseDealSize` (kids mode draws a small deal → `buyOrPass`), Market → draw → `marketChoice`, Lifestyle → draw → `payLifestyle`, Giving → `giveOrSkip`, Payday → none, Setback → none (gap 1). |
+| `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
+| `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
+| `createGame.ts` | Initial state from `{ id, mode, seed, players }`. Starting liabilities get `monthlyPayment = pct(principal, LIABILITY_PAYMENT_PERCENT[kind])`. Shuffles every deck from the seed. Standard mode drops `requiresKidsMode` cards. |
+| `decks.ts` | `drawCard(state, deck)`: reshuffles the discard pile into the draw pile when the draw pile is empty; returns `cardId: undefined` when both are empty. |
+| `rng.ts`, `money.ts`, `errors.ts` | mulberry32 (`nextRandom`, `rollDie`, `shuffle`), `pct`, the `EngineError` union. |
+| `test/` | `deepFreeze`, `apply`/`reject` wrappers that freeze input, `fixtures.ts` (`twoPlayerGame`, `withGame`, `withPlayer`, `aboutToRoll` to pin position and die roll). |
+
+Engine decisions made in step 4 that Andre should confirm or overrule:
+
+- **Negative Payday below zero cash.** `ROLL` adds `monthlyCashFlow` to cash even when negative. No current action can make cash flow negative, so this cannot yet drive cash below zero, but once lifestyle loans exist it can. That is bankruptcy (gap 3). Decide before `PAY_LIFESTYLE`.
+- **Landing on Setback does nothing** until gap 1 is resolved. No card is drawn.
+- **Empty deck.** Landing on Market or Lifestyle with no cards in either pile sets `pending: none`.
+- **Kids mode** draws from `smallDeals` on Opportunity and skips `chooseDealSize`. Gap 4 still blocks the rest of kids mode.
+- **Rolling twice is rejected** with `ALREADY_ROLLED`; ending the turn before rolling is rejected with `MUST_ROLL_FIRST`. Both come from `hasRolledThisTurn`, which scans the log for the current turn.
+- **Escape ends the game** at `END_TURN` (phase `finished`, `currentPlayerId` stays on the winner). Phase 1 has no Freedom track (gap 5).
+- The fast-check action generator (CLAUDE.md Rule 3, step 5) does not exist yet. It lands with spec step 6.
 
 `@ff/shared` now holds (all in `packages/shared/src/`):
 
@@ -49,9 +72,9 @@ Spec gaps resolved on 2026-10-23 and written into `docs/spec.md`: liability mont
 
 ## Next step
 
-Spec step 4: implement `ROLL`, `END_TURN`, and Payday crediting in `@ff/engine`, test-first per CLAUDE.md Rule 3. That session also needs `rng.ts` (mulberry32), `pct()`, `selectors.ts` (`passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`), and an initial-state builder that applies `LIABILITY_PAYMENT_PERCENT` to each profession's starting liabilities.
+Spec step 5, first action: `CHOOSE_DEAL_SIZE` (valid only when `pending` is `chooseDealSize`; draws from `smallDeals` or `bigDeals` via `drawCard` into `pending: buyOrPass`). Then `BUY`, `PASS`, and so on in the CLAUDE.md order. Each one test-first with the same `apply`/`reject` helpers.
 
-Setback resolution (space 11) is blocked on CLAUDE.md spec gap 1; `ROLL` can land there and leave resolution for later.
+`BUY` for stocks needs the engine to roll a price inside `priceRange`; that is the first use of `nextRandom` outside dice and shuffles.
 
 ## Deferred from the scaffold
 
