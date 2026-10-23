@@ -93,6 +93,7 @@ describe('PendingSchema', () => {
       { kind: 'none' },
       { kind: 'chooseDealSize' },
       { kind: 'buyOrPass', cardId: 'small-001' },
+      { kind: 'buyOrPass', cardId: 'small-005', sharePrice: 17 },
       { kind: 'marketChoice', cardId: 'market-001' },
       { kind: 'payLifestyle', cardId: 'life-001' },
       { kind: 'giveOrSkip' },

@@ -20,6 +20,7 @@ The repo is a pnpm workspace with three packages:
 | --- | --- |
 | `reduce.ts` | `reduce(state, action)`. Guards phase and `NOT_YOUR_TURN`, dispatches to `actions/`, appends the log entry with the pre-action `turnNumber`. Unlisted actions return `NOT_IMPLEMENTED`. |
 | `actions/roll.ts` | Rolls, moves, credits one Payday per Payday space passed or landed on, resolves the space: Opportunity → `chooseDealSize` (kids mode draws a small deal → `buyOrPass`), Market → draw → `marketChoice`, Lifestyle → draw → `payLifestyle`, Giving → `giveOrSkip`, Payday → none, Setback → none (gap 1). |
+| `actions/chooseDealSize.ts` | Valid only when `pending` is `chooseDealSize`. Draws from `smallDeals` or `bigDeals` into `pending: buyOrPass`. A stock card gets `sharePrice` rolled inside its `priceRange` (inclusive) at draw time, advancing `rngState`, logged as `sharePriceRolled`. Empty deck → `pending: none`. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
 | `createGame.ts` | Initial state from `{ id, mode, seed, players }`. Starting liabilities get `monthlyPayment = pct(principal, LIABILITY_PAYMENT_PERCENT[kind])`. Shuffles every deck from the seed. Standard mode drops `requiresKidsMode` cards. |
@@ -35,6 +36,7 @@ Engine decisions made in step 4 that Andre should confirm or overrule:
 - **Kids mode** draws from `smallDeals` on Opportunity and skips `chooseDealSize`. Gap 4 still blocks the rest of kids mode.
 - **Rolling twice is rejected** with `ALREADY_ROLLED`; ending the turn before rolling is rejected with `MUST_ROLL_FIRST`. Both come from `hasRolledThisTurn`, which scans the log for the current turn.
 - **Escape ends the game** at `END_TURN` (phase `finished`, `currentPlayerId` stays on the winner). Phase 1 has no Freedom track (gap 5).
+- **Stock prices are rolled at draw time, not at BUY**, so the player sees the price before deciding. `pending.buyOrPass.sharePrice` holds it; `BUY` must use that, never re-roll. The kids-mode path in `ROLL` (Opportunity draws a small deal directly) does not roll a price yet; fix when kids mode is specified (gap 4), or exclude stocks from the kids deck.
 - The fast-check action generator (CLAUDE.md Rule 3, step 5) does not exist yet. It lands with spec step 6.
 
 `@ff/shared` now holds (all in `packages/shared/src/`):
@@ -72,9 +74,9 @@ Spec gaps resolved on 2026-10-23 and written into `docs/spec.md`: liability mont
 
 ## Next step
 
-Spec step 5, first action: `CHOOSE_DEAL_SIZE` (valid only when `pending` is `chooseDealSize`; draws from `smallDeals` or `bigDeals` via `drawCard` into `pending: buyOrPass`). Then `BUY`, `PASS`, and so on in the CLAUDE.md order. Each one test-first with the same `apply`/`reject` helpers.
+Spec step 5, next action: `BUY` (valid only when `pending` is `buyOrPass`). Pays `downPayment` from cash (reject `INSUFFICIENT_CASH`), adds a `mortgage` liability when `mortgage > 0`, adds the asset with `purchasePrice`, `downPaid`, `monthlyCashFlow`. For stocks, `action.shares` × `pending.sharePrice` is the cash cost and the asset stores `shares`; cap at `sharesAvailable`. The card leaves `pending` and is held as an asset, so deck counts still balance. Then `PASS` (card to the discard pile), `BORROW`, and so on in the CLAUDE.md order.
 
-`BUY` for stocks needs the engine to roll a price inside `priceRange`; that is the first use of `nextRandom` outside dice and shuffles.
+Before `BUY`: the spec does not say what `purchasePrice` and `monthlyCashFlow` mean for a stock (per share × shares?), or whether `mortgage` on a deal becomes one liability per asset. Ask Andre.
 
 ## Deferred from the scaffold
 

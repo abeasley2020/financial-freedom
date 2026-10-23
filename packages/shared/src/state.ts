@@ -104,7 +104,8 @@ export type Decks = DeepReadonly<z.infer<typeof DecksSchema>>;
 export const PendingSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('none') }).strict(),
   z.object({ kind: z.literal('chooseDealSize') }).strict(),
-  z.object({ kind: z.literal('buyOrPass'), cardId: CardIdSchema }).strict(),
+  /** `sharePrice` is set when the card is a stock: the price per share rolled inside the card's priceRange at draw time. */
+  z.object({ kind: z.literal('buyOrPass'), cardId: CardIdSchema, sharePrice: MoneySchema.optional() }).strict(),
   z.object({ kind: z.literal('marketChoice'), cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('payLifestyle'), cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('giveOrSkip') }).strict(),
@@ -118,6 +119,7 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('moved'), from: z.number().int(), to: z.number().int() }).strict(),
   z.object({ kind: z.literal('payday'), amount: SignedMoneySchema }).strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
+  z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
   z.object({ kind: z.literal('cashChanged'), delta: SignedMoneySchema, reason: z.string().min(1) }).strict(),
 ]);
 export type LogEvent = DeepReadonly<z.infer<typeof LogEventSchema>>;
