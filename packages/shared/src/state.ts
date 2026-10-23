@@ -185,6 +185,24 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       mortgagePaid: MoneySchema.optional(),
     })
     .strict(),
+  z
+    .object({
+      kind: z.literal('cashFlowChanged'),
+      assetId: AssetIdSchema,
+      delta: SignedMoneySchema,
+      /** The asset's monthlyCashFlow after the change. */
+      monthlyCashFlow: SignedMoneySchema,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('sharesSplit'),
+      assetId: AssetIdSchema,
+      ratio: z.number().int().min(2),
+      /** Shares in the lot after the split. */
+      shares: z.number().int().positive(),
+    })
+    .strict(),
   z.object({ kind: z.literal('cashChanged'), delta: SignedMoneySchema, reason: z.string().min(1) }).strict(),
 ]);
 export type LogEvent = DeepReadonly<z.infer<typeof LogEventSchema>>;

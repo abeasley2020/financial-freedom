@@ -1,5 +1,6 @@
 import type { Action, GameState, LogEntry, LogEvent } from '@ff/shared';
 
+import { acceptMarket } from './actions/acceptMarket';
 import { borrow } from './actions/borrow';
 import { buy } from './actions/buy';
 import { chooseDealSize } from './actions/chooseDealSize';
@@ -61,6 +62,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return payLifestyle(state, action);
     case 'SELL_ASSET':
       return sellAsset(state, action);
+    case 'ACCEPT_MARKET':
+      return acceptMarket(state, action);
     default:
       return rejected('NOT_IMPLEMENTED');
   }
