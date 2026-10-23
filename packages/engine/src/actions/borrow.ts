@@ -29,6 +29,8 @@ export function borrow(state: GameState, action: Extract<Action, { type: 'BORROW
     principal: amount,
     monthlyPayment: pct(amount, LIABILITY_PAYMENT_PERCENT.bank),
   };
+  // Spec, Decision log: what the cash was for. The debrief labels the loan by it.
+  const purpose = state.pending.kind === 'buyOrPass' ? 'asset' : state.pending.kind === 'lifeChoice' ? 'want' : 'none';
 
   return {
     ok: true,
@@ -40,7 +42,7 @@ export function borrow(state: GameState, action: Extract<Action, { type: 'BORROW
     },
     events: [
       { kind: 'cashChanged', delta: amount, reason: 'borrow' },
-      { kind: 'borrowed', liabilityId: loan.id, amount, monthlyPayment: loan.monthlyPayment, principles: DECISION_PRINCIPLES.bankLoan },
+      { kind: 'borrowed', liabilityId: loan.id, amount, monthlyPayment: loan.monthlyPayment, principles: DECISION_PRINCIPLES.bankLoan, purpose },
     ],
   };
 }

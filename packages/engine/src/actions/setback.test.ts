@@ -159,7 +159,7 @@ describe('ROLL: Setback log', () => {
     expect(next.game.log.at(-1)?.events.slice(4)).toEqual([
       { kind: 'drewCard', deck: 'setback', cardId: 'setback-001' },
       { kind: 'cashChanged', delta: 3_000, reason: 'borrow' },
-      { kind: 'borrowed', liabilityId: loanId, amount: 3_000, monthlyPayment: 300, principles: ['P1'] },
+      { kind: 'borrowed', liabilityId: loanId, amount: 3_000, monthlyPayment: 300, principles: ['P1'], purpose: 'setback', cardId: 'setback-001' },
       { kind: 'cashChanged', delta: -3_500, reason: 'setback' },
       { kind: 'setback', cardId: 'setback-001', cost: 3_500, autoBorrowed: 3_000, skipsNextTurn: true },
     ]);

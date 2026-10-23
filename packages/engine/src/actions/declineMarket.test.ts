@@ -88,12 +88,12 @@ describe('DECLINE_MARKET: mandatory effects', () => {
 });
 
 describe('DECLINE_MARKET: log and determinism', () => {
-  it('DECLINE_MARKET: appends a log entry with a passed event', () => {
+  it('DECLINE_MARKET: appends a log entry with a declinedMarket event (passed is for deals only)', () => {
     const next = apply(facing('market-001', [duplex], [duplexMortgage]), DECLINE);
     expect(next.game.log.at(-1)).toEqual({
       turnNumber: 0,
       action: DECLINE,
-      events: [{ kind: 'passed', cardId: 'market-001', principles: ['P2', 'P3'] }],
+      events: [{ kind: 'declinedMarket', cardId: 'market-001', principles: ['P2', 'P3'] }],
     });
   });
 

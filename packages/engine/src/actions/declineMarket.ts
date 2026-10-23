@@ -19,6 +19,6 @@ export function declineMarket(state: GameState): ActionResult {
   return {
     ok: true,
     state: discardMarketCard(state, card.id),
-    events: [{ kind: 'passed', cardId: card.id, principles: card.principles }],
+    events: [{ kind: 'declinedMarket', cardId: card.id, principles: card.principles }],
   };
 }

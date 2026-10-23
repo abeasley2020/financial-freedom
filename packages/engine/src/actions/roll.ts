@@ -138,6 +138,8 @@ function resolveSetback(state: GameState): Resolution {
       amount: autoBorrowed,
       monthlyPayment: loan.monthlyPayment,
       principles: DECISION_PRINCIPLES.setbackLoan,
+      purpose: 'setback',
+      cardId: card.id,
     });
   }
   cash -= cost;

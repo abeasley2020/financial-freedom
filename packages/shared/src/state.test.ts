@@ -239,3 +239,25 @@ describe('v2 round events (spec, Winning and game length)', () => {
     expect(LogEventSchema.safeParse(Object.fromEntries(Object.entries(snapshot).filter(([k]) => k !== 'roundNumber'))).success).toBe(false);
   });
 });
+
+describe('decision log facts (spec v2, Decision log)', () => {
+  it('a passed deal records its cash flow, down payment, and whether it was affordable', () => {
+    const passed = { kind: 'passed', cardId: 'small-001', principles: ['P2'], monthlyCashFlow: 160, downPayment: 5_000, affordable: false };
+    expect(LogEventSchema.safeParse(passed).success).toBe(true);
+    expect(LogEventSchema.safeParse(Object.fromEntries(Object.entries(passed).filter(([k]) => k !== 'affordable'))).success).toBe(false);
+  });
+
+  it('a bank loan records its purpose, and a Setback loan names the card', () => {
+    const base = { kind: 'borrowed', liabilityId: 'l', amount: 1_000, monthlyPayment: 100, principles: ['P5'] };
+    for (const purpose of ['asset', 'want', 'none']) expect(LogEventSchema.safeParse({ ...base, purpose }).success, purpose).toBe(true);
+    expect(LogEventSchema.safeParse({ ...base, purpose: 'setback', cardId: 'setback-001', principles: ['P1'] }).success).toBe(true);
+    expect(LogEventSchema.safeParse({ ...base, purpose: 'setback' }).success).toBe(false);
+    expect(LogEventSchema.safeParse({ ...base, purpose: 'asset', cardId: 'setback-001' }).success).toBe(false);
+    expect(LogEventSchema.safeParse(base).success).toBe(false);
+    expect(LogEventSchema.safeParse({ ...base, purpose: 'fun' }).success).toBe(false);
+  });
+
+  it('declining a Market card is its own event', () => {
+    expect(LogEventSchema.safeParse({ kind: 'declinedMarket', cardId: 'market-001', principles: ['P2'] }).success).toBe(true);
+  });
+});
