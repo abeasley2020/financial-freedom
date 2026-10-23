@@ -22,7 +22,7 @@ Turn sequence (the engine enforces this order; no step can be skipped by hand):
 1. Roll one six-sided die and move that many spaces on the inner loop.
 2. Credit monthly cash flow for each Payday space passed or landed on during the move.
 3. Resolve the space landed on.
-4. Player may take optional actions: repay a loan in full, sell an asset when a Market card allows it, or borrow from the bank in $1,000 increments at 10 percent of principal added to monthly expenses.
+4. Player may take optional actions: repay a loan in full (never a mortgage; see Mortgages below), sell an asset when a Market card allows it, sell shares of a stock when that stock's card is drawn again, or borrow from the bank in $1,000 increments at 10 percent of principal added to monthly expenses. Borrowing is also legal while a buyOrPass or payLifestyle decision is open, so a player who is short can raise the cash to take the deal or pay the card: BORROW adds the cash and the bank liability and leaves the same decision open. In every other pending state BORROW is rejected. REPAY is legal only when no decision is pending. Kids mode never allows BORROW.
 5. Engine checks the win condition and advances to the next player.
 
 Board: inner loop of 24 spaces. Space mix: 9 Opportunity, 5 Market, 5 Lifestyle, 2 Payday, 2 Giving, 1 Setback. Setback cards (job loss, medical bill, car repair) force the player to pay or borrow and skip a turn if cash is negative.
@@ -40,11 +40,13 @@ Professions (starting numbers in dollars per month; cash is a one-time start):
 | Engineer | 6,500 | 4,400 | 1,500 | Student loan 35,000, car loan 12,000, credit card 4,000 |
 | Doctor | 13,000 | 9,200 | 3,000 | Student loan 150,000, car loan 20,000, credit card 8,000 |
 
-The Expenses column is baseExpenses. Each liability adds a monthly payment equal to a fixed percent of its principal, floored to whole dollars: student loan 1%, car loan 2%, credit card 3%, mortgage 1%, bank loan 10%, lifestyle loan the card's stated monthly cost. totalExpenses = baseExpenses + the sum of those payments.
+The Expenses column is baseExpenses. Each liability adds a monthly payment equal to a fixed percent of its principal, floored to whole dollars: student loan 1%, car loan 2%, credit card 3%, mortgage 0% (the deal card's monthlyCashFlow is already net of the mortgage payment), bank loan 10%, lifestyle loan the card's stated monthly cost. totalExpenses = baseExpenses + the sum of those payments.
+
+Mortgages: each financed deal (mortgage greater than 0 on the card) creates one liability of kind mortgage, with principal equal to the card's mortgage, monthlyPayment 0, and the assetId of the asset it finances. When that asset is sold, the sale proceeds pay off the linked mortgage first and the player keeps the remainder. REPAY cannot target a mortgage; it is retired only by the sale.
 
 Starting cash flow varies by profession on purpose; the Stage 4 simulator decides whether any profession needs rebalancing.
 
-Kids mode (ages 7 to 10): one Opportunity deck instead of two, round numbers only, no bank loans, no Setback spaces, win at passive income greater than or equal to expenses, target 30 minutes.
+Kids mode (ages 7 to 10): one Opportunity deck instead of two (the small deals, with stock cards removed), round numbers only, no bank loans, no Setback spaces, win at passive income greater than or equal to expenses, target 30 minutes.
 
 ## Card decks
 
@@ -60,12 +62,20 @@ Five decks, all original content, stored as JSON so cards can be added or rebala
 
 Card data shape (one TypeScript type per deck, validated with Zod at load time):
 
-- Deal card: id, deck, title, description, type (stock, fund, rental, business, land), price, downPayment, mortgage, monthlyCashFlow, sharesAvailable for stocks, priceRange for stock randomization, requiresKidsMode flag.
+- Deal card: id, deck, title, description, type (stock, fund, rental, business, land), price, downPayment, mortgage, monthlyCashFlow, sharesAvailable for stocks, priceRange for stock randomization, dividendPerShare for stocks (optional, default 0), requiresKidsMode flag.
 - Market card: id, title, description, effect (an array of typed effects such as offerBuyout, changeCashFlow, forceSale, splitShares), appliesTo (asset type filter).
 - Lifestyle card: id, title, description, cashCost, or monthlyCost plus loanPrincipal.
 - Setback card: id, title, description, cashCost, skipTurn boolean.
 
 Stock cards use a price range instead of a fixed price. The engine rolls within the range so the same stock card teaches buying low and selling high across multiple draws.
+
+Stock rules:
+
+- Stocks are bought with cash only. There is no down payment and no mortgage; the card's mortgage is 0.
+- When a stock card is drawn, the engine rolls sharePrice inside priceRange. The player chooses a whole number of shares, at most sharesAvailable, and must afford shares × sharePrice.
+- Each BUY creates a separate asset lot with purchasePrice = shares × sharePrice and monthlyCashFlow = floor(shares × dividendPerShare).
+- Stocks are sold only by the current player, and only when the same stock card is drawn again at a new rolled price. The pending decision then offers buy, sell, or pass. A sale takes a chosen number of shares from one lot at the new sharePrice.
+- A stock card never leaves its deck. After the decision it goes to the discard pile; lots reference it by cardId.
 
 Giving spaces are not cards. Landing on one lets the player give 10 percent of cash on hand. Each gift adds a Favor token. Three Favor tokens may be spent to re-draw any card once. This rewards generosity without making it a math trick.
 
@@ -77,10 +87,10 @@ State model (one immutable object, serializable to JSON):
 
 - game: id, mode (standard or kids), phase (lobby, playing, finished), turnIndex, currentPlayerId, rngSeed, log.
 - players: array of player objects with id, name, professionId, position, cash, salary, assets, liabilities, favorTokens, isOut, hasEscaped.
-- assets: each with cardId, type, purchasePrice, downPaid, monthlyCashFlow, shares if stock.
-- liabilities: each with kind (student, car, credit, mortgage, bank, lifestyle), principal, monthlyPayment. A lifestyle liability stores sourceCardId.
+- assets: each with id, cardId, type, purchasePrice, downPaid, monthlyCashFlow, shares if stock. One asset per BUY: a stock bought twice is two lots.
+- liabilities: each with id, kind (student, car, credit, mortgage, bank, lifestyle), principal, monthlyPayment. A lifestyle liability stores sourceCardId. A mortgage liability stores assetId and has monthlyPayment 0.
 - decks: for each deck, drawPile and discardPile as arrays of card ids.
-- pending: the one decision the current player must make before the turn advances (none, chooseDealSize, buyOrPass, marketChoice, payLifestyle, giveOrSkip).
+- pending: the one decision the current player must make before the turn advances (none, chooseDealSize, buyOrPass, marketChoice, payLifestyle, giveOrSkip). For a stock card, buyOrPass carries the rolled sharePrice and the player may buy, sell shares from a lot they hold, or pass.
 
 Derived values are never stored. Monthly expenses, passive income, cash flow, and net worth are computed from the state by selector functions so they can never drift out of sync.
 
@@ -89,7 +99,7 @@ Actions (the full list the reducer accepts): ROLL, CHOOSE\_DEAL\_SIZE, BUY, PASS
 Invariants the test suite enforces on every state transition:
 
 - Cash never goes negative without an explicit bankruptcy resolution.
-- Total cards across drawPile, discardPile, and player assets equals the deck size at all times.
+- Total cards across drawPile, discardPile, player assets, and the card awaiting a pending decision equals the deck size at all times. Stock cards never leave the deck, so stock lots do not count toward this total.
 - Only the current player may act, and exactly one pending decision exists at a time.
 - Passive income equals the sum of asset monthlyCashFlow; expenses equal profession expenses plus liability payments plus lifestyle additions.
 - Given the same rngSeed and the same action sequence, the final state is identical. Dice and shuffles use a seeded random number generator so bugs can be replayed from the log.

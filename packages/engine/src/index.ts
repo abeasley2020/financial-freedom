@@ -1,8 +1,21 @@
 // @ff/engine
 //
-// Public entry point. `reduce`, `legalActions`, selectors, `checkInvariants`,
-// and `replay` are exported from here once they exist. Actions are added
-// test-first, one at a time, in the order listed in CLAUDE.md (Rule 3).
-// This file is intentionally empty until then.
+// Pure game engine. One entry point: reduce(state, action) -> ReduceResult.
+// See CLAUDE.md, Rule 1.
 
-export {};
+export { createGame, type CreateGameOptions } from './createGame';
+export type { EngineError } from './errors';
+export { pct } from './money';
+export { reduce, type ReduceResult } from './reduce';
+export { nextRandom, rollDie, shuffle } from './rng';
+export {
+  canEscape,
+  currentPlayer,
+  debtPayments,
+  hasRolledThisTurn,
+  monthlyCashFlow,
+  passiveIncome,
+  playerById,
+  professionOf,
+  totalExpenses,
+} from './selectors';

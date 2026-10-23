@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ActionSchema, LiabilityIdSchema, PlayerIdSchema } from './actions';
+import { ActionSchema, AssetIdSchema, LiabilityIdSchema, PlayerIdSchema } from './actions';
 import { BOARD_SIZE } from './board';
 import { AssetTypeSchema, CardIdSchema, DECK_IDS, DeckIdSchema } from './cards';
 import { MoneySchema, SignedMoneySchema } from './money';
@@ -18,10 +18,12 @@ export const MAX_PLAYERS = 6;
 
 export const AssetSchema = z
   .object({
-    /** The deal card this asset came from. One asset per card, so this is the asset's identity. */
+    /** One asset per BUY. A stock bought twice is two lots with different ids. */
+    id: AssetIdSchema,
+    /** The deal card this asset came from. */
     cardId: CardIdSchema,
     type: AssetTypeSchema,
-    /** What the player agreed to pay in total (down payment plus mortgage). Market offers are a percent of this. */
+    /** What the player agreed to pay in total (down payment plus mortgage; shares × sharePrice for a stock). Market offers are a percent of this. */
     purchasePrice: MoneySchema,
     /** Cash paid at purchase. */
     downPaid: MoneySchema,
@@ -39,10 +41,12 @@ export const LiabilitySchema = z
     id: LiabilityIdSchema,
     kind: LiabilityKindSchema,
     principal: MoneySchema,
-    /** Stored because lifestyle loans take their payment from the card, not from a percent. */
+    /** Stored because lifestyle loans take their payment from the card, not from a percent. Always 0 for a mortgage. */
     monthlyPayment: MoneySchema,
     /** Lifestyle loans only: the card that created the loan. */
     sourceCardId: CardIdSchema.optional(),
+    /** Mortgages only: the asset this loan finances. Paid off first from that asset's sale proceeds. */
+    assetId: AssetIdSchema.optional(),
   })
   .strict()
   .superRefine((liability, ctx) => {
@@ -56,6 +60,20 @@ export const LiabilitySchema = z
         message: 'only a lifestyle liability may carry sourceCardId',
         path: ['sourceCardId'],
       });
+    }
+    const isMortgage = liability.kind === 'mortgage';
+    if (isMortgage && liability.assetId === undefined) {
+      ctx.addIssue({ code: 'custom', message: 'a mortgage needs assetId', path: ['assetId'] });
+    }
+    if (isMortgage && liability.monthlyPayment !== 0) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'a mortgage has monthlyPayment 0: the deal card cash flow is already net of it',
+        path: ['monthlyPayment'],
+      });
+    }
+    if (!isMortgage && liability.assetId !== undefined) {
+      ctx.addIssue({ code: 'custom', message: 'only a mortgage may carry assetId', path: ['assetId'] });
     }
   });
 export type Liability = DeepReadonly<z.infer<typeof LiabilitySchema>>;
@@ -104,7 +122,8 @@ export type Decks = DeepReadonly<z.infer<typeof DecksSchema>>;
 export const PendingSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('none') }).strict(),
   z.object({ kind: z.literal('chooseDealSize') }).strict(),
-  z.object({ kind: z.literal('buyOrPass'), cardId: CardIdSchema }).strict(),
+  /** `sharePrice` is set when the card is a stock: the price per share rolled inside the card's priceRange at draw time. */
+  z.object({ kind: z.literal('buyOrPass'), cardId: CardIdSchema, sharePrice: MoneySchema.optional() }).strict(),
   z.object({ kind: z.literal('marketChoice'), cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('payLifestyle'), cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('giveOrSkip') }).strict(),
@@ -118,6 +137,27 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('moved'), from: z.number().int(), to: z.number().int() }).strict(),
   z.object({ kind: z.literal('payday'), amount: SignedMoneySchema }).strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
+  z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
+  z.object({ kind: z.literal('passed'), cardId: CardIdSchema }).strict(),
+  z
+    .object({
+      kind: z.literal('borrowed'),
+      liabilityId: LiabilityIdSchema,
+      amount: MoneySchema,
+      monthlyPayment: MoneySchema,
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('bought'),
+      assetId: AssetIdSchema,
+      cardId: CardIdSchema,
+      /** Cash paid now: the down payment, or shares × sharePrice. */
+      cost: MoneySchema,
+      /** Stock lots only. */
+      shares: z.number().int().positive().optional(),
+    })
+    .strict(),
   z.object({ kind: z.literal('cashChanged'), delta: SignedMoneySchema, reason: z.string().min(1) }).strict(),
 ]);
 export type LogEvent = DeepReadonly<z.infer<typeof LogEventSchema>>;

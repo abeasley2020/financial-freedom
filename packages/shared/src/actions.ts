@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { CardIdSchema } from './cards';
 import { MoneySchema } from './money';
 import type { DeepReadonly } from './readonly';
 
@@ -9,6 +8,10 @@ export type PlayerId = z.infer<typeof PlayerIdSchema>;
 
 export const LiabilityIdSchema = z.string().min(1);
 export type LiabilityId = z.infer<typeof LiabilityIdSchema>;
+
+/** Declared here, not in state.ts, because state.ts imports this module. */
+export const AssetIdSchema = z.string().min(1);
+export type AssetId = z.infer<typeof AssetIdSchema>;
 
 /** Bank loans come in $1,000 steps (spec, Core rules, turn step 4). */
 export const BORROW_STEP = 1_000;
@@ -26,8 +29,15 @@ export const ActionSchema = z.discriminatedUnion('type', [
   /** `shares` applies to stock cards only; other deals are all-or-nothing. */
   z.object({ type: z.literal('BUY'), ...acting, shares: z.number().int().positive().optional() }).strict(),
   z.object({ type: z.literal('PASS'), ...acting }).strict(),
-  /** Assets are keyed by the card that created them. */
-  z.object({ type: z.literal('SELL_ASSET'), ...acting, cardId: CardIdSchema }).strict(),
+  /** Names one lot by its asset id. `shares` applies to stock lots only; other assets sell whole. */
+  z
+    .object({
+      type: z.literal('SELL_ASSET'),
+      ...acting,
+      assetId: AssetIdSchema,
+      shares: z.number().int().positive().optional(),
+    })
+    .strict(),
   z
     .object({
       type: z.literal('BORROW'),
@@ -37,8 +47,8 @@ export const ActionSchema = z.discriminatedUnion('type', [
     .strict(),
   z.object({ type: z.literal('REPAY'), ...acting, liabilityId: LiabilityIdSchema }).strict(),
   z.object({ type: z.literal('PAY_LIFESTYLE'), ...acting, method: z.enum(['cash', 'loan']) }).strict(),
-  /** `cardId` names the asset the market effect is applied to when the player owns more than one that qualifies. */
-  z.object({ type: z.literal('ACCEPT_MARKET'), ...acting, cardId: CardIdSchema.optional() }).strict(),
+  /** `assetId` names the lot the market effect is applied to when the player owns more than one that qualifies. */
+  z.object({ type: z.literal('ACCEPT_MARKET'), ...acting, assetId: AssetIdSchema.optional() }).strict(),
   z.object({ type: z.literal('DECLINE_MARKET'), ...acting }).strict(),
   z.object({ type: z.literal('GIVE'), ...acting }).strict(),
   z.object({ type: z.literal('SKIP_GIVE'), ...acting }).strict(),

@@ -56,6 +56,8 @@ export const DealCardSchema = z
     sharesAvailable: z.number().int().positive().optional(),
     /** Stocks only: the engine rolls a price in this range on each draw. */
     priceRange: PriceRangeSchema.optional(),
+    /** Stocks only: whole dollars per share per month. Absent means 0. A lot's monthlyCashFlow is floor(shares × this). */
+    dividendPerShare: MoneySchema.optional(),
     /** True when the card belongs to the kids-mode deck only. */
     requiresKidsMode: z.boolean(),
   })
@@ -84,6 +86,16 @@ export const DealCardSchema = z
         message: 'only a stock card may carry sharesAvailable',
         path: ['sharesAvailable'],
       });
+    }
+    if (!isStock && card.dividendPerShare !== undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'only a stock card may carry dividendPerShare',
+        path: ['dividendPerShare'],
+      });
+    }
+    if (isStock && card.mortgage !== 0) {
+      ctx.addIssue({ code: 'custom', message: 'stocks are cash only: mortgage must be 0', path: ['mortgage'] });
     }
   });
 export type DealCard = DeepReadonly<z.infer<typeof DealCardSchema>>;

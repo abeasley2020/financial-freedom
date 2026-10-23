@@ -72,5 +72,20 @@
     "mortgage": 0,
     "monthlyCashFlow": 180,
     "requiresKidsMode": false
+  },
+  {
+    "id": "small-007",
+    "deck": "smallDeals",
+    "title": "Lakeshore Utilities Shares",
+    "description": "The power company. Nobody gets rich on it, but it pays a dividend every month like clockwork.",
+    "type": "stock",
+    "price": 70,
+    "downPayment": 70,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 200,
+    "priceRange": { "min": 50, "max": 90 },
+    "dividendPerShare": 1,
+    "requiresKidsMode": false
   }
 ]

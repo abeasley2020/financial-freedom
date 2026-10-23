@@ -85,6 +85,36 @@ describe('GameStateSchema', () => {
       }).success,
     ).toBe(true);
   });
+
+  it('requires a mortgage liability to name its asset and carry a zero monthly payment', () => {
+    const mortgage = { id: 'm1', kind: 'mortgage', principal: 45_000, monthlyPayment: 0, assetId: 'a1' };
+    expect(PlayerSchema.safeParse({ ...player, liabilities: [mortgage] }).success).toBe(true);
+    const noAsset = Object.fromEntries(Object.entries(mortgage).filter(([k]) => k !== 'assetId'));
+    expect(PlayerSchema.safeParse({ ...player, liabilities: [noAsset] }).success).toBe(false);
+    expect(PlayerSchema.safeParse({ ...player, liabilities: [{ ...mortgage, monthlyPayment: 450 }] }).success).toBe(
+      false,
+    );
+  });
+
+  it('rejects assetId on a non-mortgage liability', () => {
+    const bad = { ...player, liabilities: [{ id: 'l1', kind: 'car', principal: 6_000, monthlyPayment: 120, assetId: 'a1' }] };
+    expect(PlayerSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it('every asset has its own id so two lots of one stock can coexist', () => {
+    const lot = (id: string, shares: number) => ({
+      id,
+      cardId: 'small-005',
+      type: 'stock',
+      purchasePrice: shares * 10,
+      downPaid: shares * 10,
+      monthlyCashFlow: 0,
+      shares,
+    });
+    expect(PlayerSchema.safeParse({ ...player, assets: [lot('a1', 10), lot('a2', 5)] }).success).toBe(true);
+    const withoutId = Object.fromEntries(Object.entries(lot('a1', 10)).filter(([k]) => k !== 'id'));
+    expect(PlayerSchema.safeParse({ ...player, assets: [withoutId] }).success).toBe(false);
+  });
 });
 
 describe('PendingSchema', () => {
@@ -93,6 +123,7 @@ describe('PendingSchema', () => {
       { kind: 'none' },
       { kind: 'chooseDealSize' },
       { kind: 'buyOrPass', cardId: 'small-001' },
+      { kind: 'buyOrPass', cardId: 'small-005', sharePrice: 17 },
       { kind: 'marketChoice', cardId: 'market-001' },
       { kind: 'payLifestyle', cardId: 'life-001' },
       { kind: 'giveOrSkip' },
@@ -115,12 +146,13 @@ describe('ActionSchema', () => {
       { type: 'BUY', playerId: 'p1' },
       { type: 'BUY', playerId: 'p1', shares: 100 },
       { type: 'PASS', playerId: 'p1' },
-      { type: 'SELL_ASSET', playerId: 'p1', cardId: 'small-001' },
+      { type: 'SELL_ASSET', playerId: 'p1', assetId: 'a1' },
+      { type: 'SELL_ASSET', playerId: 'p1', assetId: 'a1', shares: 25 },
       { type: 'BORROW', playerId: 'p1', amount: 1_000 },
       { type: 'REPAY', playerId: 'p1', liabilityId: 'l1' },
       { type: 'PAY_LIFESTYLE', playerId: 'p1', method: 'cash' },
       { type: 'ACCEPT_MARKET', playerId: 'p1' },
-      { type: 'ACCEPT_MARKET', playerId: 'p1', cardId: 'small-001' },
+      { type: 'ACCEPT_MARKET', playerId: 'p1', assetId: 'a1' },
       { type: 'DECLINE_MARKET', playerId: 'p1' },
       { type: 'GIVE', playerId: 'p1' },
       { type: 'SKIP_GIVE', playerId: 'p1' },
@@ -145,6 +177,11 @@ describe('ActionSchema', () => {
     expect(ActionSchema.safeParse({ type: 'BORROW', playerId: 'p1', amount: 0 }).success).toBe(false);
     expect(ActionSchema.safeParse({ type: 'BORROW', playerId: 'p1', amount: 3_000 }).success).toBe(true);
   });
+
+  it('SELL_ASSET names a lot by assetId, not by card', () => {
+    expect(ActionSchema.safeParse({ type: 'SELL_ASSET', playerId: 'p1', cardId: 'small-001' }).success).toBe(false);
+    expect(ActionSchema.safeParse({ type: 'SELL_ASSET', playerId: 'p1', assetId: 'a1', shares: 0 }).success).toBe(false);
+  });
 });
 
 describe('ProfessionSchema', () => {
@@ -161,6 +198,7 @@ describe('ProfessionSchema', () => {
   });
 
   it('publishes the fixed payment percent per liability kind from the spec', () => {
-    expect(LIABILITY_PAYMENT_PERCENT).toEqual({ student: 1, car: 2, credit: 3, mortgage: 1, bank: 10 });
+    // Mortgage is 0: the deal card's monthlyCashFlow is already net of the mortgage payment.
+    expect(LIABILITY_PAYMENT_PERCENT).toEqual({ student: 1, car: 2, credit: 3, mortgage: 0, bank: 10 });
   });
 });
