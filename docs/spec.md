@@ -52,7 +52,7 @@ Five decks, all original content, stored as JSON so cards can be added or rebala
 
 | Deck | Count | What it teaches | Example card |
 | --- | --- | --- | --- |
-| Small deals | 40 | Stocks, index funds, small rentals, side businesses under $5,000 down | Duplex in Decatur: price 80,000, down 8,000, cash flow +220/mo |
+| Small deals | 40 | Stocks, index funds, small rentals, side businesses under $5,000 down | Duplex in Decatur: price 50,000, down 5,000, cash flow +160/mo |
 | Big deals | 25 | Apartment buildings, businesses, land; $6,000 to $50,000 down | Laundromat: price 120,000, down 30,000, cash flow +1,400/mo |
 | Market | 20 | Prices move; buyers appear; tenants leave; the player decides to sell or hold | Buyer offers 2x purchase price for any small rental you own |
 | Lifestyle | 25 | Spending that feels good and quietly raises monthly expenses | New truck: pay 4,000 cash or add 380/mo loan payment |

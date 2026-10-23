@@ -1,0 +1,76 @@
+[
+  {
+    "id": "small-001",
+    "deck": "smallDeals",
+    "title": "Duplex in Decatur",
+    "description": "Two units on a quiet street, both rented to long-term tenants. The bank will carry most of it.",
+    "type": "rental",
+    "price": 50000,
+    "downPayment": 5000,
+    "mortgage": 45000,
+    "monthlyCashFlow": 160,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "small-002",
+    "deck": "smallDeals",
+    "title": "Starter Condo",
+    "description": "One bedroom near the hospital. Nurses rent it on rotating contracts, so it is rarely empty.",
+    "type": "rental",
+    "price": 45000,
+    "downPayment": 4000,
+    "mortgage": 41000,
+    "monthlyCashFlow": 120,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "small-003",
+    "deck": "smallDeals",
+    "title": "Lawn Care Trailer",
+    "description": "A used trailer, two mowers, and a list of eight weekly customers. You hire a high-schooler to run it.",
+    "type": "business",
+    "price": 3000,
+    "downPayment": 3000,
+    "mortgage": 0,
+    "monthlyCashFlow": 150,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "small-004",
+    "deck": "smallDeals",
+    "title": "Total Market Index Fund",
+    "description": "A slice of every big company at once. Slow, boring, and it pays a small dividend every month.",
+    "type": "fund",
+    "price": 2000,
+    "downPayment": 2000,
+    "mortgage": 0,
+    "monthlyCashFlow": 10,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "small-005",
+    "deck": "smallDeals",
+    "title": "Birchwood Robotics Shares",
+    "description": "A young company that builds warehouse robots. The price swings; buy low if you can.",
+    "type": "stock",
+    "price": 20,
+    "downPayment": 20,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 500,
+    "priceRange": { "min": 5, "max": 40 },
+    "requiresKidsMode": false
+  },
+  {
+    "id": "small-006",
+    "deck": "smallDeals",
+    "title": "Vending Machine Route",
+    "description": "Six snack machines in office lobbies. You restock them on Saturdays and keep the coins.",
+    "type": "business",
+    "price": 4500,
+    "downPayment": 4500,
+    "mortgage": 0,
+    "monthlyCashFlow": 180,
+    "requiresKidsMode": false
+  }
+]
