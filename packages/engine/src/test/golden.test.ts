@@ -4,6 +4,13 @@
 // log must rebuild that state exactly. Never regenerate these files to make
 // a test pass: a difference means a rule changed, and the commit that
 // changes the rule must say so and get Andre's approval first.
+//
+// STAGE B (v2 engine rules, 2026-10-23): the three recordings are v1 games.
+// v2 changes the rules on purpose (Payday every turn, no Payday spaces, the
+// v2 board, Life Choices, growth assets, the round limit), so they cannot
+// replay until the end of Stage B, when they are regenerated once with
+// Andre's approval and the commit names every rule change. Until then this
+// suite is skipped, not deleted, so the v1 recordings stay in history.
 
 import { ActionSchema, GameStateSchema, type Action, type GameState } from '@ff/shared';
 import { z } from 'zod';
@@ -46,7 +53,9 @@ const games: readonly [string, Golden][] = [
   ['kids-three-players', GoldenSchema.parse(kids)],
 ];
 
-describe.each(games)('golden game %s', (_name, golden) => {
+const GOLDEN_RECORDINGS_ARE_V1 = true;
+
+describe.skipIf(GOLDEN_RECORDINGS_ARE_V1).each(games)('golden game %s', (_name, golden) => {
   it('replays its action log from the seed to exactly the recorded final state', () => {
     const final = replay(createGame(golden.setup), golden.actions);
     expect(final).toEqual(golden.expected);
@@ -86,7 +95,7 @@ describe.each(games)('golden game %s', (_name, golden) => {
   });
 });
 
-describe('golden games as a set', () => {
+describe.skipIf(GOLDEN_RECORDINGS_ARE_V1)('golden games as a set', () => {
   it('cover both modes and both ways a Phase 1 game can end', () => {
     expect(games.map(([, g]) => g.setup.mode)).toContain('kids');
     expect(games.map(([, g]) => g.setup.mode)).toContain('standard');

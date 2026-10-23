@@ -12,55 +12,46 @@ import {
   type SpaceKind,
 } from '@ff/shared';
 
-import { resolveBankruptcy } from '../bankruptcy';
 import { drawCard } from '../decks';
 import { pct } from '../money';
+import { creditPayday } from '../payday';
 import { rejected, type ActionResult } from '../reduce';
 import { rollDie } from '../rng';
-import { currentPlayer, hasRolledThisTurn, monthlyCashFlow, playerById } from '../selectors';
+import { currentPlayer, hasRolledThisTurn, playerById } from '../selectors';
 
 /**
- * Spec, Core rules, turn steps 1 to 3: roll one die, move, credit each Payday
- * passed or landed on, then resolve the landed space. A Payday that takes
- * cash below zero runs the bankruptcy sales first; a player who goes out does
- * not resolve the space.
+ * Spec, Core rules, turn steps 1 to 3: Payday first (every turn is a month,
+ * decided 2026-10-23, Q1), then roll one die, move, and resolve the landed
+ * space. A Payday that takes cash below zero runs the bankruptcy sales; a
+ * player who goes out at Payday does not roll, move, or resolve a space, and
+ * only END_TURN remains.
  */
 export function roll(state: GameState, action: Extract<Action, { type: 'ROLL' }>): ActionResult {
   if (state.pending.kind !== 'none') return rejected('INVALID_FOR_PENDING');
   if (hasRolledThisTurn(state)) return rejected('ALREADY_ROLLED');
 
-  const events: LogEvent[] = [];
-  const die = rollDie(state.game.rngState);
-  events.push({ kind: 'rolled', value: die.value });
-
   const { playerId } = action;
-  const from = currentPlayer(state).position;
+  const events: LogEvent[] = [];
+
+  // Step 1: Payday.
+  const paid = creditPayday(state, playerId);
+  events.push(...paid.events);
+  if (playerById(paid.state, playerId).isOut) {
+    return { ok: true, state: { ...paid.state, pending: { kind: 'none' } }, events };
+  }
+
+  // Step 2: roll and move.
+  const die = rollDie(paid.state.game.rngState);
+  events.push({ kind: 'rolled', value: die.value });
+  const from = currentPlayer(paid.state).position;
   const to = (from + die.value) % BOARD_SIZE;
   events.push({ kind: 'moved', from, to });
 
   let next: GameState = {
-    ...state,
-    game: { ...state.game, rngState: die.state },
-    players: state.players.map((p) => (p.id === playerId ? { ...p, position: to } : p)),
+    ...paid.state,
+    game: { ...paid.state.game, rngState: die.state },
+    players: paid.state.players.map((p) => (p.id === playerId ? { ...p, position: to } : p)),
   };
-
-  // Step 2: one Payday credit per Payday space passed or landed on. Each one
-  // uses the player as they stand, since a bankruptcy sale changes cash flow.
-  for (let step = 1; step <= die.value; step++) {
-    if (BOARD[(from + step) % BOARD_SIZE] !== 'payday') continue;
-    const player = playerById(next, playerId);
-    const amount = monthlyCashFlow(player);
-    next = setCash(next, playerId, player.cash + amount);
-    events.push({ kind: 'payday', amount });
-    if (player.cash + amount < 0) {
-      const bankruptcy = resolveBankruptcy(next, playerId);
-      next = bankruptcy.state;
-      events.push(...bankruptcy.events);
-      if (playerById(next, playerId).isOut) {
-        return { ok: true, state: { ...next, pending: { kind: 'none' } }, events };
-      }
-    }
-  }
 
   // Step 3: resolve the landed space.
   const space = BOARD[to];
@@ -70,10 +61,6 @@ export function roll(state: GameState, action: Extract<Action, { type: 'ROLL' }>
   events.push(...resolved.events);
 
   return { ok: true, state: next, events };
-}
-
-function setCash(state: GameState, playerId: string, cash: number): GameState {
-  return { ...state, players: state.players.map((p) => (p.id === playerId ? { ...p, cash } : p)) };
 }
 
 interface Resolution {
@@ -96,9 +83,6 @@ function resolveSpace(state: GameState, space: SpaceKind): Resolution {
       return drawInto(state, 'lifestyle', 'payLifestyle');
     case 'giving':
       return { state, pending: { kind: 'giveOrSkip' }, events: [] };
-    case 'payday':
-      // Already credited in step 2.
-      return nothing(state);
     case 'setback':
       // Kids mode has no Setback spaces (spec, Core rules, Kids mode).
       if (state.game.mode === 'kids') return nothing(state);

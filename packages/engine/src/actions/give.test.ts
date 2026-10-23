@@ -5,22 +5,24 @@ import { reduce } from '../reduce';
 import { playerById } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { aboutToRoll, twoPlayerGame, withGame, withPlayer, withZeroCashFlow } from '../test/fixtures';
 
-// Ada the Teacher (p1) starts with 400 cash and 0 Favor tokens. Giving is space 6.
+// Ada the Teacher (p1) starts with 400 cash and 0 Favor tokens. Giving is
+// space 4. Her salary is pinned to her totalExpenses here so the Payday that
+// opens every turn adds $0 and the gift boundaries are exact.
 
 const GIVE: Action = { type: 'GIVE', playerId: 'p1' };
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-/** p1 with `cash` has rolled from 0 onto Giving (6): pending giveOrSkip, no Payday crossed. */
+/** p1 with `cash` has rolled from 0 onto Giving (4): pending giveOrSkip, Payday of $0. */
 function onGiving(cash: number, state = twoPlayerGame()): GameState {
-  return apply(aboutToRoll(withPlayer(state, 'p1', { cash }), 0, 6), { type: 'ROLL', playerId: 'p1' });
+  return apply(aboutToRoll(withZeroCashFlow(withPlayer(state, 'p1', { cash }), 'p1'), 0, 4), { type: 'ROLL', playerId: 'p1' });
 }
 
 describe('GIVE: giving 10 percent of cash', () => {
   it('GIVE: pays 10 percent of cash on hand and adds one Favor token', () => {
     const before = onGiving(400);
-    expect(BOARD[6]).toBe('giving');
+    expect(BOARD[4]).toBe('giving');
     expect(before.pending).toEqual({ kind: 'giveOrSkip' });
     const next = apply(before, GIVE);
     expect(p1(next).cash).toBe(360);
@@ -49,7 +51,7 @@ describe('GIVE: giving 10 percent of cash', () => {
   it('GIVE: each gift adds one more token', () => {
     const first = apply(onGiving(1_000), GIVE);
     const nextTurn = withGame(apply(first, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
-    const second = apply(aboutToRoll(nextTurn, 0, 6), { type: 'ROLL', playerId: 'p1' });
+    const second = apply(aboutToRoll(nextTurn, 0, 4), { type: 'ROLL', playerId: 'p1' });
     const next = apply(second, GIVE);
     expect(p1(next).favorTokens).toBe(2);
     expect(p1(next).cash).toBe(810);
@@ -66,7 +68,7 @@ describe('GIVE: giving 10 percent of cash', () => {
     const next = apply(before, GIVE);
     expect(p1(next).assets).toEqual(p1(before).assets);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
-    expect(p1(next).position).toBe(6);
+    expect(p1(next).position).toBe(4);
     expect(next.decks).toEqual(before.decks);
     expect(next.players[1]).toEqual(before.players[1]);
   });

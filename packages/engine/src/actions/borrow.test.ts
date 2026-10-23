@@ -5,14 +5,14 @@ import { reduce } from '../reduce';
 import { debtPayments, monthlyCashFlow, playerById, totalExpenses } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, offered, twoPlayerGame, withGame } from '../test/fixtures';
+import { aboutToRoll, offered, rolledClean, twoPlayerGame, withGame } from '../test/fixtures';
 
 const borrow = (amount: number, playerId = 'p1'): Action => ({ type: 'BORROW', playerId, amount });
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-/** p1 has rolled from 11 onto Payday (12): pending none, cash 400 + 700 = 1,100. */
+/** p1 has rolled (Payday 700 credited) and skipped a Giving space: pending none, cash 400 + 700 = 1,100. */
 function afterRoll(state: GameState = twoPlayerGame()): GameState {
-  return apply(aboutToRoll(state, 11, 1), { type: 'ROLL', playerId: 'p1' });
+  return rolledClean(state, 'p1');
 }
 
 describe('BORROW: taking a bank loan', () => {
@@ -60,7 +60,7 @@ describe('BORROW: taking a bank loan', () => {
   it('BORROW: the next Payday reflects the new payment', () => {
     const borrowed = apply(afterRoll(), borrow(1_000));
     const nextTurn = withGame(apply(borrowed, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
-    const paid = apply(aboutToRoll(nextTurn, 11, 1), { type: 'ROLL', playerId: 'p1' });
+    const paid = rolledClean(nextTurn, 'p1');
     expect(p1(paid).cash).toBe(2_100 + 600);
   });
 
@@ -93,12 +93,12 @@ describe('BORROW: while a decision is open', () => {
   });
 
   it('BORROW: lets a player who was short complete BUY', () => {
-    // Ada has 400; the Duplex needs 5,000 down.
+    // Ada has 400 + 700 Payday = 1,100; the Duplex needs 5,000 down.
     const short = offered(twoPlayerGame(), 'small-001');
     expect(reject(short, { type: 'BUY', playerId: 'p1' })).toBe('INSUFFICIENT_CASH');
     const funded = apply(short, borrow(5_000));
     const bought = apply(funded, { type: 'BUY', playerId: 'p1' });
-    expect(p1(bought).cash).toBe(400);
+    expect(p1(bought).cash).toBe(1_100);
     expect(p1(bought).assets).toHaveLength(1);
     expect(p1(bought).assets[0]).toMatchObject({ cardId: 'small-001', downPaid: 5_000 });
     expect(p1(bought).liabilities.filter((l) => l.kind === 'bank')).toHaveLength(1);
@@ -119,7 +119,7 @@ describe('BORROW: while a decision is open', () => {
     const funded = apply(offered(twoPlayerGame(), 'small-001'), borrow(1_000));
     const passed = apply(funded, { type: 'PASS', playerId: 'p1' });
     expect(passed.pending).toEqual({ kind: 'none' });
-    expect(p1(passed).cash).toBe(1_400);
+    expect(p1(passed).cash).toBe(1_100 + 1_000);
   });
 });
 
@@ -185,7 +185,7 @@ describe('BORROW: rejections', () => {
 
   it('BORROW: rejected in kids mode', () => {
     expect(reject(afterRoll(twoPlayerGame({ mode: 'kids' })), borrow(1_000))).toBe('NOT_ALLOWED_IN_KIDS_MODE');
-    const kidsOffer = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 0, 1), { type: 'ROLL', playerId: 'p1' });
+    const kidsOffer = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 2, 1), { type: 'ROLL', playerId: 'p1' });
     expect(kidsOffer.pending.kind).toBe('buyOrPass');
     expect(reject(kidsOffer, borrow(1_000))).toBe('NOT_ALLOWED_IN_KIDS_MODE');
   });

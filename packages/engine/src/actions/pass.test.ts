@@ -38,7 +38,7 @@ describe('PASS: declining a deal', () => {
     });
     const next = apply(offered(holder, 'small-005', 35), PASS);
     expect(next.players[0]?.assets).toEqual(holder.players[0]?.assets);
-    expect(next.players[0]?.cash).toBe(400);
+    expect(next.players[0]?.cash).toBe(400 + 700);
   });
 
   it('PASS: changes no cash, assets, liabilities, or position', () => {
@@ -48,7 +48,7 @@ describe('PASS: declining a deal', () => {
   });
 
   it('PASS: works in kids mode', () => {
-    const kids = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 0, 1), { type: 'ROLL', playerId: 'p1' });
+    const kids = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 2, 1), { type: 'ROLL', playerId: 'p1' });
     expect(kids.pending.kind).toBe('buyOrPass');
     const cardId = (kids.pending as { cardId: string }).cardId;
     const next = apply(kids, PASS);
@@ -64,7 +64,7 @@ describe('PASS: declining a deal', () => {
       decks: { ...passed.decks, smallDeals: { drawPile: [], discardPile: ['small-001'] } },
     };
     const nextTurn = withGame(apply(drained, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
-    const rolled = apply(aboutToRoll(nextTurn, 0, 1), { type: 'ROLL', playerId: 'p1' });
+    const rolled = apply(aboutToRoll(nextTurn, 2, 1), { type: 'ROLL', playerId: 'p1' });
     const chosen = apply(rolled, { type: 'CHOOSE_DEAL_SIZE', playerId: 'p1', size: 'small' });
     expect(chosen.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-001' });
   });

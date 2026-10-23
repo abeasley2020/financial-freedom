@@ -9,9 +9,9 @@ import { aboutToRoll, twoPlayerGame, withGame } from '../test/fixtures';
 const SMALL: Action = { type: 'CHOOSE_DEAL_SIZE', playerId: 'p1', size: 'small' };
 const BIG: Action = { type: 'CHOOSE_DEAL_SIZE', playerId: 'p1', size: 'big' };
 
-/** p1 has rolled from 0 to 1 (Opportunity), so pending is chooseDealSize. */
+/** p1 has rolled from 2 to 3 (Opportunity), so pending is chooseDealSize. */
 function onOpportunity(state: GameState = twoPlayerGame()): GameState {
-  const next = apply(aboutToRoll(state, 0, 1), { type: 'ROLL', playerId: 'p1' });
+  const next = apply(aboutToRoll(state, 2, 1), { type: 'ROLL', playerId: 'p1' });
   expect(next.pending).toEqual({ kind: 'chooseDealSize' });
   return next;
 }
@@ -164,7 +164,7 @@ describe('CHOOSE_DEAL_SIZE: rejections', () => {
   });
 
   it('CHOOSE_DEAL_SIZE: in kids mode Opportunity never asks for a size, so it is rejected', () => {
-    const kids = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 0, 1), { type: 'ROLL', playerId: 'p1' });
+    const kids = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 2, 1), { type: 'ROLL', playerId: 'p1' });
     expect(kids.pending.kind).toBe('buyOrPass');
     expect(reject(kids, SMALL)).toBe('INVALID_FOR_PENDING');
   });

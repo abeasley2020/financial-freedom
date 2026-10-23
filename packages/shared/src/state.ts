@@ -138,6 +138,19 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('rolled'), value: z.number().int().min(1).max(6) }).strict(),
   z.object({ kind: z.literal('moved'), from: z.number().int(), to: z.number().int() }).strict(),
   z.object({ kind: z.literal('payday'), amount: SignedMoneySchema }).strict(),
+  /**
+   * Spec, Decision log: the facts the debrief needs at every Payday, taken
+   * after the credit. Carries playerId because END_TURN pays a skipped seat.
+   */
+  z
+    .object({
+      kind: z.literal('paydaySnapshot'),
+      playerId: PlayerIdSchema,
+      passiveIncome: SignedMoneySchema,
+      totalExpenses: MoneySchema,
+      cash: SignedMoneySchema,
+    })
+    .strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
   z.object({ kind: z.literal('passed'), cardId: CardIdSchema }).strict(),
