@@ -1,0 +1,26 @@
+[
+  {
+    "id": "setback-001",
+    "deck": "setback",
+    "title": "Furnace Dies",
+    "description": "In January. The repair company can come tomorrow if you pay today.",
+    "cashCost": 3500,
+    "skipTurn": false
+  },
+  {
+    "id": "setback-002",
+    "deck": "setback",
+    "title": "Car Repair",
+    "description": "Transmission trouble. You need the car to get to work, so there is no putting it off.",
+    "cashCost": 900,
+    "skipTurn": false
+  },
+  {
+    "id": "setback-003",
+    "deck": "setback",
+    "title": "Job Loss",
+    "description": "Layoffs. You find new work, but a month of bills comes due before the first paycheck. Skip your next turn.",
+    "cashCost": 2000,
+    "skipTurn": true
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "life-001",
+    "deck": "lifestyle",
+    "title": "New Truck",
+    "description": "The old one still runs, but this one has heated seats. Pay cash or take the dealer's loan.",
+    "cashCost": 4000,
+    "monthlyCost": 380,
+    "loanPrincipal": 12000
+  },
+  {
+    "id": "life-002",
+    "deck": "lifestyle",
+    "title": "Family Beach Week",
+    "description": "Seven nights, four people, one rented house by the ocean. Memories are not a monthly bill, but the trip is.",
+    "cashCost": 2500
+  },
+  {
+    "id": "life-003",
+    "deck": "lifestyle",
+    "title": "Big Screen and Sound System",
+    "description": "Wall-sized television and speakers you can feel. The store offers no-money-down financing.",
+    "cashCost": 1800,
+    "monthlyCost": 90,
+    "loanPrincipal": 1800
+  }
+]

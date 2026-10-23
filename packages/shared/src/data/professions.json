@@ -1,0 +1,71 @@
+[
+  {
+    "id": "teacher",
+    "name": "Teacher",
+    "salary": 3300,
+    "baseExpenses": 2300,
+    "startingCash": 400,
+    "startingLiabilities": [
+      { "kind": "student", "principal": 12000 },
+      { "kind": "car", "principal": 6000 },
+      { "kind": "credit", "principal": 2000 }
+    ]
+  },
+  {
+    "id": "electrician",
+    "name": "Electrician",
+    "salary": 4100,
+    "baseExpenses": 2700,
+    "startingCash": 700,
+    "startingLiabilities": [
+      { "kind": "car", "principal": 8000 },
+      { "kind": "credit", "principal": 3000 }
+    ]
+  },
+  {
+    "id": "nurse",
+    "name": "Nurse",
+    "salary": 4600,
+    "baseExpenses": 3100,
+    "startingCash": 900,
+    "startingLiabilities": [
+      { "kind": "student", "principal": 20000 },
+      { "kind": "car", "principal": 7000 }
+    ]
+  },
+  {
+    "id": "police-officer",
+    "name": "Police Officer",
+    "salary": 4200,
+    "baseExpenses": 2900,
+    "startingCash": 600,
+    "startingLiabilities": [
+      { "kind": "car", "principal": 9000 },
+      { "kind": "credit", "principal": 2500 }
+    ]
+  },
+  {
+    "id": "engineer",
+    "name": "Engineer",
+    "salary": 6500,
+    "baseExpenses": 4400,
+    "startingCash": 1500,
+    "startingLiabilities": [
+      { "kind": "student", "principal": 35000 },
+      { "kind": "car", "principal": 12000 },
+      { "kind": "credit", "principal": 4000 }
+    ]
+  },
+  {
+    "id": "doctor",
+    "name": "Doctor",
+    "salary": 13000,
+    "baseExpenses": 9200,
+    "startingCash": 3000,
+    "startingLiabilities": [
+      { "kind": "student", "principal": 150000 },
+      { "kind": "car", "principal": 20000 },
+      { "kind": "credit", "principal": 8000 }
+    ]
+  }
+]

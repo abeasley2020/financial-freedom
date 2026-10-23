@@ -1,0 +1,50 @@
+[
+  {
+    "id": "big-001",
+    "deck": "bigDeals",
+    "title": "Laundromat",
+    "description": "Twenty machines in a strip mall next to a college. Open all night, no employees, quarters every day.",
+    "type": "business",
+    "price": 120000,
+    "downPayment": 30000,
+    "mortgage": 90000,
+    "monthlyCashFlow": 1400,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "big-002",
+    "deck": "bigDeals",
+    "title": "Eight-Unit Apartment Building",
+    "description": "Brick building, full occupancy, a property manager already in place. The rent covers the mortgage with room to spare.",
+    "type": "rental",
+    "price": 320000,
+    "downPayment": 40000,
+    "mortgage": 280000,
+    "monthlyCashFlow": 2200,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "big-003",
+    "deck": "bigDeals",
+    "title": "Forty Acres Outside Town",
+    "description": "Farmland the city is growing toward. It earns nothing today and costs taxes, but a developer may come calling.",
+    "type": "land",
+    "price": 60000,
+    "downPayment": 12000,
+    "mortgage": 48000,
+    "monthlyCashFlow": -50,
+    "requiresKidsMode": false
+  },
+  {
+    "id": "big-004",
+    "deck": "bigDeals",
+    "title": "Car Wash",
+    "description": "Automatic tunnel wash on a busy corner. A manager runs it; you check the numbers once a month.",
+    "type": "business",
+    "price": 200000,
+    "downPayment": 50000,
+    "mortgage": 150000,
+    "monthlyCashFlow": 1900,
+    "requiresKidsMode": false
+  }
+]
