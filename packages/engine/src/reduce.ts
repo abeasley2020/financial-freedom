@@ -12,6 +12,7 @@ import { payLifestyle } from './actions/payLifestyle';
 import { repay } from './actions/repay';
 import { roll } from './actions/roll';
 import { sellAsset } from './actions/sellAsset';
+import { skipGive } from './actions/skipGive';
 import type { EngineError } from './errors';
 
 export type ReduceResult = { readonly ok: true; readonly state: GameState } | { readonly ok: false; readonly error: EngineError };
@@ -70,6 +71,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return declineMarket(state);
     case 'GIVE':
       return give(state);
+    case 'SKIP_GIVE':
+      return skipGive(state);
     default:
       return rejected('NOT_IMPLEMENTED');
   }
