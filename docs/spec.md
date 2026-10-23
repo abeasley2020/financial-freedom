@@ -25,9 +25,11 @@ Turn sequence (the engine enforces this order; no step can be skipped by hand):
 4. Player may take optional actions: repay a loan in full (never a mortgage; see Mortgages below), sell an asset when a Market card allows it, sell shares of a stock when that stock's card is drawn again, or borrow from the bank in $1,000 increments at 10 percent of principal added to monthly expenses. Borrowing is also legal while a buyOrPass or payLifestyle decision is open, so a player who is short can raise the cash to take the deal or pay the card: BORROW adds the cash and the bank liability and leaves the same decision open. In every other pending state BORROW is rejected. REPAY is legal only when no decision is pending. Kids mode never allows BORROW.
 5. Engine checks the win condition and advances to the next player.
 
-Board: inner loop of 24 spaces. Space mix: 9 Opportunity, 5 Market, 5 Lifestyle, 2 Payday, 2 Giving, 1 Setback. Setback cards (job loss, medical bill, car repair) force the player to pay or borrow and skip a turn if cash is negative.
+Board: inner loop of 24 spaces. Space mix: 9 Opportunity, 5 Market, 5 Lifestyle, 2 Payday, 2 Giving, 1 Setback. Setback cards (job loss, medical bill, car repair) force the player to pay at once.
 
-Bankruptcy: if a player cannot cover a required payment even after borrowing, they sell assets at half price until covered. If still short, they are out.
+Setback (decided 2026-10-23): landing on Setback draws a Setback card and pays its cashCost immediately; there is no decision to make and the card goes straight to the discard pile. If cash cannot cover the cost, the engine auto-borrows from the bank in $1,000 steps (the smallest number of steps that covers the shortfall, as an ordinary bank liability at 10 percent) and the player skips their next turn. The player also skips their next turn when the card's skipTurn is true. A skipped turn is recorded on the player as skipsNextTurn and cleared when END_TURN passes over them. Kids mode has no Setback spaces: in kids mode the Setback space does nothing.
+
+Bankruptcy (decided 2026-10-23): a player who cannot cover a required payment sells assets at half price until covered. Setback costs are always covered by auto-borrowing, so the payment that triggers bankruptcy is a Payday whose negative cash flow would take cash below zero (lifestyle loans and bank loans can push monthly cash flow negative). Sales are automatic: assets are sold in order of lowest monthlyCashFlow first, ties broken by lowest purchasePrice, each at pct(purchasePrice, 50), until cash is zero or more. Proceeds pay off the asset's linked mortgage first (the mortgage is retired even when the proceeds fall short of it) and the player keeps the rest. A sold deal card returns to its deck's discard pile; a stock lot simply disappears because its card never left the deck. If all assets are gone and cash is still below zero, the player is out: isOut is set, cash is set to 0, and the player takes no further turns. When fewer than two players remain in, the game ends.
 
 Professions (starting numbers in dollars per month; cash is a one-time start):
 
@@ -76,8 +78,13 @@ Stock rules:
 - Each BUY creates a separate asset lot with purchasePrice = shares × sharePrice and monthlyCashFlow = floor(shares × dividendPerShare).
 - Stocks are sold only by the current player, and only when the same stock card is drawn again at a new rolled price. The pending decision then offers buy, sell, or pass. A sale takes a chosen number of shares from one lot at the new sharePrice.
 - A stock card never leaves its deck. After the decision it goes to the discard pile; lots reference it by cardId.
+- A partial sale leaves the lot with the remaining shares; its purchasePrice and downPaid shrink in proportion (floored) and its monthlyCashFlow becomes floor(remaining shares × dividendPerShare). Selling every share removes the lot.
 
-Giving spaces are not cards. Landing on one lets the player give 10 percent of cash on hand. Each gift adds a Favor token. Three Favor tokens may be spent to re-draw any card once. This rewards generosity without making it a math trick.
+Market card resolution (engine reading of the card data, 2026-10-23; confirm or overrule): a Market card is drawn into the marketChoice decision. ACCEPT_MARKET applies the card's effects, in order, to the current player's assets whose type is in appliesTo: offerBuyout and forceSale sell at pct(purchasePrice, percentOfPurchasePrice), with the linked mortgage paid off first; changeCashFlow adds delta to each qualifying asset's monthlyCashFlow; splitShares multiplies each qualifying lot's shares by ratio and leaves purchasePrice and monthlyCashFlow unchanged. offerBuyout sells one asset: the only qualifying one, or the one named by assetId when the player holds several. forceSale, changeCashFlow, and splitShares apply to every qualifying asset. DECLINE_MARKET is legal only when every effect on the card is an offerBuyout (the only optional effect) or when the player owns no qualifying asset; either way the card is discarded with no effect. A player who owns no qualifying asset may ACCEPT_MARKET or DECLINE_MARKET and the card is simply discarded.
+
+Lifestyle card resolution: a Lifestyle card is drawn into the payLifestyle decision and must be paid. PAY_LIFESTYLE with method cash pays cashCost; with method loan it adds a lifestyle liability with principal loanPrincipal, monthlyPayment monthlyCost, and sourceCardId. A method the card does not offer is rejected. A player who is short may BORROW first (standard mode).
+
+Giving spaces are not cards. Landing on one lets the player give 10 percent of cash on hand. Each gift adds a Favor token. Three Favor tokens may be spent to re-draw any card once. This rewards generosity without making it a math trick. GIVE is rejected when 10 percent of cash floors to $0, so a token is never free; the player may SKIP_GIVE instead. Spending Favor tokens is not a Phase 1 action.
 
 ## Game engine design
 
@@ -86,7 +93,7 @@ The engine is a pure TypeScript package with zero React and zero Supabase import
 State model (one immutable object, serializable to JSON):
 
 - game: id, mode (standard or kids), phase (lobby, playing, finished), turnIndex, currentPlayerId, rngSeed, log.
-- players: array of player objects with id, name, professionId, position, cash, salary, assets, liabilities, favorTokens, isOut, hasEscaped.
+- players: array of player objects with id, name, professionId, position, cash, salary, assets, liabilities, favorTokens, isOut, hasEscaped, skipsNextTurn.
 - assets: each with id, cardId, type, purchasePrice, downPaid, monthlyCashFlow, shares if stock. One asset per BUY: a stock bought twice is two lots.
 - liabilities: each with id, kind (student, car, credit, mortgage, bank, lifestyle), principal, monthlyPayment. A lifestyle liability stores sourceCardId. A mortgage liability stores assetId and has monthlyPayment 0.
 - decks: for each deck, drawPile and discardPile as arrays of card ids.

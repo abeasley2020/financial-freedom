@@ -106,7 +106,7 @@ docs/
 
 ## Dependencies
 
-Approved (from the spec): react 18, vite, typescript, tailwindcss v3, shadcn/ui (and its Radix deps), zustand, zod, @supabase/supabase-js (Phase 2 only), vitest, fast-check, @playwright/test, @axe-core/playwright, eslint + typescript-eslint, husky. **Ask before adding anything else**, including `tsx` for the simulation script.
+Approved (from the spec): react 18, vite, typescript, tailwindcss v3, shadcn/ui (and its Radix deps), zustand, zod, @supabase/supabase-js (Phase 2 only), vitest, fast-check, @playwright/test, @axe-core/playwright, eslint + typescript-eslint, husky, and `tsx` (dev dependency, approved 2026-10-23 for the simulation script only). **Ask before adding anything else.**
 
 ---
 
@@ -170,8 +170,8 @@ Windows notes: the first `pnpm dev --host` triggers a Windows Firewall prompt. A
 
 Each item below is a game-design decision the spec doesn't make. Where a default is listed, use it only after Andre confirms.
 
-1. **Setback vs. no negative cash.** The spec says "skip a turn if cash is negative," but the invariant forbids negative cash. Default: if cash can't cover the cost, auto-borrow in $1,000 steps and skip next turn. Also skip if `card.skipTurn`. Blocks: Setback resolution.
-2. **Undo vs. randomness.** "Undo until END_TURN" would let a player re-roll. Default: undo is a host-side stack of states, not a reducer action, and can't go back past the most recent ROLL or card draw. Blocks: web undo button.
-3. **Bankruptcy sale details.** Who picks which asset to sell? Is half price taken from `purchasePrice`? Does the mortgage get paid off from the proceeds? Blocks: bankruptcy.
-4. **Kids mode with no loans.** What happens when a kid can't afford a Lifestyle card or a required payment? Blocks: kids mode (Phase 3).
-5. **Freedom track and dream purchases.** Not specified. Phase 1 ends the game at the first escape. Don't build the Freedom track until it's specified.
+1. **Undo vs. randomness.** "Undo until END_TURN" would let a player re-roll. Default: undo is a host-side stack of states, not a reducer action, and can't go back past the most recent ROLL or card draw. Blocks: web undo button.
+2. **Kids mode with no loans.** What happens when a kid can't afford a Lifestyle card or a required payment? Blocks: kids mode (Phase 3).
+3. **Freedom track and dream purchases.** Not specified. Phase 1 ends the game at the first escape. Don't build the Freedom track until it's specified.
+
+Resolved on 2026-10-23 and written into `docs/spec.md` (Core rules): Setback resolution (auto-borrow in $1,000 steps and skip the next turn; also skip on `card.skipTurn`) and bankruptcy sales (automatic, lowest `monthlyCashFlow` first, ties by lowest `purchasePrice`, at `pct(purchasePrice, 50)`, mortgage paid off first, `isOut` when nothing is left).
