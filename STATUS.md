@@ -38,12 +38,26 @@ Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine ac
 | SKIP_GIVE | merged | |
 | Setback resolution + bankruptcy | merged | `skipsNextTurn` on Player; END_TURN consumes skips and ends the game when fewer than two players remain |
 | Stage 4.1 property suite | merged | `invariants.props.test.ts`, 1,000 runs default, `FC_NUM_RUNS` honoured; found and fixed one over-strict invariant |
-| Stage 4.2 simulator | next | |
-| Stage 4.3 golden games | todo | |
+| Stage 4.2 simulator | merged | `pnpm sim`, report in `docs/sim/first-run.md`; no game numbers changed |
+| Stage 4.3 golden games | next | |
+
+### Simulator first run (docs/sim/first-run.md)
+
+1,000 standard games, 2 to 4 bots, three simple strategies, 400-turn cap. Headline numbers, with the spec targets of "no profession above 25% win rate" and "median game under 60 turns":
+
+| Measure | First run |
+| --- | --- |
+| Games ending by escape | 0.3% |
+| Games ending with one player left (everyone else bankrupt) | 99.1% |
+| Median game length, turns | 100 (2 players: 58, 3: 102, 4: 137) |
+| Seats that went bankrupt | 66.6% |
+| Win rate: Doctor / Engineer / Nurse / Electrician / Police / Teacher | 65% / 44% / 31% / 28% / 23% / 9.5% |
+
+Reading, for Andre to judge (no numbers were changed): with the current rules and the 21-card starter decks, the game is decided by attrition, not escape. The likely drivers are the mandatory Lifestyle cards (5 of 24 spaces, 3 cards recycling, loans that add $90 to $380/mo), Setback auto-loans at 10%/mo, and bankruptcy sales at half price with the mortgage paid first, which usually return nothing. Escapes need roughly $2,600 to $9,200/mo of passive income from 11 deal cards. Win rate tracks starting salary almost exactly, so the Doctor's cushion matters more than any play decision. The bots are simple, so a smarter buying strategy might escape more often; the simulator can be rerun after any card or number change with `pnpm sim`, and `--games`, `--seed`, `--players 2-6`, `--mode kids`, and `--max-turns` are accepted.
 
 ### Questions for Andre
 
-None yet. Each entry below, when added, has a proposed default and names the action it blocked.
+None blocked an action tonight. The simulator reading above is the one thing most worth a decision: whether the Phase 1 target is still "first escape wins" with these numbers, or whether the card decks need filling out (spec counts: 40 small, 25 big, 20 market, 25 lifestyle, 10 setback) before balance means anything.
 
 ### Decisions made alone tonight (confirm or overrule)
 
@@ -87,6 +101,7 @@ The repo is a pnpm workspace with three packages:
 | `invariants.ts` | `checkInvariants(state)` returns violations; `assertInvariants` throws them. Checks the Zod schema (integers, non-negative cash, strict shapes, one pending), per-player rules (out players hold no assets, mortgages finance a held asset, unique ids), the current player (an out player may be current only between their own ROLL and END_TURN), deck conservation per deck (draw + discard + held non-stock cards + pending card = the mode's deck, no duplicates), pending cards of the right deck, and log turn numbers. `fullDeck(state, deck)` is the mode-aware deck. |
 | `replay.ts` | `replay(initial, actions)` re-applies a log; throws if any action is rejected. |
 | `invariants.props.test.ts` | fast-check suite. A game is `(seed, mode, professions[], choices[])`; `test/walk.ts` turns each choice number into a candidate action from the current pending state (mostly legal, some deliberately off, every 23rd from the wrong player). Properties: invariants after every accepted action (standard and kids), only the current player is accepted, END_TURN only with pending none, one log entry per accepted action, replay rebuilds the final state, byte-identical determinism, standard games never get stuck, kids games get stuck only on an unpayable Lifestyle card (spec gap 2), wrong-player actions always `NOT_YOUR_TURN`. `test/fcConfig.ts` reads `FC_NUM_RUNS` (default 1,000). Each property has a 120 s timeout because `pnpm test` runs it in parallel with every other file. |
+| `../sim/` (outside `src/`, own `tsconfig.json` with Node types, Node globals allowed in ESLint) | `bots.ts` (`decide(state, strategy)` returns moves best first; strategies cautious, balanced, aggressive differ in cash cushion, willingness to borrow for a deal, and required return per $1,000 down), `simulate.ts` (`playGame`, `simulate` → `SimReport`; seating drawn from the engine PRNG so a report is reproducible), `run.ts` (CLI, Markdown report, `--out`). Bots only ever call `reduce`; a bot with no accepted move throws, which the 1,000-game run never hit. |
 | `sales.ts` | `liquidate(state, playerId, asset, proceeds, reason)`: removes the asset, retires its linked mortgage first (`mortgagePaid = min(proceeds, principal)`), credits the rest, returns a deal card to its deck's discard pile (a stock lot just disappears). Shared by Market sales and bankruptcy. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If the player is in and `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. If fewer than two players are in, `phase: finished` with the survivor current. Otherwise increments `turnNumber` and moves to the next seat that is in; a seat with `skipsNextTurn` is passed over once, its flag cleared, event `turnSkipped`. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
@@ -131,7 +146,7 @@ Schema decisions worth knowing:
 
 Tooling in place: TypeScript strict (plus `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `erasableSyntaxOnly`), ESLint flat config with type-aware rules, the engine purity rules from CLAUDE.md Rule 1 enforced by ESLint, `id-denylist` on bare `expenses`, Vitest projects (`shared`, `engine`, `web`), Husky pre-commit running `pnpm typecheck` and `pnpm lint`, `.gitattributes` forcing LF.
 
-Root scripts from the CLAUDE.md command table all exist. Two are placeholders that exit 1 with a message: `pnpm e2e` (Playwright not installed) and `pnpm sim` (simulation not written). `pnpm test:props` runs the fast-check suite (about 10 s at 1,000 runs); `pnpm test` runs it too, so `pnpm check` runs it twice.
+Root scripts from the CLAUDE.md command table all exist. One is a placeholder that exits 1 with a message: `pnpm e2e` (Playwright not installed). `pnpm sim` runs the balance simulation through `tsx` (1,000 games in under a second). `pnpm test:props` runs the fast-check suite (about 10 s at 1,000 runs); `pnpm test` runs it too, so `pnpm check` runs it twice.
 
 Package manager note: `corepack enable` fails with EPERM on this machine because Node lives under Program Files. pnpm was installed with `npm i -g pnpm` instead. The `packageManager` field in `package.json` pins the version.
 

@@ -3,6 +3,7 @@
   "references": [
     { "path": "./packages/shared" },
     { "path": "./packages/engine" },
+    { "path": "./packages/engine/sim" },
     { "path": "./packages/web/tsconfig.app.json" },
     { "path": "./packages/web/tsconfig.node.json" }
   ]

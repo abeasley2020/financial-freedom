@@ -105,6 +105,15 @@ export default defineConfig([
     },
   },
 
+  // Balance simulation: a Node script outside the pure engine. It may log and
+  // write files, but it still only talks to the engine through reduce().
+  {
+    files: ['packages/engine/sim/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+
   // Web: React 18 + Vite, with accessibility lint.
   {
     files: ['packages/web/src/**/*.{ts,tsx}'],

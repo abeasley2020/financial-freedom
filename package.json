@@ -18,7 +18,7 @@
     "test:props": "vitest run --project engine props.test",
     "test:watch": "vitest",
     "e2e": "node -e \"console.error('e2e: Playwright is not set up yet. See STATUS.md.'); process.exit(1)\"",
-    "sim": "node -e \"console.error('sim: balance simulation is not written yet. See STATUS.md.'); process.exit(1)\"",
+    "sim": "tsx packages/engine/sim/run.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm test:props",
     "prepare": "husky"
   },
@@ -30,6 +30,7 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "husky": "^9.1.7",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.72.0",
     "vitest": "^5.0.5"
