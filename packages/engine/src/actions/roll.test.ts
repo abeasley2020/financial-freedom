@@ -114,13 +114,14 @@ describe('ROLL: resolving the landed space', () => {
     expect(next.pending).toEqual({ kind: 'giveOrSkip' });
   });
 
-  it('ROLL: landing on Setback leaves pending none and the setback deck untouched (spec gap 1, unresolved)', () => {
+  it('ROLL: landing on Setback draws the top setback card, pays it, and leaves pending none (details in setback.test.ts)', () => {
     const before = twoPlayerGame();
+    const [top, ...rest] = before.decks.setback.drawPile;
     const next = apply(aboutToRoll(before, 10, 1), ROLL);
     expect(BOARD[11]).toBe('setback');
     expect(next.pending).toEqual({ kind: 'none' });
-    expect(next.decks.setback).toEqual(before.decks.setback);
-    expect(p1(next).cash).toBe(400);
+    expect(next.decks.setback).toEqual({ drawPile: rest, discardPile: [top] });
+    expect(p1(next).cash).toBeLessThan(400 + 4_000);
   });
 
   it('ROLL: in kids mode, Opportunity draws from the small deals deck into pending buyOrPass', () => {

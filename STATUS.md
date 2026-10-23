@@ -19,8 +19,8 @@ Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine ac
 | DECLINE_MARKET | merged | `MARKET_EFFECT_MANDATORY` unless every effect is a buyout or nothing qualifies |
 | GIVE | merged | `INSUFFICIENT_CASH` when 10% floors to $0 |
 | SKIP_GIVE | merged | |
-| Setback resolution + bankruptcy | next | decided tonight; lands as its own branch after the actions |
-| Stage 4.1 property suite | todo | |
+| Setback resolution + bankruptcy | merged | `skipsNextTurn` on Player; END_TURN consumes skips and ends the game when fewer than two players remain |
+| Stage 4.1 property suite | next | |
 | Stage 4.2 simulator | todo | |
 | Stage 4.3 golden games | todo | |
 
@@ -54,7 +54,8 @@ The repo is a pnpm workspace with three packages:
 | File | Contents |
 | --- | --- |
 | `reduce.ts` | `reduce(state, action)`. Guards phase and `NOT_YOUR_TURN`, dispatches to `actions/`, appends the log entry with the pre-action `turnNumber`. Unlisted actions return `NOT_IMPLEMENTED`. |
-| `actions/roll.ts` | Rolls, moves, credits one Payday per Payday space passed or landed on, resolves the space: Opportunity → `chooseDealSize` (kids mode draws a small deal → `buyOrPass`), Market → draw → `marketChoice`, Lifestyle → draw → `payLifestyle`, Giving → `giveOrSkip`, Payday → none, Setback → none (resolution not yet written). |
+| `actions/roll.ts` | Rolls, moves, credits one Payday per Payday space passed or landed on (each using the player as they then stand), resolves the space: Opportunity → `chooseDealSize` (kids mode draws a small deal → `buyOrPass`), Market → draw → `marketChoice`, Lifestyle → draw → `payLifestyle`, Giving → `giveOrSkip`, Payday → none, Setback → draw, pay `cashCost` at once (auto-borrow the smallest $1,000 multiple covering the shortfall as a `bank` liability and set `skipsNextTurn`; also set it on `card.skipTurn`), card to the setback discard pile, pending none. Kids mode: Setback does nothing. A Payday that takes cash below zero calls `resolveBankruptcy`; a player who goes out does not resolve the space. Events: `rolled`, `moved`, `payday`, `drewCard`, `borrowed`, `cashChanged`, `setback`, plus bankruptcy events. |
+| `bankruptcy.ts` | `resolveBankruptcy(state, playerId)`: while cash < 0, `liquidate` the asset with the lowest `monthlyCashFlow` (ties: lowest `purchasePrice`, then holding order) at `pct(purchasePrice, 50)`; if assets run out, set `isOut`, cash 0, event `wentOut { shortfall }`. |
 | `actions/chooseDealSize.ts` | Valid only when `pending` is `chooseDealSize`. Draws from `smallDeals` or `bigDeals` into `pending: buyOrPass`. A stock card gets `sharePrice` rolled inside its `priceRange` (inclusive) at draw time, advancing `rngState`, logged as `sharePriceRolled`. Empty deck → `pending: none`. |
 | `actions/buy.ts` | Valid only when `pending` is `buyOrPass`. Non-stock: pays `downPayment` (`INSUFFICIENT_CASH` if short), adds the asset with the card's numbers, adds one `mortgage` liability (`monthlyPayment: 0`, `assetId`) when financed, keeps the card as the asset. Stock: `shares` required and at most `sharesAvailable` (`INVALID_SHARES`), cost `shares × pending.sharePrice`, lot with `monthlyCashFlow = floor(shares × dividendPerShare)`, card back to the discard pile. Asset id is `${playerId}-${cardId}-${log.length}`; mortgage id is that plus `-mortgage`. Events: `cashChanged`, `bought`. |
 | `actions/pass.ts` | Valid only when `pending` is `buyOrPass`. Sends the card to its deck's discard pile and clears `pending`. Same for a stock, which is how a holder declines to buy or sell. Event: `passed`. |
@@ -67,7 +68,7 @@ The repo is a pnpm workspace with three packages:
 | `actions/give.ts` | Valid only when `pending` is `giveOrSkip`. Pays `pct(cash, 10)` and adds one Favor token; `INSUFFICIENT_CASH` when the gift would be $0. Events: `cashChanged`, `gave`. |
 | `actions/skipGive.ts` | Valid only when `pending` is `giveOrSkip`. Clears the decision. Event: `skippedGive`. |
 | `sales.ts` | `liquidate(state, playerId, asset, proceeds, reason)`: removes the asset, retires its linked mortgage first (`mortgagePaid = min(proceeds, principal)`), credits the rest, returns a deal card to its deck's discard pile (a stock lot just disappears). Shared by Market sales and bankruptcy. |
-| `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
+| `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If the player is in and `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. If fewer than two players are in, `phase: finished` with the survivor current. Otherwise increments `turnNumber` and moves to the next seat that is in; a seat with `skipsNextTurn` is passed over once, its flag cleared, event `turnSkipped`. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
 | `createGame.ts` | Initial state from `{ id, mode, seed, players }`. Starting liabilities get `monthlyPayment = pct(principal, LIABILITY_PAYMENT_PERCENT[kind])`. Shuffles every deck from the seed. Standard mode drops `requiresKidsMode` cards; kids mode drops stock cards. |
 | `decks.ts` | `drawCard(state, deck)`: reshuffles the discard pile into the draw pile when the draw pile is empty; returns `cardId: undefined` when both are empty. |
@@ -103,7 +104,8 @@ Schema decisions worth knowing:
 - `Liability` has an `id` so `REPAY` can name one loan among several of the same kind. A `mortgage` liability must carry `assetId` and `monthlyPayment: 0`. A `lifestyle` liability must carry `sourceCardId`.
 - `Asset` has its own `id`. One asset per BUY, so a stock bought twice is two lots. `SELL_ASSET` takes `assetId` plus optional `shares`; `ACCEPT_MARKET` takes optional `assetId`.
 - `game` stores both `rngSeed` (never changes) and `rngState` (advanced on every draw).
-- `LogEntry` is `{ turnNumber, action, events[] }`. Event kinds: `rolled`, `moved`, `payday`, `drewCard`, `sharePriceRolled`, `passed`, `borrowed`, `repaid`, `paidLifestyle`, `bought`, `sold`, `cashFlowChanged`, `sharesSplit`, `gave`, `skippedGive`, `cashChanged`. Add kinds as actions need them.
+- `LogEntry` is `{ turnNumber, action, events[] }`. Event kinds: `rolled`, `moved`, `payday`, `drewCard`, `sharePriceRolled`, `passed`, `borrowed`, `repaid`, `paidLifestyle`, `bought`, `sold`, `cashFlowChanged`, `sharesSplit`, `gave`, `skippedGive`, `setback`, `wentOut`, `turnSkipped`, `cashChanged`. Add kinds as actions need them.
+- `Player.skipsNextTurn` (boolean) is the one fact added tonight: a Setback happened and the next END_TURN pass must skip this seat. It is an event that happened, like `isOut`, not a derived value.
 - `board.json` order is a first pass: Payday at 0 and 12, Setback at 11. The spec gives only the mix, not the order.
 - Small deals cap `downPayment` at $5,000. A fixture test enforces it.
 

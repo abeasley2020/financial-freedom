@@ -76,6 +76,7 @@ export function createGame(options: CreateGameOptions): GameState {
       favorTokens: 0,
       isOut: false,
       hasEscaped: false,
+      skipsNextTurn: false,
     };
   });
 

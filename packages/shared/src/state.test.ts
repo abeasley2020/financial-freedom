@@ -16,6 +16,7 @@ const player: Player = {
   favorTokens: 0,
   isOut: false,
   hasEscaped: false,
+  skipsNextTurn: false,
 };
 
 const emptyPile = { drawPile: [], discardPile: [] };

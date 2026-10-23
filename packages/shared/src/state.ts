@@ -95,6 +95,8 @@ export const PlayerSchema = z
     isOut: z.boolean(),
     /** Escaped the Grind. Set once; never cleared even if passive income later falls. */
     hasEscaped: z.boolean(),
+    /** A Setback made this player sit out their next turn. Cleared when END_TURN passes over them. */
+    skipsNextTurn: z.boolean(),
   })
   .strict();
 export type Player = DeepReadonly<z.infer<typeof PlayerSchema>>;
@@ -206,6 +208,21 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   /** `favorTokens` is the player's total after the gift. */
   z.object({ kind: z.literal('gave'), amount: MoneySchema.positive(), favorTokens: z.number().int().positive() }).strict(),
   z.object({ kind: z.literal('skippedGive') }).strict(),
+  z
+    .object({
+      kind: z.literal('setback'),
+      cardId: CardIdSchema,
+      cost: MoneySchema,
+      /** Bank loan taken automatically to cover the cost; 0 when cash covered it. */
+      autoBorrowed: MoneySchema,
+      /** True when the card or the forced loan makes the player sit out their next turn. */
+      skipsNextTurn: z.boolean(),
+    })
+    .strict(),
+  /** Bankruptcy sales could not cover a Payday deficit; the current player is out. */
+  z.object({ kind: z.literal('wentOut'), shortfall: MoneySchema.positive() }).strict(),
+  /** END_TURN passed over this player because of a Setback. */
+  z.object({ kind: z.literal('turnSkipped'), playerId: PlayerIdSchema }).strict(),
   z.object({ kind: z.literal('cashChanged'), delta: SignedMoneySchema, reason: z.string().min(1) }).strict(),
 ]);
 export type LogEvent = DeepReadonly<z.infer<typeof LogEventSchema>>;
