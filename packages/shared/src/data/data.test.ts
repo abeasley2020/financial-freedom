@@ -82,9 +82,14 @@ describe('fixtures: cards/*.json', () => {
     expect(result.success, issues(result)).toBe(true);
   });
 
-  it('ships 20 starter cards across the five decks', () => {
+  it('ships 21 starter cards across the five decks (20 from spec step 3 plus one dividend stock)', () => {
     const total = DECK_IDS.reduce((n, deck) => n + CARDS_BY_DECK[deck].length, 0);
-    expect(total).toBe(20);
+    expect(total).toBe(21);
+  });
+
+  it('includes at least one dividend-paying stock so BUY can exercise the dividend rule', () => {
+    const paying = SMALL_DEALS.filter((c) => c.type === 'stock' && (c.dividendPerShare ?? 0) > 0);
+    expect(paying.length).toBeGreaterThan(0);
   });
 
   it('card ids are unique across all decks', () => {

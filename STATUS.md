@@ -21,6 +21,7 @@ The repo is a pnpm workspace with three packages:
 | `reduce.ts` | `reduce(state, action)`. Guards phase and `NOT_YOUR_TURN`, dispatches to `actions/`, appends the log entry with the pre-action `turnNumber`. Unlisted actions return `NOT_IMPLEMENTED`. |
 | `actions/roll.ts` | Rolls, moves, credits one Payday per Payday space passed or landed on, resolves the space: Opportunity → `chooseDealSize` (kids mode draws a small deal → `buyOrPass`), Market → draw → `marketChoice`, Lifestyle → draw → `payLifestyle`, Giving → `giveOrSkip`, Payday → none, Setback → none (gap 1). |
 | `actions/chooseDealSize.ts` | Valid only when `pending` is `chooseDealSize`. Draws from `smallDeals` or `bigDeals` into `pending: buyOrPass`. A stock card gets `sharePrice` rolled inside its `priceRange` (inclusive) at draw time, advancing `rngState`, logged as `sharePriceRolled`. Empty deck → `pending: none`. |
+| `actions/buy.ts` | Valid only when `pending` is `buyOrPass`. Non-stock: pays `downPayment` (`INSUFFICIENT_CASH` if short), adds the asset with the card's numbers, adds one `mortgage` liability (`monthlyPayment: 0`, `assetId`) when financed, keeps the card as the asset. Stock: `shares` required and at most `sharesAvailable` (`INVALID_SHARES`), cost `shares × pending.sharePrice`, lot with `monthlyCashFlow = floor(shares × dividendPerShare)`, card back to the discard pile. Asset id is `${playerId}-${cardId}-${log.length}`; mortgage id is that plus `-mortgage`. Events: `cashChanged`, `bought`. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
 | `createGame.ts` | Initial state from `{ id, mode, seed, players }`. Starting liabilities get `monthlyPayment = pct(principal, LIABILITY_PAYMENT_PERCENT[kind])`. Shuffles every deck from the seed. Standard mode drops `requiresKidsMode` cards. |
@@ -50,7 +51,7 @@ Engine decisions made in step 4 that Andre should confirm or overrule:
 | `state.ts` | `GameStateSchema` and its parts: `GameSchema`, `PlayerSchema`, `AssetSchema`, `LiabilitySchema`, `DecksSchema`, `PendingSchema`, `LogEntrySchema` / `LogEventSchema` |
 | `actions.ts` | `ActionSchema` (all 13 actions, each with `playerId`), `BORROW_STEP = 1000` |
 | `readonly.ts` | `DeepReadonly<T>`; every exported state and card type is wrapped in it |
-| `data/` | `professions.json` (6), `cards/*.json` (20 starter cards: 6 small, 4 big, 4 market, 3 lifestyle, 3 setback), `board.json` (24 spaces); `data/index.ts` parses each at import and exports `PROFESSIONS`, `CARDS_BY_DECK`, `CARDS_BY_ID`, `BOARD` |
+| `data/` | `professions.json` (6), `cards/*.json` (21 starter cards: 7 small, 4 big, 4 market, 3 lifestyle, 3 setback; the 21st is Lakeshore Utilities, a dividend-paying stock added so BUY can test the dividend rule), `board.json` (24 spaces); `data/index.ts` parses each at import and exports `PROFESSIONS`, `CARDS_BY_DECK`, `CARDS_BY_ID`, `BOARD` |
 
 Schema decisions worth knowing before step 4:
 
@@ -77,13 +78,9 @@ Also resolved on 2026-10-23, written into `docs/spec.md` (Core rules "Mortgages"
 
 ## Next step
 
-Spec step 5, next action: `BUY` (valid only when `pending` is `buyOrPass`).
+Spec step 5, next action: `PASS` (valid only when `pending` is `buyOrPass`). The card goes to its deck's discard pile and `pending` becomes `none`. For a stock, pass is also how a holder declines to buy or sell. Test helper `offered(state, cardId, sharePrice?)` in `test/fixtures.ts` walks the real ROLL → CHOOSE_DEAL_SIZE path to a buyOrPass decision.
 
-- Non-stock deal: pay `downPayment` from cash (reject `INSUFFICIENT_CASH`), add the asset (`id`, `cardId`, `type`, `purchasePrice = price`, `downPaid = downPayment`, `monthlyCashFlow` from the card), and when `mortgage > 0` add one `mortgage` liability with `principal = mortgage`, `monthlyPayment: 0`, `assetId`. The card is held as the asset (not discarded), so the deck-size invariant counts it.
-- Stock: `action.shares` is required, whole, at most `sharesAvailable`; cost is `shares × pending.sharePrice` (reject `INSUFFICIENT_CASH`); add a lot with `purchasePrice = downPaid = cost`, `monthlyCashFlow = floor(shares × (dividendPerShare ?? 0))`, `shares`. The card goes to the discard pile.
-- Asset ids need a deterministic scheme (no `crypto`): for example `${playerId}-${cardId}-${log.length}`.
-
-Then `PASS` (card to the discard pile; for a stock, pass is also how a holder declines to buy or sell), `BORROW`, `REPAY` (reject a mortgage), `PAY_LIFESTYLE`, `SELL_ASSET` (stock lots only while `pending` is `buyOrPass` for that card; mortgage paid off first from proceeds), and on in the CLAUDE.md order.
+Then `BORROW`, `REPAY` (reject a mortgage), `PAY_LIFESTYLE`, `SELL_ASSET` (stock lots only while `pending` is `buyOrPass` for that card; mortgage paid off first from proceeds), and on in the CLAUDE.md order.
 
 ## Deferred from the scaffold
 

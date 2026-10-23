@@ -3,6 +3,7 @@ export type EngineError =
   | 'NOT_YOUR_TURN'
   | 'INVALID_FOR_PENDING'
   | 'INSUFFICIENT_CASH'
+  | 'INVALID_SHARES'
   | 'GAME_NOT_PLAYING'
   | 'ALREADY_ROLLED'
   | 'MUST_ROLL_FIRST'

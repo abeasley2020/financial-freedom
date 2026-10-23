@@ -1,5 +1,6 @@
 import type { Action, GameState, LogEntry, LogEvent } from '@ff/shared';
 
+import { buy } from './actions/buy';
 import { chooseDealSize } from './actions/chooseDealSize';
 import { endTurn } from './actions/endTurn';
 import { roll } from './actions/roll';
@@ -43,6 +44,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return endTurn(state, action);
     case 'CHOOSE_DEAL_SIZE':
       return chooseDealSize(state, action);
+    case 'BUY':
+      return buy(state, action);
     default:
       return rejected('NOT_IMPLEMENTED');
   }

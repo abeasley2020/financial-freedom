@@ -138,6 +138,17 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('payday'), amount: SignedMoneySchema }).strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
+  z
+    .object({
+      kind: z.literal('bought'),
+      assetId: AssetIdSchema,
+      cardId: CardIdSchema,
+      /** Cash paid now: the down payment, or shares × sharePrice. */
+      cost: MoneySchema,
+      /** Stock lots only. */
+      shares: z.number().int().positive().optional(),
+    })
+    .strict(),
   z.object({ kind: z.literal('cashChanged'), delta: SignedMoneySchema, reason: z.string().min(1) }).strict(),
 ]);
 export type LogEvent = DeepReadonly<z.infer<typeof LogEventSchema>>;
