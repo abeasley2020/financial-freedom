@@ -8,6 +8,7 @@ export * from './board';
 export * from './cards';
 export * from './data/index';
 export * from './money';
+export * from './principles';
 export * from './professions';
 export type { DeepReadonly } from './readonly';
 export * from './state';

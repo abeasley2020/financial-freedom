@@ -3,32 +3,83 @@
     "id": "market-001",
     "deck": "market",
     "title": "Eager Buyer",
-    "description": "A family relocating for work offers double what you paid for any rental you own. Sell, or keep the cash flow?",
-    "effects": [{ "kind": "offerBuyout", "percentOfPurchasePrice": 200 }],
-    "appliesTo": ["rental"]
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Someone offers twice what you paid for a rental. Sell it, or keep the rent?",
+    "adultText": "A family relocating for work offers double what you paid for any rental you own. Sell, or keep the cash flow?",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "offerBuyout",
+        "percentOfPurchasePrice": 200
+      }
+    ],
+    "appliesTo": [
+      "rental"
+    ]
   },
   {
     "id": "market-002",
     "deck": "market",
     "title": "Tenant Moves Out",
-    "description": "A tenant breaks their lease. Each rental you own earns $100 less per month until you find someone new.",
-    "effects": [{ "kind": "changeCashFlow", "delta": -100 }],
-    "appliesTo": ["rental"]
+    "principles": [
+      "P1",
+      "P9"
+    ],
+    "kidsText": "A renter moves out. Each rental you own pays $100 less a month for now.",
+    "adultText": "A tenant breaks their lease. Each rental you own earns $100 less per month until you find someone new.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeCashFlow",
+        "delta": -100
+      }
+    ],
+    "appliesTo": [
+      "rental"
+    ]
   },
   {
     "id": "market-003",
     "deck": "market",
     "title": "Stock Split",
-    "description": "Every stock you hold splits two for one. Twice the shares, same total value today.",
-    "effects": [{ "kind": "splitShares", "ratio": 2 }],
-    "appliesTo": ["stock"]
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "Each share you own becomes two shares. Same value today.",
+    "adultText": "Every stock you hold splits two for one. Twice the shares, same total value today.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "splitShares",
+        "ratio": 2
+      }
+    ],
+    "appliesTo": [
+      "stock"
+    ]
   },
   {
     "id": "market-004",
     "deck": "market",
     "title": "Highway Comes Through",
-    "description": "The state buys any land you own for the new highway at one and a half times what you paid. You cannot refuse.",
-    "effects": [{ "kind": "forceSale", "percentOfPurchasePrice": 150 }],
-    "appliesTo": ["land"]
+    "principles": [
+      "P9"
+    ],
+    "kidsText": "The state buys your land for a new road. You get more than you paid.",
+    "adultText": "The state buys any land you own for the new highway at one and a half times what you paid. You cannot refuse.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "forceSale",
+        "percentOfPurchasePrice": 150
+      }
+    ],
+    "appliesTo": [
+      "land"
+    ]
   }
 ]

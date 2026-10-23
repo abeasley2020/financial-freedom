@@ -3,7 +3,12 @@
     "id": "setback-001",
     "deck": "setback",
     "title": "Furnace Dies",
-    "description": "In January. The repair company can come tomorrow if you pay today.",
+    "principles": [
+      "P1"
+    ],
+    "kidsText": "The heater broke in winter. You have to pay to fix it today.",
+    "adultText": "In January. The repair company can come tomorrow if you pay today.",
+    "kidsOk": true,
     "cashCost": 3500,
     "skipTurn": false
   },
@@ -11,7 +16,12 @@
     "id": "setback-002",
     "deck": "setback",
     "title": "Car Repair",
-    "description": "Transmission trouble. You need the car to get to work, so there is no putting it off.",
+    "principles": [
+      "P1"
+    ],
+    "kidsText": "Your car broke down. You need it for work, so you pay now.",
+    "adultText": "Transmission trouble. You need the car to get to work, so there is no putting it off.",
+    "kidsOk": true,
     "cashCost": 900,
     "skipTurn": false
   },
@@ -19,7 +29,12 @@
     "id": "setback-003",
     "deck": "setback",
     "title": "Job Loss",
-    "description": "Layoffs. You find new work, but a month of bills comes due before the first paycheck. Skip your next turn.",
+    "principles": [
+      "P1"
+    ],
+    "kidsText": "You lost your job. Bills still come. You skip your next turn.",
+    "adultText": "Layoffs. You find new work, but a month of bills comes due before the first paycheck. Skip your next turn.",
+    "kidsOk": true,
     "cashCost": 2000,
     "skipTurn": true
   }

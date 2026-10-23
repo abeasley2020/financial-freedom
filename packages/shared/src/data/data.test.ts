@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 
 import { BoardSchema } from '../board';
 import { CardSchema, DealCardSchema, DECK_IDS, type DeckId } from '../cards';
+import { PRINCIPLE_IDS } from '../principles';
 import { ProfessionSchema } from '../professions';
 import rawBoard from './board.json';
 import rawBigDeals from './cards/big-deals.json';
@@ -105,6 +106,43 @@ describe('fixtures: cards/*.json', () => {
   it('includes at least one stock card so the engine can exercise price ranges', () => {
     const stocks = SMALL_DEALS.filter((c) => c.type === 'stock');
     expect(stocks.length).toBeGreaterThan(0);
+  });
+
+  // Spec v2, Engineering practices, content tests. The per-principle minimum
+  // (every principle on at least 3 cards) waits for Stage C's full decks.
+  const everyCard = DECK_IDS.flatMap((deck) => CARDS_BY_DECK[deck]);
+
+  it('every card carries at least one known principle', () => {
+    for (const card of everyCard) {
+      expect(card.principles.length, card.id).toBeGreaterThan(0);
+      for (const p of card.principles) expect(PRINCIPLE_IDS, `${card.id} ${p}`).toContain(p);
+    }
+  });
+
+  it('every card has kidsText of 90 characters or fewer and adultText of 160 or fewer, with no em dashes', () => {
+    for (const card of everyCard) {
+      expect(card.kidsText.length, `${card.id} kidsText`).toBeLessThanOrEqual(90);
+      expect(card.adultText.length, `${card.id} adultText`).toBeLessThanOrEqual(160);
+      expect(card.kidsText, card.id).not.toMatch(/\u2014/);
+      expect(card.adultText, card.id).not.toMatch(/\u2014/);
+      expect(card.title, card.id).not.toMatch(/\u2014/);
+    }
+  });
+
+  it('every Setback card teaches P1 (spec, Setback cards)', () => {
+    for (const card of CARDS_BY_DECK.setback) expect(card.principles, card.id).toContain('P1');
+  });
+
+  it('single stocks are not kidsOk (spec, Kids mode: no single stocks)', () => {
+    for (const card of SMALL_DEALS) {
+      if (card.type === 'stock') expect(card.kidsOk, card.id).toBe(false);
+    }
+  });
+
+  it('every deck keeps at least one kidsOk card so kids mode has something to draw', () => {
+    for (const deck of DECK_IDS) {
+      expect(CARDS_BY_DECK[deck].some((c) => c.kidsOk), deck).toBe(true);
+    }
   });
 });
 

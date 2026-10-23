@@ -70,15 +70,22 @@ describe('createGame', () => {
     expect(a.decks.smallDeals.drawPile).not.toEqual(b.decks.smallDeals.drawPile);
   });
 
-  it('kids mode removes stock cards from the small deals deck and nothing else', () => {
+  it('kids mode keeps only kidsOk cards in every deck, which drops the single stocks (spec, Kids mode)', () => {
     const kids = createGame({ ...options, mode: 'kids' });
-    const smallDeals = CARDS_BY_DECK.smallDeals;
-    const stockIds = smallDeals.filter((c) => c.deck === 'smallDeals' && c.type === 'stock').map((c) => c.id);
-    const nonStockIds = smallDeals.filter((c) => !stockIds.includes(c.id)).map((c) => c.id);
-    expect(stockIds.length).toBeGreaterThan(0);
-    expect([...kids.decks.smallDeals.drawPile].sort()).toEqual(nonStockIds.sort());
-    for (const deck of DECK_IDS.filter((d) => d !== 'smallDeals')) {
-      expect([...kids.decks[deck].drawPile].sort(), deck).toEqual(CARDS_BY_DECK[deck].map((c) => c.id).sort());
+    for (const deck of DECK_IDS) {
+      const kidsOk = CARDS_BY_DECK[deck].filter((c) => c.kidsOk).map((c) => c.id);
+      expect([...kids.decks[deck].drawPile].sort(), deck).toEqual(kidsOk.sort());
+    }
+    expect(kids.decks.smallDeals.drawPile).not.toContain('small-005');
+    expect(kids.decks.smallDeals.drawPile).not.toContain('small-007');
+    expect(kids.decks.smallDeals.drawPile.length).toBeGreaterThan(0);
+  });
+
+  it('kids mode drops a non-stock card that is not kidsOk', () => {
+    // Every fixture small deal that is not a stock is kidsOk today, so this pins the rule against the schema, not the data.
+    const notForKids = CARDS_BY_DECK.smallDeals.filter((c) => !c.kidsOk);
+    for (const card of notForKids) {
+      expect(createGame({ ...options, mode: 'kids' }).decks.smallDeals.drawPile).not.toContain(card.id);
     }
   });
 

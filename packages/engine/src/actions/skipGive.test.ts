@@ -42,7 +42,7 @@ describe('SKIP_GIVE: declining to give', () => {
 describe('SKIP_GIVE: log and determinism', () => {
   it('SKIP_GIVE: appends a log entry with a skippedGive event', () => {
     const next = apply(onGiving(400), SKIP);
-    expect(next.game.log.at(-1)).toEqual({ turnNumber: 0, action: SKIP, events: [{ kind: 'skippedGive' }] });
+    expect(next.game.log.at(-1)).toEqual({ turnNumber: 0, action: SKIP, events: [{ kind: 'skippedGive', principles: ['P10'] }] });
   });
 
   it('SKIP_GIVE: is deterministic', () => {

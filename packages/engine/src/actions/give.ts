@@ -1,4 +1,4 @@
-import type { GameState } from '@ff/shared';
+import { DECISION_PRINCIPLES, type GameState } from '@ff/shared';
 
 import { pct } from '../money';
 import { rejected, type ActionResult } from '../reduce';
@@ -29,7 +29,7 @@ export function give(state: GameState): ActionResult {
     },
     events: [
       { kind: 'cashChanged', delta: -amount, reason: 'give' },
-      { kind: 'gave', amount, favorTokens },
+      { kind: 'gave', amount, favorTokens, principles: DECISION_PRINCIPLES.giving },
     ],
   };
 }

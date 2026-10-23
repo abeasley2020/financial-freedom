@@ -3,48 +3,71 @@
     "id": "big-001",
     "deck": "bigDeals",
     "title": "Laundromat",
-    "description": "Twenty machines in a strip mall next to a college. Open all night, no employees, quarters every day.",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Twenty washing machines near a college. Quarters come in all day and night.",
+    "adultText": "Twenty machines in a strip mall next to a college. Open all night, no employees, quarters every day.",
+    "kidsOk": true,
     "type": "business",
     "price": 120000,
     "downPayment": 30000,
     "mortgage": 90000,
-    "monthlyCashFlow": 1400,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 1400
   },
   {
     "id": "big-002",
     "deck": "bigDeals",
     "title": "Eight-Unit Apartment Building",
-    "description": "Brick building, full occupancy, a property manager already in place. The rent covers the mortgage with room to spare.",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Eight apartments, all rented out. The rent pays the loan and then some.",
+    "adultText": "Brick building, full occupancy, a property manager already in place. Rent covers the mortgage with room to spare.",
+    "kidsOk": true,
     "type": "rental",
     "price": 320000,
     "downPayment": 40000,
     "mortgage": 280000,
-    "monthlyCashFlow": 2200,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 2200
   },
   {
     "id": "big-003",
     "deck": "bigDeals",
     "title": "Forty Acres Outside Town",
-    "description": "Farmland the city is growing toward. It earns nothing today and costs taxes, but a developer may come calling.",
+    "principles": [
+      "P4",
+      "P9"
+    ],
+    "kidsText": "Empty land near town. It costs a little each month, but someone may want it later.",
+    "adultText": "Farmland the city is growing toward. It earns nothing today and costs taxes, but a developer may come calling.",
+    "kidsOk": true,
     "type": "land",
     "price": 60000,
     "downPayment": 12000,
     "mortgage": 48000,
-    "monthlyCashFlow": -50,
-    "requiresKidsMode": false
+    "monthlyCashFlow": -50
   },
   {
     "id": "big-004",
     "deck": "bigDeals",
     "title": "Car Wash",
-    "description": "Automatic tunnel wash on a busy corner. A manager runs it; you check the numbers once a month.",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A car wash on a busy corner. A manager runs it for you.",
+    "adultText": "Automatic tunnel wash on a busy corner. A manager runs it; you check the numbers once a month.",
+    "kidsOk": true,
     "type": "business",
     "price": 200000,
     "downPayment": 50000,
     "mortgage": 150000,
-    "monthlyCashFlow": 1900,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 1900
   }
 ]

@@ -1,4 +1,4 @@
-import type { Action, GameState } from '@ff/shared';
+import { DECISION_PRINCIPLES, type Action, type GameState } from '@ff/shared';
 
 import { rejected, type ActionResult } from '../reduce';
 import { currentPlayer, hasRolledThisTurn } from '../selectors';
@@ -30,7 +30,7 @@ export function repay(state: GameState, action: Extract<Action, { type: 'REPAY' 
     },
     events: [
       { kind: 'cashChanged', delta: -loan.principal, reason: 'repay' },
-      { kind: 'repaid', liabilityId: loan.id, principal: loan.principal },
+      { kind: 'repaid', liabilityId: loan.id, principal: loan.principal, principles: DECISION_PRINCIPLES.repayLoan },
     ],
   };
 }

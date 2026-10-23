@@ -59,7 +59,7 @@ export function buy(state: GameState, action: Extract<Action, { type: 'BUY' }>):
     },
     events: [
       { kind: 'cashChanged', delta: -cost, reason: 'buy' },
-      { kind: 'bought', assetId, cardId: card.id, cost },
+      { kind: 'bought', assetId, cardId: card.id, cost, principles: card.principles },
     ],
   };
 }
@@ -96,7 +96,7 @@ function buyStock(
   const piles = state.decks[card.deck];
   const events: LogEvent[] = [
     { kind: 'cashChanged', delta: -cost, reason: 'buy' },
-    { kind: 'bought', assetId, cardId: card.id, cost, shares },
+    { kind: 'bought', assetId, cardId: card.id, cost, shares, principles: card.principles },
   ];
 
   return {

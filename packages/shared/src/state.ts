@@ -4,6 +4,7 @@ import { ActionSchema, AssetIdSchema, LiabilityIdSchema, PlayerIdSchema } from '
 import { BOARD_SIZE } from './board';
 import { AssetTypeSchema, CardIdSchema, DECK_IDS, DeckIdSchema } from './cards';
 import { MoneySchema, SignedMoneySchema } from './money';
+import { PrinciplesSchema } from './principles';
 import { LiabilityKindSchema, ProfessionIdSchema } from './professions';
 import type { DeepReadonly } from './readonly';
 
@@ -153,16 +154,19 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
     .strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
-  z.object({ kind: z.literal('passed'), cardId: CardIdSchema }).strict(),
+  /** A deal (or Market card) declined. Carries the card's principles (spec, Decision log). */
+  z.object({ kind: z.literal('passed'), cardId: CardIdSchema, principles: PrinciplesSchema }).strict(),
+  /** A bank loan, taken by BORROW (P5) or forced by a Setback (P1). */
   z
     .object({
       kind: z.literal('borrowed'),
       liabilityId: LiabilityIdSchema,
       amount: MoneySchema,
       monthlyPayment: MoneySchema,
+      principles: PrinciplesSchema,
     })
     .strict(),
-  z.object({ kind: z.literal('repaid'), liabilityId: LiabilityIdSchema, principal: MoneySchema }).strict(),
+  z.object({ kind: z.literal('repaid'), liabilityId: LiabilityIdSchema, principal: MoneySchema, principles: PrinciplesSchema }).strict(),
   z
     .object({
       kind: z.literal('paidLifestyle'),
@@ -184,6 +188,8 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       cost: MoneySchema,
       /** Stock lots only. */
       shares: z.number().int().positive().optional(),
+      /** The card's principles. */
+      principles: PrinciplesSchema,
     })
     .strict(),
   z
@@ -198,6 +204,8 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       remainingShares: z.number().int().nonnegative().optional(),
       /** Set when the sale retired a linked mortgage: how much of the proceeds went to it. */
       mortgagePaid: MoneySchema.optional(),
+      /** The card's principles. */
+      principles: PrinciplesSchema,
     })
     .strict(),
   z
@@ -219,8 +227,10 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
     })
     .strict(),
   /** `favorTokens` is the player's total after the gift. */
-  z.object({ kind: z.literal('gave'), amount: MoneySchema.positive(), favorTokens: z.number().int().positive() }).strict(),
-  z.object({ kind: z.literal('skippedGive') }).strict(),
+  z
+    .object({ kind: z.literal('gave'), amount: MoneySchema.positive(), favorTokens: z.number().int().positive(), principles: PrinciplesSchema })
+    .strict(),
+  z.object({ kind: z.literal('skippedGive'), principles: PrinciplesSchema }).strict(),
   z
     .object({
       kind: z.literal('setback'),

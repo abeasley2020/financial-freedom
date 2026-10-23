@@ -142,7 +142,7 @@ describe('BORROW: log and determinism', () => {
       action: borrow(2_000),
       events: [
         { kind: 'cashChanged', delta: 2_000, reason: 'borrow' },
-        { kind: 'borrowed', liabilityId: loanId, amount: 2_000, monthlyPayment: 200 },
+        { kind: 'borrowed', liabilityId: loanId, amount: 2_000, monthlyPayment: 200, principles: ['P5'] },
       ],
     });
   });

@@ -3,7 +3,14 @@
     "id": "life-001",
     "deck": "lifestyle",
     "title": "New Truck",
-    "description": "The old one still runs, but this one has heated seats. Pay cash or take the dealer's loan.",
+    "principles": [
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "kidsText": "Your old truck still runs. A new one has heated seats. Pay cash or take a loan.",
+    "adultText": "The old one still runs, but this one has heated seats. Pay cash or take the dealer's loan.",
+    "kidsOk": true,
     "cashCost": 4000,
     "monthlyCost": 380,
     "loanPrincipal": 12000
@@ -12,14 +19,27 @@
     "id": "life-002",
     "deck": "lifestyle",
     "title": "Family Beach Week",
-    "description": "Seven nights, four people, one rented house by the ocean. Memories are not a monthly bill, but the trip is.",
+    "principles": [
+      "P3",
+      "P4"
+    ],
+    "kidsText": "A week at the beach for the whole family. Fun, but it costs real money.",
+    "adultText": "Seven nights, four people, one rented house by the ocean. Memories are not a monthly bill, but the trip is.",
+    "kidsOk": true,
     "cashCost": 2500
   },
   {
     "id": "life-003",
     "deck": "lifestyle",
     "title": "Big Screen and Sound System",
-    "description": "Wall-sized television and speakers you can feel. The store offers no-money-down financing.",
+    "principles": [
+      "P4",
+      "P6",
+      "P7"
+    ],
+    "kidsText": "A giant TV and big speakers. The store will let you pay a little each month.",
+    "adultText": "Wall-sized television and speakers you can feel. The store offers no-money-down financing.",
+    "kidsOk": true,
     "cashCost": 1800,
     "monthlyCost": 90,
     "loanPrincipal": 1800

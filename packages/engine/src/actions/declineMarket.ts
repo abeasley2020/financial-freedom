@@ -16,5 +16,9 @@ export function declineMarket(state: GameState): ActionResult {
   const optional = card.effects.every((e) => e.kind === 'offerBuyout');
   if (!optional && qualifyingAssets(state, card).length > 0) return rejected('MARKET_EFFECT_MANDATORY');
 
-  return { ok: true, state: discardMarketCard(state, card.id), events: [{ kind: 'passed', cardId: card.id }] };
+  return {
+    ok: true,
+    state: discardMarketCard(state, card.id),
+    events: [{ kind: 'passed', cardId: card.id, principles: card.principles }],
+  };
 }
