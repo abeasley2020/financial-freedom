@@ -5,6 +5,7 @@ import { buy } from './actions/buy';
 import { chooseDealSize } from './actions/chooseDealSize';
 import { endTurn } from './actions/endTurn';
 import { pass } from './actions/pass';
+import { payLifestyle } from './actions/payLifestyle';
 import { repay } from './actions/repay';
 import { roll } from './actions/roll';
 import type { EngineError } from './errors';
@@ -55,6 +56,8 @@ function dispatch(state: GameState, action: Action): ActionResult {
       return borrow(state, action);
     case 'REPAY':
       return repay(state, action);
+    case 'PAY_LIFESTYLE':
+      return payLifestyle(state, action);
     default:
       return rejected('NOT_IMPLEMENTED');
   }

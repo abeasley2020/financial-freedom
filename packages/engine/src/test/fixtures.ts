@@ -1,6 +1,6 @@
 // Test-only builders. Production code never imports from src/test/.
 
-import { CARDS_BY_ID, type Game, type GameState, type Player } from '@ff/shared';
+import { BOARD, CARDS_BY_ID, type DeckId, type Game, type GameState, type Player } from '@ff/shared';
 
 import { createGame } from '../createGame';
 import { reduce } from '../reduce';
@@ -55,6 +55,21 @@ function mustApply(state: GameState, action: Parameters<typeof reduce>[1]): Game
   return result.state;
 }
 
+/** Puts `cardId` on top of `deck`'s draw pile, removing it from wherever else it was. */
+export function onTopOfDeck(state: GameState, deck: DeckId, cardId: string): GameState {
+  const piles = state.decks[deck];
+  return {
+    ...state,
+    decks: {
+      ...state.decks,
+      [deck]: {
+        drawPile: [cardId, ...piles.drawPile.filter((id) => id !== cardId)],
+        discardPile: piles.discardPile.filter((id) => id !== cardId),
+      },
+    },
+  };
+}
+
 /**
  * Walks the real path to a buyOrPass decision for `cardId`: puts the card on
  * top of its deck, rolls the current player from 0 onto Opportunity (space 1),
@@ -67,17 +82,7 @@ export function offered(state: GameState, cardId: string, sharePrice?: number): 
     throw new Error(`fixture: "${cardId}" is not a deal card`);
   }
   const deck = card.deck;
-  const piles = state.decks[deck];
-  const onTop: GameState = {
-    ...state,
-    decks: {
-      ...state.decks,
-      [deck]: {
-        drawPile: [cardId, ...piles.drawPile.filter((id) => id !== cardId)],
-        discardPile: piles.discardPile.filter((id) => id !== cardId),
-      },
-    },
-  };
+  const onTop = onTopOfDeck(state, deck, cardId);
   const playerId = state.game.currentPlayerId;
   const rolled = mustApply(aboutToRoll(onTop, 0, 1), { type: 'ROLL', playerId });
   const chosen = mustApply(rolled, {
@@ -87,4 +92,21 @@ export function offered(state: GameState, cardId: string, sharePrice?: number): 
   });
   if (sharePrice === undefined || chosen.pending.kind !== 'buyOrPass') return chosen;
   return { ...chosen, pending: { kind: 'buyOrPass', cardId, sharePrice } };
+}
+
+/**
+ * Walks the real path to a marketChoice or payLifestyle decision for
+ * `cardId`: puts the card on top of its deck and rolls the current player
+ * from 0 onto the first board space of the matching kind (Market is space 2,
+ * Lifestyle is space 4 on the starter board; neither crosses a Payday).
+ */
+export function drawn(state: GameState, cardId: string): GameState {
+  const card = CARDS_BY_ID.get(cardId);
+  if (card?.deck !== 'market' && card?.deck !== 'lifestyle') {
+    throw new Error(`fixture: "${cardId}" is not a market or lifestyle card`);
+  }
+  const space = BOARD.indexOf(card.deck);
+  if (space < 1 || space > 6) throw new Error(`fixture: no ${card.deck} space within one die roll of 0`);
+  const onTop = onTopOfDeck(state, card.deck, cardId);
+  return mustApply(aboutToRoll(onTop, 0, space), { type: 'ROLL', playerId: state.game.currentPlayerId });
 }

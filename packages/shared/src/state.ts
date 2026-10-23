@@ -150,6 +150,18 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('repaid'), liabilityId: LiabilityIdSchema, principal: MoneySchema }).strict(),
   z
     .object({
+      kind: z.literal('paidLifestyle'),
+      cardId: CardIdSchema,
+      method: z.enum(['cash', 'loan']),
+      /** cashCost when paid in cash; loanPrincipal when financed. */
+      amount: MoneySchema,
+      /** Loan only. */
+      liabilityId: LiabilityIdSchema.optional(),
+      monthlyPayment: MoneySchema.optional(),
+    })
+    .strict(),
+  z
+    .object({
       kind: z.literal('bought'),
       assetId: AssetIdSchema,
       cardId: CardIdSchema,
