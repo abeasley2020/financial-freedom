@@ -2,6 +2,14 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## Stage A, spec v2 (2026-10-23)
+
+- `docs/spec.md` rewritten as v2: ten principles, 16 professions with a numbers rule, Life Choices deck (every card has an option with no monthly cost), growth assets, 15-round limit and Freedom percentage, decision log facts, and the debrief with its attribution table. v1 rules not changed are kept and labeled.
+- `docs/plan-wealth-edition.md` added: build stages A to H and their prompts.
+- CLAUDE.md spec gaps now point at the spec's v2 open questions. Kids-who-cannot-pay and the Freedom track are resolved by v2.
+- The six overnight decisions are confirmed.
+- No code changed.
+
 ## Morning summary (overnight session, 2026-10-23)
 
 Stages 3 and 4 are complete. Main is green (`pnpm check`: 27 test files, 526 tests including the 7 fast-check properties at 1,000 runs each, zero lint warnings) and pushed to origin. No UI work was started.
@@ -61,7 +69,7 @@ Reading, for Andre to judge (no numbers were changed): with the current rules an
 
 None blocked an action tonight. The simulator reading above is the one thing most worth a decision: whether the Phase 1 target is still "first escape wins" with these numbers, or whether the card decks need filling out (spec counts: 40 small, 25 big, 20 market, 25 lifestyle, 10 setback) before balance means anything.
 
-### Decisions made alone tonight (confirm or overrule)
+### Decisions made alone tonight (confirmed by Andre 2026-10-23)
 
 These are engine readings of the spec that the spec and tonight's decisions did not state outright. Each is written into `docs/spec.md` so the rule has one home; overruling one means editing the spec and the test that pins it.
 
@@ -155,7 +163,9 @@ Package manager note: `corepack enable` fails with EPERM on this machine because
 
 ## Next step
 
-Stages 3 and 4 are done; the next work is Andre's call. Candidates, in the order the spec implies: fill out the card decks toward the spec counts and rerun `pnpm sim`; resolve spec gap 1 (undo) and gap 2 (kids who cannot pay) so kids mode can finish a game; then the first UI session (`formatMoney`, Tailwind, shadcn/ui, Zustand, a router decision, `legalActions(state, playerId)` for the buttons).
+Stage A of `docs/plan-wealth-edition.md` is done: `docs/spec.md` is v2 (Wealth Edition), the plan is committed, and CLAUDE.md points at both. Before Stage B, Andre reviews the "v2 open questions" table at the end of the spec (Q1 to Q11). Stage B uses each recommended default unless he overrules it in the spec.
+
+Then Stage B (engine v2 rules, unattended), Stage C (content), Stage D (tuning), Stage E (debrief), in that order. Prompts are in the plan.
 
 ## Deferred from the scaffold
 

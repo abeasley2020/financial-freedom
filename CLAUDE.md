@@ -4,7 +4,7 @@ Family cash-flow board game. Laptop shows the shared table, phones show private 
 
 Progress and next steps go in `STATUS.md`, not here. Read both at the start of every session.
 
-**Current state:** see `STATUS.md`. Sessions follow the "First Claude Code session" list in the spec, in that order.
+**Current state:** see `STATUS.md`. Work follows the build stages A through H in `docs/plan-wealth-edition.md`, in that order. `docs/spec.md` is v2 (Wealth Edition).
 
 ---
 
@@ -42,6 +42,8 @@ Store only facts. If a value can be computed from other stored values, it is a s
 | `monthlyCashFlow` = salary + passiveIncome − totalExpenses | `hasEscaped`, `isOut` (events that happened; passive income can fall later) |
 | `netWorth`, `canEscape` (passiveIncome ≥ totalExpenses) | `game.currentPlayerId`, `game.turnNumber` (spec calls it `turnIndex`) |
 | current player object, deck sizes, legal actions | `decks[*].drawPile` / `discardPile`, `pending`, `rngState`, `log` |
+| `freedomPercent`, `roundNumber`, growth asset cash flow = `pct(marketValue, payoutPercent)` | growth asset `marketValue`, `growthPercent`, `payoutPercent` |
+| Life Choices option `costToday` and `monthlyChange` | the card and option data |
 
 Use the names above exactly. The spec uses "expenses" in two different senses, so "expenses" alone is banned in code. Always write `baseExpenses` or `totalExpenses`.
 
@@ -64,8 +66,7 @@ No reducer action or selector is written before a failing test for it. For each 
 5. Add the action to the fast-check action generator, then run `pnpm test:props`.
 6. Run `pnpm check`. Done means green with zero warnings.
 
-Action order (from the spec; nothing new starts until the previous step passes):
-ROLL, END_TURN, Payday crediting → CHOOSE_DEAL_SIZE → BUY → PASS → BORROW → REPAY → PAY_LIFESTYLE → SELL_ASSET → ACCEPT_MARKET → DECLINE_MARKET → GIVE → SKIP_GIVE.
+v1 actions are all built. v2 work follows Stage B in `docs/plan-wealth-edition.md`: principles, then CHOOSE_LIFE_OPTION (replaces PAY_LIFESTYLE), then growth assets, then the round limit, then the decision-log events. Nothing new starts until the previous item passes.
 
 ---
 
@@ -170,8 +171,8 @@ Windows notes: the first `pnpm dev --host` triggers a Windows Firewall prompt. A
 
 Each item below is a game-design decision the spec doesn't make. Where a default is listed, use it only after Andre confirms.
 
-1. **Undo vs. randomness.** "Undo until END_TURN" would let a player re-roll. Default: undo is a host-side stack of states, not a reducer action, and can't go back past the most recent ROLL or card draw. Blocks: web undo button.
-2. **Kids mode with no loans.** What happens when a kid can't afford a Lifestyle card or a required payment? Blocks: kids mode (Phase 3).
-3. **Freedom track and dream purchases.** Not specified. Phase 1 ends the game at the first escape. Don't build the Freedom track until it's specified.
+The v2 open questions at the end of `docs/spec.md` (Q1 to Q11) were all decided by Andre on 2026-10-23 and are rules now. The undo rule is Q7 there. New gaps go in STATUS.md under "Questions for Andre".
+
+Resolved by spec v2 (2026-10-23): kids who cannot pay (every Life Choices card has an option with no monthly cost, and kids Setback spaces do nothing) and the Freedom track (dropped; the 15-round limit and Freedom percentage replace it).
 
 Resolved on 2026-10-23 and written into `docs/spec.md` (Core rules): Setback resolution (auto-borrow in $1,000 steps and skip the next turn; also skip on `card.skipTurn`) and bankruptcy sales (automatic, lowest `monthlyCashFlow` first, ties by lowest `purchasePrice`, at `pct(purchasePrice, 50)`, mortgage paid off first, `isOut` when nothing is left).
