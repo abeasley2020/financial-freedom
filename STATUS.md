@@ -20,9 +20,11 @@ All root scripts from the CLAUDE.md command table exist. Two are placeholders th
 
 Package manager note: `corepack enable` fails with EPERM on this machine because Node lives under Program Files. pnpm was installed with `npm i -g pnpm` instead. The `packageManager` field in `package.json` pins the version.
 
+Spec gaps resolved on 2026-10-23 and written into `docs/spec.md`: liability monthly payments (fixed percent of principal per kind, under the profession table), Payday timing (credit each Payday passed or landed on, then resolve the space), the `lifestyle` liability kind with `sourceCardId`, and the `giveOrSkip` pending state. The remaining CLAUDE.md spec gaps are renumbered 1–5 (Setback, undo, bankruptcy sale, kids mode, Freedom track).
+
 ## Next step
 
-Spec step 2: write the shared types and Zod schemas for state, cards, and actions in `packages/shared/src/`. Before starting, resolve CLAUDE.md spec gaps 1 (liability payments), 2 (Payday timing), 4 (lifestyle loan kind), and 5 (giving pending state) with Andre, since they change the state shape.
+Spec step 2: write the shared types and Zod schemas for state, cards, and actions in `packages/shared/src/`. The state shape is now unblocked; the four gaps that affected it are resolved in the spec.
 
 Then step 3 (profession and card JSON fixtures), then step 4 (ROLL, END_TURN, Payday, test-first).
 

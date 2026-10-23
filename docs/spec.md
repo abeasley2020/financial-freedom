@@ -20,8 +20,8 @@ Win condition: a player escapes the Grind (the inner loop) when passive income i
 Turn sequence (the engine enforces this order; no step can be skipped by hand):
 
 1. Roll one six-sided die and move that many spaces on the inner loop.
-2. Resolve the space landed on: Opportunity (choose small deal or big deal), Market, Lifestyle, Payday, Giving, or Setback.
-3. If the move passed or landed on Payday, the engine credits monthly cash flow (salary plus passive income minus expenses minus loan payments) before resolving the space.
+2. Credit monthly cash flow for each Payday space passed or landed on during the move.
+3. Resolve the space landed on.
 4. Player may take optional actions: repay a loan in full, sell an asset when a Market card allows it, or borrow from the bank in $1,000 increments at 10 percent of principal added to monthly expenses.
 5. Engine checks the win condition and advances to the next player.
 
@@ -40,7 +40,9 @@ Professions (starting numbers in dollars per month; cash is a one-time start):
 | Engineer | 6,500 | 4,400 | 1,500 | Student loan 35,000, car loan 12,000, credit card 4,000 |
 | Doctor | 13,000 | 9,200 | 3,000 | Student loan 150,000, car loan 20,000, credit card 8,000 |
 
-Design intent: every profession's starting cash flow is roughly 20 to 30 percent of expenses, so the doctor is not an automatic winner. Higher salary comes with higher expenses and bigger debt.
+The Expenses column is baseExpenses. Each liability adds a monthly payment equal to a fixed percent of its principal, floored to whole dollars: student loan 1%, car loan 2%, credit card 3%, mortgage 1%, bank loan 10%, lifestyle loan the card's stated monthly cost. totalExpenses = baseExpenses + the sum of those payments.
+
+Starting cash flow varies by profession on purpose; the Stage 4 simulator decides whether any profession needs rebalancing.
 
 Kids mode (ages 7 to 10): one Opportunity deck instead of two, round numbers only, no bank loans, no Setback spaces, win at passive income greater than or equal to expenses, target 30 minutes.
 
@@ -76,9 +78,9 @@ State model (one immutable object, serializable to JSON):
 - game: id, mode (standard or kids), phase (lobby, playing, finished), turnIndex, currentPlayerId, rngSeed, log.
 - players: array of player objects with id, name, professionId, position, cash, salary, assets, liabilities, favorTokens, isOut, hasEscaped.
 - assets: each with cardId, type, purchasePrice, downPaid, monthlyCashFlow, shares if stock.
-- liabilities: each with kind (student, car, credit, mortgage, bank), principal, monthlyPayment.
+- liabilities: each with kind (student, car, credit, mortgage, bank, lifestyle), principal, monthlyPayment. A lifestyle liability stores sourceCardId.
 - decks: for each deck, drawPile and discardPile as arrays of card ids.
-- pending: the one decision the current player must make before the turn advances (none, chooseDealSize, buyOrPass, marketChoice, payLifestyle).
+- pending: the one decision the current player must make before the turn advances (none, chooseDealSize, buyOrPass, marketChoice, payLifestyle, giveOrSkip).
 
 Derived values are never stored. Monthly expenses, passive income, cash flow, and net worth are computed from the state by selector functions so they can never drift out of sync.
 

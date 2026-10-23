@@ -170,12 +170,8 @@ Windows notes: the first `pnpm dev --host` triggers a Windows Firewall prompt. A
 
 Each item below is a game-design decision the spec doesn't make. Where a default is listed, use it only after Andre confirms.
 
-1. **Liability monthly payments per profession.** The profession table gives principals but no monthly payments, and `totalExpenses` needs them. Blocks: profession fixtures, Payday.
-2. **Payday timing.** Turn step 2 says resolve the space, step 3 says credit Payday "before resolving the space." Default: move → credit each Payday passed or landed on → resolve the space. Blocks: ROLL.
-3. **Setback vs. no negative cash.** The spec says "skip a turn if cash is negative," but the invariant forbids negative cash. Default: if cash can't cover the cost, auto-borrow in $1,000 steps and skip next turn. Also skip if `card.skipTurn`. Blocks: Setback resolution.
-4. **Lifestyle loans.** The liability `kind` list has no slot for a lifestyle loan. Default: add `kind: 'lifestyle'` with `sourceCardId`, so it counts in `debtPayments` and `REPAY` can clear it. Blocks: PAY_LIFESTYLE.
-5. **Giving needs a pending state.** GIVE/SKIP_GIVE exist, but `pending` has no matching value. Default: add `giveOrSkip`. Blocks: GIVE, SKIP_GIVE.
-6. **Undo vs. randomness.** "Undo until END_TURN" would let a player re-roll. Default: undo is a host-side stack of states, not a reducer action, and can't go back past the most recent ROLL or card draw. Blocks: web undo button.
-7. **Bankruptcy sale details.** Who picks which asset to sell? Is half price taken from `purchasePrice`? Does the mortgage get paid off from the proceeds? Blocks: bankruptcy.
-8. **Kids mode with no loans.** What happens when a kid can't afford a Lifestyle card or a required payment? Blocks: kids mode (Phase 3).
-9. **Freedom track and dream purchases.** Not specified. Phase 1 ends the game at the first escape. Don't build the Freedom track until it's specified.
+1. **Setback vs. no negative cash.** The spec says "skip a turn if cash is negative," but the invariant forbids negative cash. Default: if cash can't cover the cost, auto-borrow in $1,000 steps and skip next turn. Also skip if `card.skipTurn`. Blocks: Setback resolution.
+2. **Undo vs. randomness.** "Undo until END_TURN" would let a player re-roll. Default: undo is a host-side stack of states, not a reducer action, and can't go back past the most recent ROLL or card draw. Blocks: web undo button.
+3. **Bankruptcy sale details.** Who picks which asset to sell? Is half price taken from `purchasePrice`? Does the mortgage get paid off from the proceeds? Blocks: bankruptcy.
+4. **Kids mode with no loans.** What happens when a kid can't afford a Lifestyle card or a required payment? Blocks: kids mode (Phase 3).
+5. **Freedom track and dream purchases.** Not specified. Phase 1 ends the game at the first escape. Don't build the Freedom track until it's specified.
