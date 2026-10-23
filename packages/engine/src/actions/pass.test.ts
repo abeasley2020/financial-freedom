@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { reduce } from '../reduce';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
+import { aboutToRoll, offered, twoPlayerGame, withGame, withPlayer, withZeroCashFlow } from '../test/fixtures';
 
 const PASS: Action = { type: 'PASS', playerId: 'p1' };
 
@@ -71,12 +71,34 @@ describe('PASS: declining a deal', () => {
 });
 
 describe('PASS: log and determinism', () => {
-  it('PASS: appends a log entry with a passed event', () => {
+  it('PASS: appends a log entry with a passed event carrying the deal facts the debrief needs (spec, Decision log)', () => {
+    // Ada holds 400 + 700 Payday = 1,100 against a 5,000 down payment: not affordable.
     const next = apply(offered(twoPlayerGame(), 'small-001'), PASS);
     expect(next.game.log.at(-1)).toEqual({
       turnNumber: 0,
       action: PASS,
-      events: [{ kind: 'passed', cardId: 'small-001', principles: ['P2', 'P3', 'P5'] }],
+      events: [
+        { kind: 'passed', cardId: 'small-001', principles: ['P2', 'P3', 'P5'], monthlyCashFlow: 160, downPayment: 5_000, affordable: false },
+      ],
+    });
+  });
+
+  it('PASS: records affordable true when cash on hand covers the down payment, including the exact amount', () => {
+    const exact = apply(offered(withZeroCashFlow(withPlayer(twoPlayerGame(), 'p1', { cash: 5_000 }), 'p1'), 'small-001'), PASS);
+    expect(exact.game.log.at(-1)?.events[0]).toMatchObject({ kind: 'passed', affordable: true });
+    const short = apply(offered(withZeroCashFlow(withPlayer(twoPlayerGame(), 'p1', { cash: 4_999 }), 'p1'), 'small-001'), PASS);
+    expect(short.game.log.at(-1)?.events[0]).toMatchObject({ kind: 'passed', affordable: false });
+  });
+
+  it('PASS: a passed stock records the card price per share as the down payment and its card cash flow', () => {
+    const next = apply(offered(twoPlayerGame(), 'small-005', 20), PASS);
+    expect(next.game.log.at(-1)?.events[0]).toEqual({
+      kind: 'passed',
+      cardId: 'small-005',
+      principles: ['P8', 'P9'],
+      monthlyCashFlow: 0,
+      downPayment: 20,
+      affordable: true,
     });
   });
 

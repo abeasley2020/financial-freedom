@@ -208,9 +208,29 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
     .strict(),
   z.object({ kind: z.literal('drewCard'), deck: DeckIdSchema, cardId: CardIdSchema }).strict(),
   z.object({ kind: z.literal('sharePriceRolled'), cardId: CardIdSchema, sharePrice: MoneySchema }).strict(),
-  /** A deal (or Market card) declined. Carries the card's principles (spec, Decision log). */
-  z.object({ kind: z.literal('passed'), cardId: CardIdSchema, principles: PrinciplesSchema }).strict(),
-  /** A bank loan, taken by BORROW (P5) or forced by a Setback (P1). */
+  /**
+   * Spec, Decision log: PASS on a deal records the card's monthlyCashFlow, its
+   * downPayment (the reference price per share for a stock, the minimum for a
+   * growth asset), and whether cash on hand covered that down payment.
+   */
+  z
+    .object({
+      kind: z.literal('passed'),
+      cardId: CardIdSchema,
+      principles: PrinciplesSchema,
+      monthlyCashFlow: SignedMoneySchema,
+      downPayment: MoneySchema,
+      affordable: z.boolean(),
+    })
+    .strict(),
+  /** A Market card declined (DECLINE_MARKET). */
+  z.object({ kind: z.literal('declinedMarket'), cardId: CardIdSchema, principles: PrinciplesSchema }).strict(),
+  /**
+   * A bank loan, taken by BORROW (P5) or forced by a Setback (P1). Spec,
+   * Decision log: BORROW records what the cash was for (the open decision:
+   * buyOrPass is an asset, lifeChoice is a want, otherwise none); a Setback
+   * auto-loan records the card.
+   */
   z
     .object({
       kind: z.literal('borrowed'),
@@ -218,8 +238,15 @@ export const LogEventSchema = z.discriminatedUnion('kind', [
       amount: MoneySchema,
       monthlyPayment: MoneySchema,
       principles: PrinciplesSchema,
+      purpose: z.enum(['asset', 'want', 'setback', 'none']),
+      /** Setback loans only: the card that forced the loan. */
+      cardId: CardIdSchema.optional(),
     })
-    .strict(),
+    .strict()
+    .refine((e) => (e.purpose === 'setback') === (e.cardId !== undefined), {
+      message: 'a Setback loan names its card; no other loan does',
+      path: ['cardId'],
+    }),
   z.object({ kind: z.literal('repaid'), liabilityId: LiabilityIdSchema, principal: MoneySchema, principles: PrinciplesSchema }).strict(),
   /**
    * Spec, Decision log: CHOOSE_LIFE_OPTION records the chosen option's two

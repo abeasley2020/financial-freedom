@@ -141,7 +141,7 @@ describe('BORROW: log and determinism', () => {
       action: borrow(2_000),
       events: [
         { kind: 'cashChanged', delta: 2_000, reason: 'borrow' },
-        { kind: 'borrowed', liabilityId: loanId, amount: 2_000, monthlyPayment: 200, principles: ['P5'] },
+        { kind: 'borrowed', liabilityId: loanId, amount: 2_000, monthlyPayment: 200, principles: ['P5'], purpose: 'none' },
       ],
     });
   });
@@ -198,5 +198,23 @@ describe('BORROW: rejections', () => {
     const logBefore = before.game.log.length;
     expect(reduce(before, borrow(500)).ok).toBe(false);
     expect(before.game.log).toHaveLength(logBefore);
+  });
+});
+
+describe('BORROW: records what the borrowed cash was for (spec, Decision log)', () => {
+  it('BORROW: during buyOrPass the purpose is an asset', () => {
+    const next = apply(offered(twoPlayerGame(), 'small-001'), borrow(5_000));
+    expect(next.game.log.at(-1)?.events[1]).toMatchObject({ kind: 'borrowed', purpose: 'asset' });
+  });
+
+  it('BORROW: during lifeChoice the purpose is a want', () => {
+    const next = apply(drawn(twoPlayerGame(), 'life-001'), borrow(4_000));
+    expect(next.game.log.at(-1)?.events[1]).toMatchObject({ kind: 'borrowed', purpose: 'want' });
+  });
+
+  it('BORROW: with nothing pending the purpose is none', () => {
+    const next = apply(afterRoll(), borrow(1_000));
+    expect(next.game.log.at(-1)?.events[1]).toMatchObject({ kind: 'borrowed', purpose: 'none' });
+    expect(next.game.log.at(-1)?.events[1]).not.toHaveProperty('cardId');
   });
 });
