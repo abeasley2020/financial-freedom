@@ -1,0 +1,197 @@
+// Property suite (spec, Testing strategy; CLAUDE.md, Engine invariants).
+// Random games are played through the real reducer and every invariant is
+// checked after every accepted action. On failure fast-check prints a seed
+// and path; paste them into fc.assert's options to replay.
+
+import { PROFESSIONS, type Action, type GameState } from '@ff/shared';
+import fc from 'fast-check';
+import { describe, expect, it } from 'vitest';
+
+import { assertInvariants, checkInvariants } from './invariants';
+import { reduce } from './reduce';
+import { replay } from './replay';
+import { deepFreeze } from './test/deepFreeze';
+import { NUM_RUNS } from './test/fcConfig';
+import { isStuck, setupGame, step, type WalkSetup } from './test/walk';
+
+const setupArb = (mode: fc.Arbitrary<'standard' | 'kids'>): fc.Arbitrary<WalkSetup> =>
+  fc.record({
+    seed: fc.integer(),
+    mode,
+    professions: fc.array(fc.nat({ max: PROFESSIONS.length - 1 }), { minLength: 2, maxLength: 6 }),
+  });
+
+/** Property tests run thousands of reducer calls; under a parallel `pnpm test` they need more than the 5 s default. */
+const PROPERTY_TIMEOUT_MS = 120_000;
+
+const choicesArb = fc.array(fc.nat({ max: 1_000_000 }), { minLength: 20, maxLength: 250 });
+
+interface Played {
+  readonly initial: GameState;
+  readonly final: GameState;
+  readonly accepted: readonly Action[];
+  readonly steps: number;
+}
+
+/**
+ * Plays a game from `setup` with `choices`, checking after every accepted
+ * action that the invariants hold, that only the current player acted, that
+ * END_TURN came with no decision pending, and that a rejection changed
+ * nothing. Stops when the game finishes or the choices run out.
+ */
+function play(setup: WalkSetup, choices: readonly number[]): Played {
+  const initial = setupGame(setup);
+  assertInvariants(initial);
+  let state = initial;
+  const accepted: Action[] = [];
+  let steps = 0;
+  for (const n of choices) {
+    if (state.game.phase !== 'playing') break;
+    const frozen = deepFreeze(state);
+    const { action, result } = step(frozen, n);
+    steps++;
+    if (!result.ok) continue;
+    expect(action.playerId, `${action.type} accepted from a player who is not current`).toBe(frozen.game.currentPlayerId);
+    if (action.type === 'END_TURN') expect(frozen.pending.kind, 'END_TURN accepted with a decision pending').toBe('none');
+    expect(result.state.game.log, 'every accepted action appends exactly one log entry').toHaveLength(frozen.game.log.length + 1);
+    expect(result.state.game.log.at(-1)?.action).toEqual(action);
+    assertInvariants(result.state);
+    accepted.push(action);
+    state = result.state;
+  }
+  return { initial, final: state, accepted, steps };
+}
+
+describe('property: random games', () => {
+  it('every invariant holds after every accepted action, in standard mode', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constant('standard')), choicesArb, (setup, choices) => {
+        const played = play(setup, choices);
+        expect(played.steps).toBeGreaterThan(0);
+      }),
+      { numRuns: NUM_RUNS },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('every invariant holds after every accepted action, in kids mode', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constant('kids')), choicesArb, (setup, choices) => {
+        play(setup, choices);
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('replaying the log from the starting state rebuilds the final state exactly', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constantFrom('standard', 'kids')), choicesArb, (setup, choices) => {
+        const played = play(setup, choices);
+        const logged = played.final.game.log.map((entry) => entry.action);
+        expect(logged).toEqual(played.accepted);
+        expect(replay(played.initial, logged)).toEqual(played.final);
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('the same setup and choices always produce a byte-identical final state', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constantFrom('standard', 'kids')), choicesArb, (setup, choices) => {
+        expect(JSON.stringify(play(setup, choices).final)).toBe(JSON.stringify(play(setup, choices).final));
+      }),
+      { numRuns: Math.max(20, Math.floor(NUM_RUNS / 10)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('a standard game never gets stuck: some action is always accepted while the game is playing', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constant('standard')), choicesArb, (setup, choices) => {
+        const played = play(setup, choices);
+        expect(isStuck(played.final), 'no candidate action is accepted').toBe(false);
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('a kids game only ever gets stuck on a Lifestyle card the child cannot pay (CLAUDE.md spec gap 2)', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constant('kids')), choicesArb, (setup, choices) => {
+        const played = play(setup, choices);
+        if (isStuck(played.final)) expect(played.final.pending.kind).toBe('payLifestyle');
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('an action from a player who is not current is always rejected with NOT_YOUR_TURN and changes nothing', () => {
+    fc.assert(
+      fc.property(setupArb(fc.constant('standard')), choicesArb, fc.nat({ max: 1_000_000 }), (setup, choices, n) => {
+        const played = play(setup, choices);
+        const state = deepFreeze(played.final);
+        if (state.game.phase !== 'playing') return;
+        const other = state.players.find((p) => p.id !== state.game.currentPlayerId);
+        if (other === undefined) return;
+        const { action } = step(state, n * 23 + 1);
+        const result = reduce(state, { ...action, playerId: other.id });
+        expect(result).toEqual({ ok: false, error: 'NOT_YOUR_TURN' });
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+});
+
+describe('checkInvariants', () => {
+  it('reports a sound starting state as sound', () => {
+    expect(checkInvariants(setupGame({ seed: 1, mode: 'standard', professions: [0, 5] }))).toEqual([]);
+  });
+
+  it('catches negative cash on a player who is in', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = { ...state, players: state.players.map((p, i) => (i === 0 ? { ...p, cash: -1 } : p)) };
+    expect(checkInvariants(broken).join('\n')).toMatch(/cash -1/);
+  });
+
+  it('catches a card that vanished from a deck', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = { ...state, decks: { ...state.decks, market: { drawPile: state.decks.market.drawPile.slice(1), discardPile: [] } } };
+    expect(checkInvariants(broken).join('\n')).toMatch(/deck market/);
+  });
+
+  it('catches a card that appears twice', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const [top] = state.decks.lifestyle.drawPile;
+    if (top === undefined) throw new Error('lifestyle deck is empty');
+    const broken: GameState = { ...state, decks: { ...state.decks, lifestyle: { ...state.decks.lifestyle, discardPile: [top] } } };
+    expect(checkInvariants(broken).join('\n')).toMatch(/deck lifestyle/);
+  });
+
+  it('catches a mortgage that finances no held asset', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = {
+      ...state,
+      players: state.players.map((p, i) =>
+        i === 0
+          ? { ...p, liabilities: [...p.liabilities, { id: 'm', kind: 'mortgage', principal: 1, monthlyPayment: 0, assetId: 'ghost' }] }
+          : p,
+      ),
+    };
+    expect(checkInvariants(broken).join('\n')).toMatch(/finances no asset/);
+  });
+
+  it('catches a current player who is out before rolling', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const broken: GameState = { ...state, players: state.players.map((p, i) => (i === 0 ? { ...p, isOut: true } : p)) };
+    expect(checkInvariants(broken).join('\n')).toMatch(/is out while the game is playing/);
+  });
+
+  it('allows a current player who went out during their own ROLL to remain current until END_TURN', () => {
+    const state = setupGame({ seed: 1, mode: 'standard', professions: [0, 5] });
+    const rolled = reduce(state, { type: 'ROLL', playerId: 'p1' });
+    if (!rolled.ok) throw new Error('ROLL must be accepted at the start of a turn');
+    const cleared: GameState = { ...rolled.state, pending: { kind: 'none' } };
+    const out: GameState = { ...cleared, players: cleared.players.map((p, i) => (i === 0 ? { ...p, isOut: true, cash: 0, assets: [] } : p)) };
+    expect(checkInvariants(out).filter((v) => v.includes('is out while'))).toEqual([]);
+    const stillPending: GameState = { ...out, pending: { kind: 'giveOrSkip' } };
+    expect(checkInvariants(stillPending).join('\n')).toMatch(/is out while the game is playing/);
+  });
+});

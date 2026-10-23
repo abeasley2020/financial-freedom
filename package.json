@@ -15,7 +15,7 @@
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
     "test:engine": "vitest run --project engine",
-    "test:props": "vitest run --project engine props.test --passWithNoTests",
+    "test:props": "vitest run --project engine props.test",
     "test:watch": "vitest",
     "e2e": "node -e \"console.error('e2e: Playwright is not set up yet. See STATUS.md.'); process.exit(1)\"",
     "sim": "node -e \"console.error('sim: balance simulation is not written yet. See STATUS.md.'); process.exit(1)\"",

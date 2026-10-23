@@ -28,7 +28,7 @@ export interface CreateGameOptions {
  * Which cards a mode plays with (spec, Core rules, Kids mode). Standard mode
  * drops kids-only cards. Kids mode drops stock cards from the small deals.
  */
-function inDeckForMode(card: Card, mode: GameMode): boolean {
+export function inDeckForMode(card: Card, mode: GameMode): boolean {
   if (card.deck !== 'smallDeals' && card.deck !== 'bigDeals') return true;
   if (mode === 'kids') return card.type !== 'stock';
   return !card.requiresKidsMode;

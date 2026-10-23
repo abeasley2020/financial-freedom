@@ -37,8 +37,8 @@ Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine ac
 | GIVE | merged | `INSUFFICIENT_CASH` when 10% floors to $0 |
 | SKIP_GIVE | merged | |
 | Setback resolution + bankruptcy | merged | `skipsNextTurn` on Player; END_TURN consumes skips and ends the game when fewer than two players remain |
-| Stage 4.1 property suite | next | |
-| Stage 4.2 simulator | todo | |
+| Stage 4.1 property suite | merged | `invariants.props.test.ts`, 1,000 runs default, `FC_NUM_RUNS` honoured; found and fixed one over-strict invariant |
+| Stage 4.2 simulator | next | |
 | Stage 4.3 golden games | todo | |
 
 ### Questions for Andre
@@ -84,6 +84,9 @@ The repo is a pnpm workspace with three packages:
 | `actions/declineMarket.ts` | Valid only when `pending` is `marketChoice`. Legal when every effect is an `offerBuyout` or the player owns nothing the card applies to; otherwise `MARKET_EFFECT_MANDATORY` (resolve with ACCEPT_MARKET). Discards the card with no effect. Event: `passed`. |
 | `actions/give.ts` | Valid only when `pending` is `giveOrSkip`. Pays `pct(cash, 10)` and adds one Favor token; `INSUFFICIENT_CASH` when the gift would be $0. Events: `cashChanged`, `gave`. |
 | `actions/skipGive.ts` | Valid only when `pending` is `giveOrSkip`. Clears the decision. Event: `skippedGive`. |
+| `invariants.ts` | `checkInvariants(state)` returns violations; `assertInvariants` throws them. Checks the Zod schema (integers, non-negative cash, strict shapes, one pending), per-player rules (out players hold no assets, mortgages finance a held asset, unique ids), the current player (an out player may be current only between their own ROLL and END_TURN), deck conservation per deck (draw + discard + held non-stock cards + pending card = the mode's deck, no duplicates), pending cards of the right deck, and log turn numbers. `fullDeck(state, deck)` is the mode-aware deck. |
+| `replay.ts` | `replay(initial, actions)` re-applies a log; throws if any action is rejected. |
+| `invariants.props.test.ts` | fast-check suite. A game is `(seed, mode, professions[], choices[])`; `test/walk.ts` turns each choice number into a candidate action from the current pending state (mostly legal, some deliberately off, every 23rd from the wrong player). Properties: invariants after every accepted action (standard and kids), only the current player is accepted, END_TURN only with pending none, one log entry per accepted action, replay rebuilds the final state, byte-identical determinism, standard games never get stuck, kids games get stuck only on an unpayable Lifestyle card (spec gap 2), wrong-player actions always `NOT_YOUR_TURN`. `test/fcConfig.ts` reads `FC_NUM_RUNS` (default 1,000). Each property has a 120 s timeout because `pnpm test` runs it in parallel with every other file. |
 | `sales.ts` | `liquidate(state, playerId, asset, proceeds, reason)`: removes the asset, retires its linked mortgage first (`mortgagePaid = min(proceeds, principal)`), credits the rest, returns a deal card to its deck's discard pile (a stock lot just disappears). Shared by Market sales and bankruptcy. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If the player is in and `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. If fewer than two players are in, `phase: finished` with the survivor current. Otherwise increments `turnNumber` and moves to the next seat that is in; a seat with `skipsNextTurn` is passed over once, its flag cleared, event `turnSkipped`. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
@@ -128,7 +131,7 @@ Schema decisions worth knowing:
 
 Tooling in place: TypeScript strict (plus `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `erasableSyntaxOnly`), ESLint flat config with type-aware rules, the engine purity rules from CLAUDE.md Rule 1 enforced by ESLint, `id-denylist` on bare `expenses`, Vitest projects (`shared`, `engine`, `web`), Husky pre-commit running `pnpm typecheck` and `pnpm lint`, `.gitattributes` forcing LF.
 
-Root scripts from the CLAUDE.md command table all exist. Two are placeholders that exit 1 with a message: `pnpm e2e` (Playwright not installed) and `pnpm sim` (simulation not written). `pnpm test:props` passes with `--passWithNoTests`; remove that flag when the first `*.props.test.ts` file lands.
+Root scripts from the CLAUDE.md command table all exist. Two are placeholders that exit 1 with a message: `pnpm e2e` (Playwright not installed) and `pnpm sim` (simulation not written). `pnpm test:props` runs the fast-check suite (about 10 s at 1,000 runs); `pnpm test` runs it too, so `pnpm check` runs it twice.
 
 Package manager note: `corepack enable` fails with EPERM on this machine because Node lives under Program Files. pnpm was installed with `npm i -g pnpm` instead. The `packageManager` field in `package.json` pins the version.
 
@@ -144,7 +147,6 @@ Not installed or configured yet, each waiting for the session that needs it:
 - Tailwind v3, shadcn/ui, Zustand (first UI session)
 - A router for `/table` and `/player`. `react-router` is not on the approved dependency list; ask before adding.
 - Playwright + `@axe-core/playwright` and the real `pnpm e2e` script
-- fast-check global config reading `FC_NUM_RUNS` (lands with the property suite)
 - GitHub Actions CI (typecheck, lint, test, test:props on PRs)
 - Vercel project link. When linking, set `HUSKY=0` in the Vercel environment so `prepare` skips hook install.
 - README beyond the title line
