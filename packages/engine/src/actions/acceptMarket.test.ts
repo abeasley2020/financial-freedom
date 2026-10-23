@@ -203,7 +203,7 @@ describe('ACCEPT_MARKET: log and determinism', () => {
       turnNumber: 0,
       action: ACCEPT,
       events: [
-        { kind: 'sold', assetId: 'dup', cardId: 'small-001', proceeds: 100_000, mortgagePaid: 45_000 },
+        { kind: 'sold', assetId: 'dup', cardId: 'small-001', proceeds: 100_000, mortgagePaid: 45_000, principles: ['P2', 'P3', 'P5'] },
         { kind: 'cashChanged', delta: 55_000, reason: 'sell' },
       ],
     });
@@ -213,7 +213,7 @@ describe('ACCEPT_MARKET: log and determinism', () => {
     const bigger: Liability = { ...duplexMortgage, principal: 120_000 };
     const next = apply(facing('market-001', [duplex], [bigger]), ACCEPT);
     expect(next.game.log.at(-1)?.events).toEqual([
-      { kind: 'sold', assetId: 'dup', cardId: 'small-001', proceeds: 100_000, mortgagePaid: 100_000 },
+      { kind: 'sold', assetId: 'dup', cardId: 'small-001', proceeds: 100_000, mortgagePaid: 100_000, principles: ['P2', 'P3', 'P5'] },
     ]);
   });
 

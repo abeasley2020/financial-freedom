@@ -76,7 +76,7 @@ describe('PASS: log and determinism', () => {
     expect(next.game.log.at(-1)).toEqual({
       turnNumber: 0,
       action: PASS,
-      events: [{ kind: 'passed', cardId: 'small-001' }],
+      events: [{ kind: 'passed', cardId: 'small-001', principles: ['P2', 'P3', 'P5'] }],
     });
   });
 

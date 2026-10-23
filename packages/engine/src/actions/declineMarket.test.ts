@@ -93,7 +93,7 @@ describe('DECLINE_MARKET: log and determinism', () => {
     expect(next.game.log.at(-1)).toEqual({
       turnNumber: 0,
       action: DECLINE,
-      events: [{ kind: 'passed', cardId: 'market-001' }],
+      events: [{ kind: 'passed', cardId: 'market-001', principles: ['P2', 'P3'] }],
     });
   });
 

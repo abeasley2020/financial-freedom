@@ -3,6 +3,7 @@ import {
   BOARD_SIZE,
   BORROW_STEP,
   CARDS_BY_ID,
+  DECISION_PRINCIPLES,
   LIABILITY_PAYMENT_PERCENT,
   type Action,
   type GameState,
@@ -131,7 +132,13 @@ function resolveSetback(state: GameState): Resolution {
     cash += autoBorrowed;
     liabilities = [...liabilities, loan];
     events.push({ kind: 'cashChanged', delta: autoBorrowed, reason: 'borrow' });
-    events.push({ kind: 'borrowed', liabilityId: loan.id, amount: autoBorrowed, monthlyPayment: loan.monthlyPayment });
+    events.push({
+      kind: 'borrowed',
+      liabilityId: loan.id,
+      amount: autoBorrowed,
+      monthlyPayment: loan.monthlyPayment,
+      principles: DECISION_PRINCIPLES.setbackLoan,
+    });
   }
   cash -= cost;
   events.push({ kind: 'cashChanged', delta: -cost, reason: 'setback' });

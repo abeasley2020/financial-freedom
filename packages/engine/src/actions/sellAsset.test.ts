@@ -178,7 +178,7 @@ describe('SELL_ASSET: log and determinism', () => {
       action: sell('lot-a', 4),
       events: [
         { kind: 'cashChanged', delta: 120, reason: 'sell' },
-        { kind: 'sold', assetId: 'lot-a', cardId: 'small-005', proceeds: 120, shares: 4, remainingShares: 6 },
+        { kind: 'sold', assetId: 'lot-a', cardId: 'small-005', proceeds: 120, shares: 4, remainingShares: 6, principles: ['P8', 'P9'] },
       ],
     });
   });

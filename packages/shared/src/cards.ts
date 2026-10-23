@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { MoneySchema, PercentSchema, SignedMoneySchema } from './money';
+import { PrinciplesSchema } from './principles';
 import type { DeepReadonly } from './readonly';
 
 // ---------------------------------------------------------------------------
@@ -22,10 +23,25 @@ export type AssetType = z.infer<typeof AssetTypeSchema>;
 export const CardIdSchema = z.string().min(1);
 export type CardId = z.infer<typeof CardIdSchema>;
 
+/** Spec v2, Card decks: kidsText 90 characters or fewer, adultText 160 or fewer, no em dashes anywhere. */
+export const KIDS_TEXT_MAX = 90;
+export const ADULT_TEXT_MAX = 160;
+const NO_EM_DASH = { pattern: /^[^\u2014]*$/u, message: 'no em dashes in card text' };
+
+export const KidsTextSchema = z.string().min(1).max(KIDS_TEXT_MAX).regex(NO_EM_DASH.pattern, NO_EM_DASH.message);
+export const AdultTextSchema = z.string().min(1).max(ADULT_TEXT_MAX).regex(NO_EM_DASH.pattern, NO_EM_DASH.message);
+
+/** Fields every card carries (spec v2, Card decks). */
 const cardBase = {
   id: CardIdSchema,
-  title: z.string().min(1),
-  description: z.string().min(1),
+  title: z.string().min(1).regex(NO_EM_DASH.pattern, NO_EM_DASH.message),
+  /** At least one of the ten principles the card teaches. */
+  principles: PrinciplesSchema,
+  /** 4th-grade reading level, shown in kids mode. */
+  kidsText: KidsTextSchema,
+  adultText: AdultTextSchema,
+  /** Kids mode plays only with cards marked kidsOk. */
+  kidsOk: z.boolean(),
 };
 
 // ---------------------------------------------------------------------------
@@ -58,8 +74,6 @@ export const DealCardSchema = z
     priceRange: PriceRangeSchema.optional(),
     /** Stocks only: whole dollars per share per month. Absent means 0. A lot's monthlyCashFlow is floor(shares × this). */
     dividendPerShare: MoneySchema.optional(),
-    /** True when the card belongs to the kids-mode deck only. */
-    requiresKidsMode: z.boolean(),
   })
   .strict()
   .superRefine((card, ctx) => {

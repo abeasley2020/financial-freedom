@@ -47,31 +47,37 @@ interface Golden {
   readonly expected: GameState;
 }
 
-const games: readonly [string, Golden][] = [
-  ['escape-two-players', GoldenSchema.parse(escape)],
-  ['attrition-four-players', GoldenSchema.parse(attrition)],
-  ['kids-three-players', GoldenSchema.parse(kids)],
+/** Parsed lazily inside each test so a skipped suite never validates the v1 recordings against the v2 schema. */
+const recordings: readonly [string, unknown][] = [
+  ['escape-two-players', escape],
+  ['attrition-four-players', attrition],
+  ['kids-three-players', kids],
 ];
+const load = (data: unknown): Golden => GoldenSchema.parse(data);
 
 const GOLDEN_RECORDINGS_ARE_V1 = true;
 
-describe.skipIf(GOLDEN_RECORDINGS_ARE_V1).each(games)('golden game %s', (_name, golden) => {
+describe.skipIf(GOLDEN_RECORDINGS_ARE_V1).each(recordings)('golden game %s', (_name, data) => {
   it('replays its action log from the seed to exactly the recorded final state', () => {
+    const golden = load(data);
     const final = replay(createGame(golden.setup), golden.actions);
     expect(final).toEqual(golden.expected);
   });
 
   it('records every accepted action in the final log, in order', () => {
+    const golden = load(data);
     expect(golden.expected.game.log.map((entry) => entry.action)).toEqual(golden.actions);
   });
 
   it('ends in a state that satisfies every invariant', () => {
+    const golden = load(data);
     expect(() => {
       assertInvariants(golden.expected);
     }).not.toThrow();
   });
 
   it('ends the way its description says', () => {
+    const golden = load(data);
     const { expected } = golden;
     const escaped = expected.players.some((p) => p.hasEscaped);
     const inPlayers = expected.players.filter((p) => !p.isOut);
@@ -97,13 +103,14 @@ describe.skipIf(GOLDEN_RECORDINGS_ARE_V1).each(games)('golden game %s', (_name, 
 
 describe.skipIf(GOLDEN_RECORDINGS_ARE_V1)('golden games as a set', () => {
   it('cover both modes and both ways a Phase 1 game can end', () => {
-    expect(games.map(([, g]) => g.setup.mode)).toContain('kids');
-    expect(games.map(([, g]) => g.setup.mode)).toContain('standard');
-    expect(games.map(([, g]) => g.ending)).toContain('escape');
-    expect(games.map(([, g]) => g.ending)).toContain('lastStanding');
+    const games = recordings.map(([, data]) => load(data));
+    expect(games.map((g) => g.setup.mode)).toContain('kids');
+    expect(games.map((g) => g.setup.mode)).toContain('standard');
+    expect(games.map((g) => g.ending)).toContain('escape');
+    expect(games.map((g) => g.ending)).toContain('lastStanding');
   });
 
   it('each run long enough to pass several Paydays', () => {
-    for (const [, golden] of games) expect(golden.expected.game.turnNumber).toBeGreaterThan(10);
+    for (const [, data] of recordings) expect(load(data).expected.game.turnNumber).toBeGreaterThan(10);
   });
 });

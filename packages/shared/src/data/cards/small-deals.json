@@ -3,89 +3,132 @@
     "id": "small-001",
     "deck": "smallDeals",
     "title": "Duplex in Decatur",
-    "description": "Two units on a quiet street, both rented to long-term tenants. The bank will carry most of it.",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Two homes you rent out. The bank lends most of the money. Rent pays you each month.",
+    "adultText": "Two units on a quiet street, both rented to long-term tenants. The bank will carry most of it.",
+    "kidsOk": true,
     "type": "rental",
     "price": 50000,
     "downPayment": 5000,
     "mortgage": 45000,
-    "monthlyCashFlow": 160,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 160
   },
   {
     "id": "small-002",
     "deck": "smallDeals",
     "title": "Starter Condo",
-    "description": "One bedroom near the hospital. Nurses rent it on rotating contracts, so it is rarely empty.",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A small home near a hospital. Nurses rent it, so it is almost never empty.",
+    "adultText": "One bedroom near the hospital. Nurses rent it on rotating contracts, so it is rarely empty.",
+    "kidsOk": true,
     "type": "rental",
     "price": 45000,
     "downPayment": 4000,
     "mortgage": 41000,
-    "monthlyCashFlow": 120,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 120
   },
   {
     "id": "small-003",
     "deck": "smallDeals",
     "title": "Lawn Care Trailer",
-    "description": "A used trailer, two mowers, and a list of eight weekly customers. You hire a high-schooler to run it.",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Mowers, a trailer, and eight yards to cut each week. A helper does the work.",
+    "adultText": "A used trailer, two mowers, and a list of eight weekly customers. You hire a high-schooler to run it.",
+    "kidsOk": true,
     "type": "business",
     "price": 3000,
     "downPayment": 3000,
     "mortgage": 0,
-    "monthlyCashFlow": 150,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 150
   },
   {
     "id": "small-004",
     "deck": "smallDeals",
     "title": "Total Market Index Fund",
-    "description": "A slice of every big company at once. Slow, boring, and it pays a small dividend every month.",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "A tiny piece of many companies. It grows slowly and pays a little every month.",
+    "adultText": "A slice of every big company at once. Slow, boring, and it pays a small dividend every month.",
+    "kidsOk": true,
     "type": "fund",
     "price": 2000,
     "downPayment": 2000,
     "mortgage": 0,
-    "monthlyCashFlow": 10,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 10
   },
   {
     "id": "small-005",
     "deck": "smallDeals",
     "title": "Birchwood Robotics Shares",
-    "description": "A young company that builds warehouse robots. The price swings; buy low if you can.",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "A new robot company. Its price jumps around a lot. Buy low if you can.",
+    "adultText": "A young company that builds warehouse robots. The price swings; buy low if you can.",
+    "kidsOk": false,
     "type": "stock",
     "price": 20,
     "downPayment": 20,
     "mortgage": 0,
     "monthlyCashFlow": 0,
     "sharesAvailable": 500,
-    "priceRange": { "min": 5, "max": 40 },
-    "requiresKidsMode": false
+    "priceRange": {
+      "min": 5,
+      "max": 40
+    }
   },
   {
     "id": "small-006",
     "deck": "smallDeals",
     "title": "Vending Machine Route",
-    "description": "Six snack machines in office lobbies. You restock them on Saturdays and keep the coins.",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Six snack machines. Fill them on Saturdays and keep the coins.",
+    "adultText": "Six snack machines in office lobbies. You restock them on Saturdays and keep the coins.",
+    "kidsOk": true,
     "type": "business",
     "price": 4500,
     "downPayment": 4500,
     "mortgage": 0,
-    "monthlyCashFlow": 180,
-    "requiresKidsMode": false
+    "monthlyCashFlow": 180
   },
   {
     "id": "small-007",
     "deck": "smallDeals",
     "title": "Lakeshore Utilities Shares",
-    "description": "The power company. Nobody gets rich on it, but it pays a dividend every month like clockwork.",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "The power company. Nobody gets rich on it, but it pays you a little every month.",
+    "adultText": "The power company. Nobody gets rich on it, but it pays a dividend every month like clockwork.",
+    "kidsOk": false,
     "type": "stock",
     "price": 70,
     "downPayment": 70,
     "mortgage": 0,
     "monthlyCashFlow": 0,
     "sharesAvailable": 200,
-    "priceRange": { "min": 50, "max": 90 },
-    "dividendPerShare": 1,
-    "requiresKidsMode": false
+    "priceRange": {
+      "min": 50,
+      "max": 90
+    },
+    "dividendPerShare": 1
   }
 ]

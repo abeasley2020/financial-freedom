@@ -181,14 +181,14 @@ describe('BUY: log and determinism', () => {
       action: BUY,
       events: [
         { kind: 'cashChanged', delta: -5_000, reason: 'buy' },
-        { kind: 'bought', assetId, cardId: 'small-001', cost: 5_000 },
+        { kind: 'bought', assetId, cardId: 'small-001', cost: 5_000, principles: ['P2', 'P3', 'P5'] },
       ],
     });
   });
 
   it('BUY: logs the share count for a stock lot', () => {
     const next = apply(offered(withCash(400), 'small-005', 20), buyShares(10));
-    expect(next.game.log.at(-1)?.events[1]).toMatchObject({ kind: 'bought', cardId: 'small-005', cost: 200, shares: 10 });
+    expect(next.game.log.at(-1)?.events[1]).toMatchObject({ kind: 'bought', cardId: 'small-005', cost: 200, shares: 10, principles: ['P8', 'P9'] });
   });
 
   it('BUY: is deterministic, including the asset id', () => {

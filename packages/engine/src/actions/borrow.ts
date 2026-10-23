@@ -1,4 +1,4 @@
-import { BORROW_STEP, LIABILITY_PAYMENT_PERCENT, type Action, type GameState, type Liability } from '@ff/shared';
+import { BORROW_STEP, DECISION_PRINCIPLES, LIABILITY_PAYMENT_PERCENT, type Action, type GameState, type Liability } from '@ff/shared';
 
 import { pct } from '../money';
 import { rejected, type ActionResult } from '../reduce';
@@ -40,7 +40,7 @@ export function borrow(state: GameState, action: Extract<Action, { type: 'BORROW
     },
     events: [
       { kind: 'cashChanged', delta: amount, reason: 'borrow' },
-      { kind: 'borrowed', liabilityId: loan.id, amount, monthlyPayment: loan.monthlyPayment },
+      { kind: 'borrowed', liabilityId: loan.id, amount, monthlyPayment: loan.monthlyPayment, principles: DECISION_PRINCIPLES.bankLoan },
     ],
   };
 }

@@ -12,14 +12,48 @@ const duplex = {
   id: 'small-001',
   deck: 'smallDeals',
   title: 'Duplex in Decatur',
-  description: 'Two units, both rented.',
+  principles: ['P2', 'P3', 'P5'],
+  adultText: 'Two units, both rented.',
+  kidsText: 'Two homes you rent out.',
+  kidsOk: true,
   type: 'rental',
   price: 80_000,
   downPayment: 8_000,
   mortgage: 72_000,
   monthlyCashFlow: 220,
-  requiresKidsMode: false,
 };
+
+describe('every card (spec v2, Card decks: id, deck, title, principles, kidsText, adultText, kidsOk)', () => {
+  it('requires at least one principle', () => {
+    expect(DealCardSchema.safeParse({ ...duplex, principles: [] }).success).toBe(false);
+    expect(DealCardSchema.safeParse(without(duplex, 'principles')).success).toBe(false);
+  });
+
+  it('rejects an unknown principle id', () => {
+    expect(DealCardSchema.safeParse({ ...duplex, principles: ['P11'] }).success).toBe(false);
+  });
+
+  it('caps kidsText at 90 characters and adultText at 160', () => {
+    expect(DealCardSchema.safeParse({ ...duplex, kidsText: 'k'.repeat(90) }).success).toBe(true);
+    expect(DealCardSchema.safeParse({ ...duplex, kidsText: 'k'.repeat(91) }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...duplex, adultText: 'a'.repeat(160) }).success).toBe(true);
+    expect(DealCardSchema.safeParse({ ...duplex, adultText: 'a'.repeat(161) }).success).toBe(false);
+  });
+
+  it('rejects an em dash in either text', () => {
+    expect(DealCardSchema.safeParse({ ...duplex, kidsText: 'Two homes \u2014 rented.' }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...duplex, adultText: 'Two units \u2014 rented.' }).success).toBe(false);
+  });
+
+  it('requires kidsOk to be explicit', () => {
+    expect(DealCardSchema.safeParse(without(duplex, 'kidsOk')).success).toBe(false);
+  });
+
+  it('no longer accepts the v1 description or requiresKidsMode fields', () => {
+    expect(DealCardSchema.safeParse({ ...duplex, description: 'x' }).success).toBe(false);
+    expect(DealCardSchema.safeParse({ ...duplex, requiresKidsMode: false }).success).toBe(false);
+  });
+});
 
 describe('DealCardSchema', () => {
   it('accepts the spec example deal', () => {
@@ -98,7 +132,10 @@ describe('MarketCardSchema', () => {
     id: 'market-001',
     deck: 'market',
     title: 'Eager Buyer',
-    description: 'A buyer offers double what you paid for any rental.',
+    principles: ['P2', 'P3'],
+    adultText: 'A buyer offers double what you paid for any rental.',
+    kidsText: 'Someone offers twice what you paid for a rental.',
+    kidsOk: true,
     effects: [{ kind: 'offerBuyout', percentOfPurchasePrice: 200 }],
     appliesTo: ['rental'],
   };
@@ -132,7 +169,10 @@ describe('LifestyleCardSchema', () => {
     id: 'life-001',
     deck: 'lifestyle',
     title: 'New Truck',
-    description: 'Pay cash or finance it.',
+    principles: ['P4', 'P5', 'P6'],
+    adultText: 'Pay cash or finance it.',
+    kidsText: 'Pay cash or take a loan.',
+    kidsOk: true,
     cashCost: 4_000,
     monthlyCost: 380,
     loanPrincipal: 12_000,
@@ -168,7 +208,10 @@ describe('SetbackCardSchema', () => {
         id: 'setback-001',
         deck: 'setback',
         title: 'Furnace Dies',
-        description: 'Pay now.',
+        principles: ['P1'],
+        adultText: 'Pay now.',
+        kidsText: 'Pay now.',
+        kidsOk: true,
         cashCost: 3_500,
         skipTurn: false,
       }).success,
@@ -181,7 +224,10 @@ describe('SetbackCardSchema', () => {
         id: 'setback-001',
         deck: 'setback',
         title: 'Furnace Dies',
-        description: 'Pay now.',
+        principles: ['P1'],
+        adultText: 'Pay now.',
+        kidsText: 'Pay now.',
+        kidsOk: true,
         cashCost: 3_500,
       }).success,
     ).toBe(false);

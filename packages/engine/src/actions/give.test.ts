@@ -82,7 +82,7 @@ describe('GIVE: log and determinism', () => {
       action: GIVE,
       events: [
         { kind: 'cashChanged', delta: -40, reason: 'give' },
-        { kind: 'gave', amount: 40, favorTokens: 1 },
+        { kind: 'gave', amount: 40, favorTokens: 1, principles: ['P10'] },
       ],
     });
   });

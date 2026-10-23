@@ -134,7 +134,7 @@ describe('REPAY: log and determinism', () => {
       action: repay('p1-credit-2'),
       events: [
         { kind: 'cashChanged', delta: -2_000, reason: 'repay' },
-        { kind: 'repaid', liabilityId: 'p1-credit-2', principal: 2_000 },
+        { kind: 'repaid', liabilityId: 'p1-credit-2', principal: 2_000, principles: ['P5'] },
       ],
     });
   });

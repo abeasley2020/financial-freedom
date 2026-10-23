@@ -25,6 +25,6 @@ export function pass(state: GameState): ActionResult {
       decks: { ...state.decks, [card.deck]: { ...piles, discardPile: [...piles.discardPile, cardId] } },
       pending: { kind: 'none' },
     },
-    events: [{ kind: 'passed', cardId }],
+    events: [{ kind: 'passed', cardId, principles: card.principles }],
   };
 }

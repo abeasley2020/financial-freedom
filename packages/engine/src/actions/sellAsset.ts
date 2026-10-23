@@ -63,7 +63,7 @@ export function sellAsset(state: GameState, action: Extract<Action, { type: 'SEL
     },
     events: [
       { kind: 'cashChanged', delta: proceeds, reason: 'sell' },
-      { kind: 'sold', assetId: lot.id, cardId: card.id, proceeds, shares, remainingShares: remaining },
+      { kind: 'sold', assetId: lot.id, cardId: card.id, proceeds, shares, remainingShares: remaining, principles: card.principles },
     ],
   };
 }

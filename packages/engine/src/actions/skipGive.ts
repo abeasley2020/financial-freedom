@@ -1,4 +1,4 @@
-import type { GameState } from '@ff/shared';
+import { DECISION_PRINCIPLES, type GameState } from '@ff/shared';
 
 import { rejected, type ActionResult } from '../reduce';
 
@@ -8,5 +8,9 @@ import { rejected, type ActionResult } from '../reduce';
  */
 export function skipGive(state: GameState): ActionResult {
   if (state.pending.kind !== 'giveOrSkip') return rejected('INVALID_FOR_PENDING');
-  return { ok: true, state: { ...state, pending: { kind: 'none' } }, events: [{ kind: 'skippedGive' }] };
+  return {
+    ok: true,
+    state: { ...state, pending: { kind: 'none' } },
+    events: [{ kind: 'skippedGive', principles: DECISION_PRINCIPLES.giving }],
+  };
 }

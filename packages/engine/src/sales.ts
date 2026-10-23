@@ -20,17 +20,19 @@ export function liquidate(state: GameState, playerId: string, asset: Asset, proc
   const mortgagePaid = mortgage === undefined ? 0 : Math.min(proceeds, mortgage.principal);
   const net = proceeds - mortgagePaid;
 
-  const events: LogEvent[] = [
-    mortgage === undefined
-      ? { kind: 'sold', assetId: asset.id, cardId: asset.cardId, proceeds }
-      : { kind: 'sold', assetId: asset.id, cardId: asset.cardId, proceeds, mortgagePaid },
-  ];
-  if (net > 0) events.push({ kind: 'cashChanged', delta: net, reason });
-
   const card = CARDS_BY_ID.get(asset.cardId);
   if (card?.deck !== 'smallDeals' && card?.deck !== 'bigDeals') {
     throw new Error(`asset "${asset.id}" references unknown deal card "${asset.cardId}"`);
   }
+
+  const { principles } = card;
+  const events: LogEvent[] = [
+    mortgage === undefined
+      ? { kind: 'sold', assetId: asset.id, cardId: asset.cardId, proceeds, principles }
+      : { kind: 'sold', assetId: asset.id, cardId: asset.cardId, proceeds, mortgagePaid, principles },
+  ];
+  if (net > 0) events.push({ kind: 'cashChanged', delta: net, reason });
+
   const decks =
     asset.type === 'stock'
       ? state.decks
