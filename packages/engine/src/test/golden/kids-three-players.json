@@ -1,0 +1,2013 @@
+{
+  "description": "Kids mode, three players (Teacher, Electrician, Nurse): one small-deals deck without stocks, no bank loans, inert Setback space. Recorded to the end of the game, or to the first state where a child cannot pay a cash-only Lifestyle card (CLAUDE.md spec gap 2).",
+  "strategies": [
+    "balanced",
+    "cautious",
+    "balanced"
+  ],
+  "setup": {
+    "id": "golden-kids",
+    "mode": "kids",
+    "seed": 53,
+    "players": [
+      {
+        "id": "p1",
+        "name": "Max",
+        "professionId": "teacher"
+      },
+      {
+        "id": "p2",
+        "name": "Zoe",
+        "professionId": "electrician"
+      },
+      {
+        "id": "p3",
+        "name": "Sam",
+        "professionId": "nurse"
+      }
+    ]
+  },
+  "ending": "stopped",
+  "actions": [
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "SKIP_GIVE",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "PAY_LIFESTYLE",
+      "playerId": "p2",
+      "method": "loan"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "PAY_LIFESTYLE",
+      "playerId": "p1",
+      "method": "loan"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "GIVE",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "GIVE",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "PASS",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p3"
+    },
+    {
+      "type": "GIVE",
+      "playerId": "p3"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p3"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    }
+  ],
+  "expected": {
+    "game": {
+      "id": "golden-kids",
+      "mode": "kids",
+      "phase": "playing",
+      "turnNumber": 33,
+      "currentPlayerId": "p1",
+      "rngSeed": 53,
+      "rngState": -575470720,
+      "log": [
+        {
+          "turnNumber": 0,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 0,
+              "to": 6
+            }
+          ]
+        },
+        {
+          "turnNumber": 0,
+          "action": {
+            "type": "SKIP_GIVE",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "skippedGive"
+            }
+          ]
+        },
+        {
+          "turnNumber": 0,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 1,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 4
+            },
+            {
+              "kind": "moved",
+              "from": 0,
+              "to": 4
+            },
+            {
+              "kind": "drewCard",
+              "deck": "lifestyle",
+              "cardId": "life-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 1,
+          "action": {
+            "type": "PAY_LIFESTYLE",
+            "playerId": "p2",
+            "method": "loan"
+          },
+          "events": [
+            {
+              "kind": "paidLifestyle",
+              "cardId": "life-001",
+              "method": "loan",
+              "amount": 12000,
+              "liabilityId": "p2-lifestyle-4",
+              "monthlyPayment": 380
+            }
+          ]
+        },
+        {
+          "turnNumber": 1,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 2,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 0,
+              "to": 1
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 2,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 2,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 3,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 6,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "turnNumber": 3,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 4,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 4,
+              "to": 5
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 4,
+          "action": {
+            "type": "PASS",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 4,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 5,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 4
+            },
+            {
+              "kind": "moved",
+              "from": 1,
+              "to": 5
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-006"
+            }
+          ]
+        },
+        {
+          "turnNumber": 5,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-006"
+            }
+          ]
+        },
+        {
+          "turnNumber": 5,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 6,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 3
+            },
+            {
+              "kind": "moved",
+              "from": 11,
+              "to": 14
+            },
+            {
+              "kind": "payday",
+              "amount": 700
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 6,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 6,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 7,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 5,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "turnNumber": 7,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 8,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 5,
+              "to": 10
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 8,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 8,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 9,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 14,
+              "to": 19
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 9,
+          "action": {
+            "type": "PASS",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 9,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 10,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 11,
+              "to": 13
+            },
+            {
+              "kind": "payday",
+              "amount": 770
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 10,
+          "action": {
+            "type": "PASS",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 10,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 11,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 4
+            },
+            {
+              "kind": "moved",
+              "from": 10,
+              "to": 14
+            },
+            {
+              "kind": "payday",
+              "amount": 1160
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 11,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 11,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 12,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 19,
+              "to": 21
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-006"
+            }
+          ]
+        },
+        {
+          "turnNumber": 12,
+          "action": {
+            "type": "PASS",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-006"
+            }
+          ]
+        },
+        {
+          "turnNumber": 12,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 13,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 13,
+              "to": 14
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 13,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 13,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 14,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 14,
+              "to": 19
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 14,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 14,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 15,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 21,
+              "to": 23
+            },
+            {
+              "kind": "drewCard",
+              "deck": "lifestyle",
+              "cardId": "life-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 15,
+          "action": {
+            "type": "PAY_LIFESTYLE",
+            "playerId": "p1",
+            "method": "loan"
+          },
+          "events": [
+            {
+              "kind": "paidLifestyle",
+              "cardId": "life-003",
+              "method": "loan",
+              "amount": 1800,
+              "liabilityId": "p1-lifestyle-44",
+              "monthlyPayment": 90
+            }
+          ]
+        },
+        {
+          "turnNumber": 15,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 16,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 14,
+              "to": 19
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 16,
+          "action": {
+            "type": "PASS",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 16,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 17,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 19,
+              "to": 1
+            },
+            {
+              "kind": "payday",
+              "amount": 1160
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 17,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 17,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 18,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 23,
+              "to": 0
+            },
+            {
+              "kind": "payday",
+              "amount": 610
+            }
+          ]
+        },
+        {
+          "turnNumber": 18,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 19,
+              "to": 1
+            },
+            {
+              "kind": "payday",
+              "amount": 770
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "PASS",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 1,
+              "to": 3
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 21,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 0,
+              "to": 6
+            }
+          ]
+        },
+        {
+          "turnNumber": 21,
+          "action": {
+            "type": "GIVE",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -171,
+              "reason": "give"
+            },
+            {
+              "kind": "gave",
+              "amount": 171,
+              "favorTokens": 1
+            }
+          ]
+        },
+        {
+          "turnNumber": 21,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 22,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 1,
+              "to": 2
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 22,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 22,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 23,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 3,
+              "to": 8
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 23,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 23,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 24,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 6,
+              "to": 7
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 24,
+          "action": {
+            "type": "PASS",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-001"
+            }
+          ]
+        },
+        {
+          "turnNumber": 24,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 25,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 2,
+              "to": 8
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-003"
+            }
+          ]
+        },
+        {
+          "turnNumber": 25,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 25,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 26,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 8,
+              "to": 14
+            },
+            {
+              "kind": "payday",
+              "amount": 1160
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 26,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 26,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 27,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 7,
+              "to": 13
+            },
+            {
+              "kind": "payday",
+              "amount": 610
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-006"
+            }
+          ]
+        },
+        {
+          "turnNumber": 27,
+          "action": {
+            "type": "PASS",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-006"
+            }
+          ]
+        },
+        {
+          "turnNumber": 27,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 28,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 8,
+              "to": 14
+            },
+            {
+              "kind": "payday",
+              "amount": 770
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-002"
+            }
+          ]
+        },
+        {
+          "turnNumber": 28,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 28,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 29,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 14,
+              "to": 16
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 29,
+          "action": {
+            "type": "PASS",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 29,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 30,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 4
+            },
+            {
+              "kind": "moved",
+              "from": 13,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "turnNumber": 30,
+          "action": {
+            "type": "GIVE",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -214,
+              "reason": "give"
+            },
+            {
+              "kind": "gave",
+              "amount": 214,
+              "favorTokens": 2
+            }
+          ]
+        },
+        {
+          "turnNumber": 30,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 31,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 5
+            },
+            {
+              "kind": "moved",
+              "from": 14,
+              "to": 19
+            },
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 31,
+          "action": {
+            "type": "PASS",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "passed",
+              "cardId": "small-004"
+            }
+          ]
+        },
+        {
+          "turnNumber": 31,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 32,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 16,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "turnNumber": 32,
+          "action": {
+            "type": "GIVE",
+            "playerId": "p3"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -438,
+              "reason": "give"
+            },
+            {
+              "kind": "gave",
+              "amount": 438,
+              "favorTokens": 1
+            }
+          ]
+        },
+        {
+          "turnNumber": 32,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p3"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 33,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "rolled",
+              "value": 6
+            },
+            {
+              "kind": "moved",
+              "from": 17,
+              "to": 23
+            },
+            {
+              "kind": "drewCard",
+              "deck": "lifestyle",
+              "cardId": "life-002"
+            }
+          ]
+        }
+      ]
+    },
+    "players": [
+      {
+        "id": "p1",
+        "name": "Max",
+        "professionId": "teacher",
+        "position": 23,
+        "cash": 1935,
+        "salary": 3300,
+        "assets": [],
+        "liabilities": [
+          {
+            "id": "p1-student-0",
+            "kind": "student",
+            "principal": 12000,
+            "monthlyPayment": 120
+          },
+          {
+            "id": "p1-car-1",
+            "kind": "car",
+            "principal": 6000,
+            "monthlyPayment": 120
+          },
+          {
+            "id": "p1-credit-2",
+            "kind": "credit",
+            "principal": 2000,
+            "monthlyPayment": 60
+          },
+          {
+            "id": "p1-lifestyle-44",
+            "kind": "lifestyle",
+            "principal": 1800,
+            "monthlyPayment": 90,
+            "sourceCardId": "life-003"
+          }
+        ],
+        "favorTokens": 2,
+        "isOut": false,
+        "hasEscaped": false,
+        "skipsNextTurn": false
+      },
+      {
+        "id": "p2",
+        "name": "Zoe",
+        "professionId": "electrician",
+        "position": 19,
+        "cash": 3010,
+        "salary": 4100,
+        "assets": [],
+        "liabilities": [
+          {
+            "id": "p2-car-0",
+            "kind": "car",
+            "principal": 8000,
+            "monthlyPayment": 160
+          },
+          {
+            "id": "p2-credit-1",
+            "kind": "credit",
+            "principal": 3000,
+            "monthlyPayment": 90
+          },
+          {
+            "id": "p2-lifestyle-4",
+            "kind": "lifestyle",
+            "principal": 12000,
+            "monthlyPayment": 380,
+            "sourceCardId": "life-001"
+          }
+        ],
+        "favorTokens": 0,
+        "isOut": false,
+        "hasEscaped": false,
+        "skipsNextTurn": false
+      },
+      {
+        "id": "p3",
+        "name": "Sam",
+        "professionId": "nurse",
+        "position": 17,
+        "cash": 3942,
+        "salary": 4600,
+        "assets": [],
+        "liabilities": [
+          {
+            "id": "p3-student-0",
+            "kind": "student",
+            "principal": 20000,
+            "monthlyPayment": 200
+          },
+          {
+            "id": "p3-car-1",
+            "kind": "car",
+            "principal": 7000,
+            "monthlyPayment": 140
+          }
+        ],
+        "favorTokens": 1,
+        "isOut": false,
+        "hasEscaped": false,
+        "skipsNextTurn": false
+      }
+    ],
+    "decks": {
+      "smallDeals": {
+        "drawPile": [
+          "small-006",
+          "small-002",
+          "small-003",
+          "small-001"
+        ],
+        "discardPile": [
+          "small-004"
+        ]
+      },
+      "bigDeals": {
+        "drawPile": [
+          "big-003",
+          "big-004",
+          "big-002",
+          "big-001"
+        ],
+        "discardPile": []
+      },
+      "market": {
+        "drawPile": [],
+        "discardPile": [
+          "market-001",
+          "market-003",
+          "market-004",
+          "market-002"
+        ]
+      },
+      "lifestyle": {
+        "drawPile": [],
+        "discardPile": [
+          "life-001",
+          "life-003"
+        ]
+      },
+      "setback": {
+        "drawPile": [
+          "setback-001",
+          "setback-002",
+          "setback-003"
+        ],
+        "discardPile": []
+      }
+    },
+    "pending": {
+      "kind": "payLifestyle",
+      "cardId": "life-002"
+    }
+  }
+}

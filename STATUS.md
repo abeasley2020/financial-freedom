@@ -4,20 +4,22 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 
 ## Morning summary (overnight session, 2026-10-23)
 
-The session stopped when its usage limit was reached, after Stage 3 and before Stage 4. Main is green (`pnpm check`: 25 test files, 498 tests, zero lint warnings) and pushed to origin.
+Stages 3 and 4 are complete. Main is green (`pnpm check`: 27 test files, 526 tests including the 7 fast-check properties at 1,000 runs each, zero lint warnings) and pushed to origin. No UI work was started.
 
 **Completed and merged to main, one squash commit each:**
 
 - PR #4 (shared schemas and fixtures) and PR #5 (engine through BORROW), which were still open, squash-merged so the night's work could build on main.
 - Docs: Setback and bankruptcy decisions written into `docs/spec.md`, removed from the CLAUDE.md spec gaps (now 3 gaps: undo, kids mode, Freedom track); `tsx` marked approved.
-- Actions, test first: REPAY, PAY_LIFESTYLE, SELL_ASSET, ACCEPT_MARKET, DECLINE_MARKET, GIVE, SKIP_GIVE. All 13 reducer actions now exist.
-- Setback resolution, automatic bankruptcy sales, `skipsNextTurn`, and END_TURN skipping and game end with fewer than two players.
+- Stage 3, test first: REPAY, PAY_LIFESTYLE, SELL_ASSET, ACCEPT_MARKET, DECLINE_MARKET, GIVE, SKIP_GIVE. All 13 reducer actions exist. Then Setback resolution, automatic bankruptcy sales, `skipsNextTurn`, END_TURN skipping, and game end when fewer than two players remain.
+- Stage 4.1: `checkInvariants`, `replay`, and the fast-check property suite (`pnpm test:props`, `FC_NUM_RUNS` honoured). It caught one over-strict invariant on its first full run (an out player stays current until their END_TURN), which was fixed in the invariant, not the engine.
+- Stage 4.2: `pnpm sim` (bots in `packages/engine/sim/`, run with `tsx`); first 1,000-game report saved to `docs/sim/first-run.md`. No game numbers were changed.
+- Stage 4.3: three golden games in `packages/engine/src/test/golden/`, replayed by `golden.test.ts`.
 
-**Test counts:** 267 before tonight → 498 now (231 new engine tests).
+**Test counts:** 267 tests before tonight → 526 now, 7 of them fast-check properties that each play up to 1,000 random games.
 
-**Not done (Stage 4, untouched):** 4.1 fast-check property suite (`pnpm test:props` still runs with `--passWithNoTests`; `fast-check` is listed in `packages/engine/package.json` but was not found in `node_modules`, so run `pnpm install` first), 4.2 simulator (`tsx` not yet added; `pnpm sim` is still the placeholder), 4.3 golden games. No simulator numbers exist yet.
+**Simulator headline (1,000 standard games, 2 to 4 bots):** 0.3% of games end by escape, 99.1% end with one player left after everyone else goes bankrupt, median length 100 turns (2 players: 58), 66.6% of seats go bankrupt. Win rate by profession: Doctor 65%, Engineer 44%, Nurse 31%, Electrician 28%, Police Officer 23%, Teacher 9.5%. Both spec targets (no profession above 25%, median under 60 turns) are missed. Details and a reading in "Simulator first run" below.
 
-**Questions waiting for Andre:** none blocked an action. The six "Decisions made alone tonight" below are readings of the spec I made to keep moving; each is pinned by a test and written into `docs/spec.md`, so overruling one is a spec edit plus a test edit.
+**Questions waiting for Andre:** none blocked an action. One decision is worth making before UI work: whether to fill out the card decks to the spec's counts before judging balance, since the simulator says the starter decks produce a game of attrition. The six "Decisions made alone tonight" below are readings of the spec made to keep moving; each is pinned by a test and written into `docs/spec.md`, so overruling one is a spec edit plus a test edit. Dependencies added tonight: `tsx` (root, approved) and `@types/node` for the engine's `sim/` folder (previously approved for web).
 
 ## Overnight session, 2026-10-23 (unattended)
 
@@ -39,7 +41,7 @@ Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine ac
 | Setback resolution + bankruptcy | merged | `skipsNextTurn` on Player; END_TURN consumes skips and ends the game when fewer than two players remain |
 | Stage 4.1 property suite | merged | `invariants.props.test.ts`, 1,000 runs default, `FC_NUM_RUNS` honoured; found and fixed one over-strict invariant |
 | Stage 4.2 simulator | merged | `pnpm sim`, report in `docs/sim/first-run.md`; no game numbers changed |
-| Stage 4.3 golden games | next | |
+| Stage 4.3 golden games | merged | three recorded games in `src/test/golden/`, never regenerate |
 
 ### Simulator first run (docs/sim/first-run.md)
 
@@ -101,6 +103,7 @@ The repo is a pnpm workspace with three packages:
 | `invariants.ts` | `checkInvariants(state)` returns violations; `assertInvariants` throws them. Checks the Zod schema (integers, non-negative cash, strict shapes, one pending), per-player rules (out players hold no assets, mortgages finance a held asset, unique ids), the current player (an out player may be current only between their own ROLL and END_TURN), deck conservation per deck (draw + discard + held non-stock cards + pending card = the mode's deck, no duplicates), pending cards of the right deck, and log turn numbers. `fullDeck(state, deck)` is the mode-aware deck. |
 | `replay.ts` | `replay(initial, actions)` re-applies a log; throws if any action is rejected. |
 | `invariants.props.test.ts` | fast-check suite. A game is `(seed, mode, professions[], choices[])`; `test/walk.ts` turns each choice number into a candidate action from the current pending state (mostly legal, some deliberately off, every 23rd from the wrong player). Properties: invariants after every accepted action (standard and kids), only the current player is accepted, END_TURN only with pending none, one log entry per accepted action, replay rebuilds the final state, byte-identical determinism, standard games never get stuck, kids games get stuck only on an unpayable Lifestyle card (spec gap 2), wrong-player actions always `NOT_YOUR_TURN`. `test/fcConfig.ts` reads `FC_NUM_RUNS` (default 1,000). Each property has a 120 s timeout because `pnpm test` runs it in parallel with every other file. |
+| `test/golden/*.json` + `test/golden.test.ts` | Three recorded full games, each `{ description, strategies, setup, ending, actions, expected }`: `escape-two-players` (Engineer vs Doctor, seed 1119, 97 turns, ends by escape), `attrition-four-players` (seed 7, 134 turns, three bankruptcies, ends with one player standing), `kids-three-players` (seed 53, 33 turns, stops where a child cannot pay a cash-only Lifestyle card, spec gap 2). The test replays each log from `createGame(setup)` and requires `toEqual` with the recorded state, checks the log matches the actions, and runs `assertInvariants`. Generated once on 2026-10-23 by playing the sim bots through the engine; the generator was deliberately not committed. A diff here means a rule changed: say which in the commit and get Andre's approval before touching the files (`-u` is never the answer). |
 | `../sim/` (outside `src/`, own `tsconfig.json` with Node types, Node globals allowed in ESLint) | `bots.ts` (`decide(state, strategy)` returns moves best first; strategies cautious, balanced, aggressive differ in cash cushion, willingness to borrow for a deal, and required return per $1,000 down), `simulate.ts` (`playGame`, `simulate` → `SimReport`; seating drawn from the engine PRNG so a report is reproducible), `run.ts` (CLI, Markdown report, `--out`). Bots only ever call `reduce`; a bot with no accepted move throws, which the 1,000-game run never hit. |
 | `sales.ts` | `liquidate(state, playerId, asset, proceeds, reason)`: removes the asset, retires its linked mortgage first (`mortgagePaid = min(proceeds, principal)`), credits the rest, returns a deal card to its deck's discard pile (a stock lot just disappears). Shared by Market sales and bankruptcy. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If the player is in and `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. If fewer than two players are in, `phase: finished` with the survivor current. Otherwise increments `turnNumber` and moves to the next seat that is in; a seat with `skipsNextTurn` is passed over once, its flag cleared, event `turnSkipped`. |
@@ -152,7 +155,7 @@ Package manager note: `corepack enable` fails with EPERM on this machine because
 
 ## Next step
 
-See the Stage 3 progress table above. The next unmerged row is the next action, test first, in the CLAUDE.md order.
+Stages 3 and 4 are done; the next work is Andre's call. Candidates, in the order the spec implies: fill out the card decks toward the spec counts and rerun `pnpm sim`; resolve spec gap 1 (undo) and gap 2 (kids who cannot pay) so kids mode can finish a game; then the first UI session (`formatMoney`, Tailwind, shadcn/ui, Zustand, a router decision, `legalActions(state, playerId)` for the buttons).
 
 ## Deferred from the scaffold
 
