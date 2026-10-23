@@ -16,8 +16,8 @@ Working alone on Andre's overnight plan: finish Stage 3 (the remaining engine ac
 | PAY_LIFESTYLE | merged | `INVALID_METHOD` when the card does not offer that method; loan allowed in kids mode |
 | SELL_ASSET | merged | stock lots only, at redraw; `INVALID_ASSET` for any other asset |
 | ACCEPT_MARKET | merged | buyout needs `assetId` when several qualify; `liquidate` helper in `sales.ts` pays the mortgage first |
-| DECLINE_MARKET | next | |
-| GIVE, SKIP_GIVE | todo | |
+| DECLINE_MARKET | merged | `MARKET_EFFECT_MANDATORY` unless every effect is a buyout or nothing qualifies |
+| GIVE, SKIP_GIVE | next | |
 | Setback resolution + bankruptcy | todo | decided tonight; lands as its own branch after the actions |
 | Stage 4.1 property suite | todo | |
 | Stage 4.2 simulator | todo | |
@@ -62,6 +62,7 @@ The repo is a pnpm workspace with three packages:
 | `actions/payLifestyle.ts` | Valid only when `pending` is `payLifestyle`. `cash` pays `cashCost` (`INSUFFICIENT_CASH`); `loan` adds a `lifestyle` liability (`principal: loanPrincipal`, `monthlyPayment: monthlyCost`, `sourceCardId`), id `${playerId}-lifestyle-${log.length}`. `INVALID_METHOD` when the card lacks that option. Card to the lifestyle discard pile. Events: `cashChanged` + `paidLifestyle` (cash), `paidLifestyle` with `liabilityId` (loan). |
 | `actions/sellAsset.ts` | Valid only when `pending` is `buyOrPass` for a stock card (any other offer → `INVALID_FOR_PENDING`). `assetId` must be the current player's lot of that stock (`INVALID_ASSET`); `shares` defaults to the whole lot and may not exceed it (`INVALID_SHARES`). Proceeds `shares × pending.sharePrice`. A partial sale keeps the lot with `purchasePrice`/`downPaid` scaled down (floored) and `monthlyCashFlow = floor(remaining × dividendPerShare)`. Card to the discard pile. Events: `cashChanged`, `sold`. |
 | `actions/acceptMarket.ts` | Valid only when `pending` is `marketChoice`. Applies the card's `effects` in order to the current player's assets whose type is in `appliesTo`: `offerBuyout` sells one (the only qualifying asset, or the one named by `assetId`; `INVALID_ASSET` when several qualify and none is named, or when `assetId` does not qualify), `forceSale` sells all, `changeCashFlow` adds `delta` to each, `splitShares` multiplies each lot's `shares`. Nothing qualifying → card discarded, no events. Market card to the market discard pile. Events: `sold` (+ `cashChanged` when the net is positive), `cashFlowChanged`, `sharesSplit`. |
+| `actions/declineMarket.ts` | Valid only when `pending` is `marketChoice`. Legal when every effect is an `offerBuyout` or the player owns nothing the card applies to; otherwise `MARKET_EFFECT_MANDATORY` (resolve with ACCEPT_MARKET). Discards the card with no effect. Event: `passed`. |
 | `sales.ts` | `liquidate(state, playerId, asset, proceeds, reason)`: removes the asset, retires its linked mortgage first (`mortgagePaid = min(proceeds, principal)`), credits the rest, returns a deal card to its deck's discard pile (a stock lot just disappears). Shared by Market sales and bankruptcy. |
 | `actions/endTurn.ts` | Needs `pending: none` and a ROLL this turn. If `canEscape`, sets `hasEscaped` and `phase: finished` without advancing. Otherwise increments `turnNumber` and moves to the next player who is not out. |
 | `selectors.ts` | `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn` (derived from the log, so no "rolled" flag on state). |
