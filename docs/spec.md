@@ -22,7 +22,7 @@ Turn sequence (the engine enforces this order; no step can be skipped by hand):
 1. Roll one six-sided die and move that many spaces on the inner loop.
 2. Credit monthly cash flow for each Payday space passed or landed on during the move.
 3. Resolve the space landed on.
-4. Player may take optional actions: repay a loan in full (never a mortgage; see Mortgages below), sell an asset when a Market card allows it, sell shares of a stock when that stock's card is drawn again, or borrow from the bank in $1,000 increments at 10 percent of principal added to monthly expenses.
+4. Player may take optional actions: repay a loan in full (never a mortgage; see Mortgages below), sell an asset when a Market card allows it, sell shares of a stock when that stock's card is drawn again, or borrow from the bank in $1,000 increments at 10 percent of principal added to monthly expenses. Borrowing is also legal while a buyOrPass or payLifestyle decision is open, so a player who is short can raise the cash to take the deal or pay the card: BORROW adds the cash and the bank liability and leaves the same decision open. In every other pending state BORROW is rejected. REPAY is legal only when no decision is pending. Kids mode never allows BORROW.
 5. Engine checks the win condition and advances to the next player.
 
 Board: inner loop of 24 spaces. Space mix: 9 Opportunity, 5 Market, 5 Lifestyle, 2 Payday, 2 Giving, 1 Setback. Setback cards (job loss, medical bill, car repair) force the player to pay or borrow and skip a turn if cash is negative.

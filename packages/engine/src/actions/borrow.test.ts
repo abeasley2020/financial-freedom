@@ -75,6 +75,54 @@ describe('BORROW: taking a bank loan', () => {
   });
 });
 
+describe('BORROW: while a decision is open', () => {
+  it('BORROW: allowed during buyOrPass and leaves the decision open', () => {
+    const before = offered(twoPlayerGame(), 'small-001');
+    const next = apply(before, borrow(5_000));
+    expect(next.pending).toEqual(before.pending);
+    expect(next.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-001' });
+    expect(p1(next).cash).toBe(p1(before).cash + 5_000);
+    expect(p1(next).liabilities.at(-1)).toMatchObject({ kind: 'bank', principal: 5_000, monthlyPayment: 500 });
+    expect(next.decks).toEqual(before.decks);
+  });
+
+  it('BORROW: allowed during a stock offer and keeps the rolled share price', () => {
+    const before = offered(twoPlayerGame(), 'small-005', 20);
+    const next = apply(before, borrow(1_000));
+    expect(next.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-005', sharePrice: 20 });
+  });
+
+  it('BORROW: lets a player who was short complete BUY', () => {
+    // Ada has 400; the Duplex needs 5,000 down.
+    const short = offered(twoPlayerGame(), 'small-001');
+    expect(reject(short, { type: 'BUY', playerId: 'p1' })).toBe('INSUFFICIENT_CASH');
+    const funded = apply(short, borrow(5_000));
+    const bought = apply(funded, { type: 'BUY', playerId: 'p1' });
+    expect(p1(bought).cash).toBe(400);
+    expect(p1(bought).assets).toHaveLength(1);
+    expect(p1(bought).assets[0]).toMatchObject({ cardId: 'small-001', downPaid: 5_000 });
+    expect(p1(bought).liabilities.filter((l) => l.kind === 'bank')).toHaveLength(1);
+    expect(p1(bought).liabilities.filter((l) => l.kind === 'mortgage')).toHaveLength(1);
+    expect(bought.pending).toEqual({ kind: 'none' });
+    expect(monthlyCashFlow(p1(bought))).toBe(700 + 160 - 500);
+  });
+
+  it('BORROW: allowed during payLifestyle and leaves the decision open', () => {
+    // PAY_LIFESTYLE is not written yet, so the pending state is set by hand.
+    const before: GameState = { ...afterRoll(), pending: { kind: 'payLifestyle', cardId: 'life-001' } };
+    const next = apply(before, borrow(4_000));
+    expect(next.pending).toEqual({ kind: 'payLifestyle', cardId: 'life-001' });
+    expect(p1(next).cash).toBe(1_100 + 4_000);
+  });
+
+  it('BORROW: the deal can still be passed after borrowing', () => {
+    const funded = apply(offered(twoPlayerGame(), 'small-001'), borrow(1_000));
+    const passed = apply(funded, { type: 'PASS', playerId: 'p1' });
+    expect(passed.pending).toEqual({ kind: 'none' });
+    expect(p1(passed).cash).toBe(1_400);
+  });
+});
+
 describe('BORROW: amount', () => {
   it.each([0, 500, 1_500, -1_000, 999])('BORROW: rejected with INVALID_AMOUNT for %d', (amount) => {
     expect(reject(afterRoll(), borrow(amount))).toBe('INVALID_AMOUNT');
@@ -124,27 +172,22 @@ describe('BORROW: rejections', () => {
     expect(reject(twoPlayerGame(), borrow(1_000))).toBe('MUST_ROLL_FIRST');
   });
 
-  // Spec, Core rules, turn step 4: optional actions follow resolving the space.
-  // Read literally, a pending decision blocks borrowing. Andre may relax this
-  // for buyOrPass and payLifestyle (STATUS.md, "Next step"); flip those two
-  // cases to `apply` if so.
+  // Spec, Core rules, turn step 4: BORROW is legal with pending none, buyOrPass,
+  // or payLifestyle, and rejected in every other pending state.
   const pendings: Pending[] = [
     { kind: 'chooseDealSize' },
-    { kind: 'buyOrPass', cardId: 'small-001' },
     { kind: 'marketChoice', cardId: 'market-001' },
-    { kind: 'payLifestyle', cardId: 'life-001' },
     { kind: 'giveOrSkip' },
   ];
   it.each(pendings)('BORROW: rejected with INVALID_FOR_PENDING when pending is $kind', (pending) => {
     expect(reject({ ...afterRoll(), pending }, borrow(1_000))).toBe('INVALID_FOR_PENDING');
   });
 
-  it('BORROW: rejected with INVALID_FOR_PENDING while a real deal offer is open', () => {
-    expect(reject(offered(twoPlayerGame(), 'small-001'), borrow(5_000))).toBe('INVALID_FOR_PENDING');
-  });
-
-  it('BORROW: rejected with NOT_ALLOWED_IN_KIDS_MODE: kids mode has no bank loans', () => {
+  it('BORROW: rejected in kids mode', () => {
     expect(reject(afterRoll(twoPlayerGame({ mode: 'kids' })), borrow(1_000))).toBe('NOT_ALLOWED_IN_KIDS_MODE');
+    const kidsOffer = apply(aboutToRoll(twoPlayerGame({ mode: 'kids' }), 0, 1), { type: 'ROLL', playerId: 'p1' });
+    expect(kidsOffer.pending.kind).toBe('buyOrPass');
+    expect(reject(kidsOffer, borrow(1_000))).toBe('NOT_ALLOWED_IN_KIDS_MODE');
   });
 
   it.each(['lobby', 'finished'] as const)('BORROW: rejected with GAME_NOT_PLAYING when phase is %s', (phase) => {
