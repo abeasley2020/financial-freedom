@@ -5,12 +5,12 @@
 // pass: a difference means a rule changed, and the commit that changes the
 // rule must say so and get Andre's approval first.
 //
-// Recorded 2026-10-23 at the end of Stage B (spec v2) by playing the sim bots
-// through the engine; the generator was deliberately not committed. All three
-// end at the round limit: with the 26 starter cards no bot game escapes within
-// 15 rounds, and bankruptcies are rare enough that 6,000 seeds produced none
-// with four players. Escape and last-standing recordings are added once Stage
-// C content makes them reachable.
+// Re-recorded 2026-10-26 at the end of Stage C (16 professions, full decks at
+// spec counts) by playing the sim bots through the engine, with Andre's
+// approval; the recorder was deliberately not committed. Three end at the
+// round limit and one with a single player left after a bankruptcy. No bot
+// game escapes within 15 rounds on the Stage C content (6,000 seeds searched),
+// so an escape recording waits for Stage D balance.
 
 import { ActionSchema, GameStateSchema, type Action, type GameState } from '@ff/shared';
 import { z } from 'zod';
@@ -21,6 +21,7 @@ import { assertInvariants } from '../invariants';
 import { replay } from '../replay';
 import { roundLimit, roundNumber } from '../selectors';
 import kids from './golden/kids-three-players.json';
+import lastStanding from './golden/last-standing-two-players.json';
 import fourPlayers from './golden/limit-four-players.json';
 import twoPlayers from './golden/limit-two-players.json';
 
@@ -52,6 +53,7 @@ const recordings: readonly [string, unknown][] = [
   ['limit-two-players', twoPlayers],
   ['limit-four-players', fourPlayers],
   ['kids-three-players', kids],
+  ['last-standing-two-players', lastStanding],
 ];
 const load = (data: unknown): Golden => GoldenSchema.parse(data);
 
@@ -107,12 +109,13 @@ describe.each(recordings)('golden game %s', (_name, data) => {
 });
 
 describe('golden games as a set', () => {
-  it('cover both modes and the round-limit ending, with two to four players', () => {
+  it('cover both modes and the round-limit and last-standing endings, with two to four players', () => {
     const games = recordings.map(([, data]) => load(data));
     expect(games.map((g) => g.setup.mode)).toContain('kids');
     expect(games.map((g) => g.setup.mode)).toContain('standard');
     expect(games.map((g) => g.ending)).toContain('roundLimit');
-    expect(games.map((g) => g.setup.players.length).sort()).toEqual([2, 3, 4]);
+    expect(games.map((g) => g.ending)).toContain('lastStanding');
+    expect(games.map((g) => g.setup.players.length).sort()).toEqual([2, 2, 3, 4]);
   });
 
   it('each run long enough to pass several Paydays', () => {
