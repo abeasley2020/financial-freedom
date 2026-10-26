@@ -22,7 +22,7 @@ The sim bots play v2 through `reduce` only: they pick Life Choices options by `o
 
 **Simulator (docs/sim/v2-first-run.md, 1,000 standard games, 2 to 4 bots):** 99.8% end at the round limit, 0 by escape, 0.2% with one player left; median 42 turns (14 rounds per player); 0.2% of seats bankrupt. Win rates: Nurse 43.5%, Electrician 41.4%, Engineer 40.6%, Police Officer 30.1%, Doctor 27.6%, Teacher 14.8%. Kids mode (docs/sim/v2-first-run-kids.md, 1,000 games): 100% round limit, none stuck, median 29 turns. Reading for Stage D: the 15-month horizon is now the whole game, and the 26 starter cards cannot produce an escape in it; the Teacher's low salary leaves no cash to invest, so Freedom percentage alone did not level the professions. Before the round limit existed, the 4%-a-month index fund made 98% of long games end by escape, so growth percents are the lever to watch.
 
-**Questions for Andre** (each has a default already in the code; overruling one is a spec edit plus a test edit):
+**Questions for Andre: all ten decided 2026-10-26, defaults approved as written.** Q1 to Q9 are written into `docs/spec.md`; Q10 (escape and last-standing golden games) carries into Stage C. Andre also approved regenerating the golden games once at the end of Stage C.
 
 1. **Free option rule.** The spec requires an option with no monthly cost on every Life Choices card. The content test enforces more: an option with nothing today and nothing monthly (no payCash, loan, subscription, or investment) that is `kidsOk` when the card is. That is what makes "a kid is never stuck" true. Default: keep the stronger rule and write it into the spec.
 2. **Effect field names.** `addLoan.kind` and `investGrowth.type` from the spec are `loanKind` and `assetType` in the schema, because `kind` is the effect discriminator. Default: keep.
@@ -167,7 +167,7 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage B is done. Next is Stage C (professions and full card decks, unattended; prompt in `docs/plan-wealth-edition.md`), then Stage D (balance tuning), then Stage E (debrief engine). Before Stage C, Andre reads the Morning summary above and answers or waves through the ten questions.
+Stage B is done and its ten questions are decided (2026-10-26). Stage C (professions and full card decks; prompt in `docs/plan-wealth-edition.md`) is in progress, then Stage D (balance tuning), then Stage E (debrief engine).
 
 ## Deferred from the scaffold
 
