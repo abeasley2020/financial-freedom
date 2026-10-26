@@ -289,5 +289,1556 @@
         ]
       }
     ]
+  },
+  {
+    "id": "life-006",
+    "deck": "lifeChoices",
+    "category": "vehicle",
+    "title": "New SUV Lease Offer",
+    "principles": [
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "kidsText": "A shiny new SUV with a low monthly price. Keep your car, buy used, or lease?",
+    "adultText": "Zero down and 360 a month for three years. At the end you own nothing. Keep your car, buy used with cash, or lease?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep your car",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Your car works fine. Keep it.",
+        "adultText": "It is paid off and runs well. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "used",
+        "label": "Buy a used SUV for cash",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $6,000 cash for a used SUV.",
+        "adultText": "A four-year-old SUV for 6,000 cash. It already lost most of its value, so you do not lose it.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 6000
+          }
+        ]
+      },
+      {
+        "id": "lease",
+        "label": "Lease the new SUV",
+        "principles": [
+          "P5",
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $360 every month. You give it back later.",
+        "adultText": "360 a month on a 13,000 lease balance. Paying it off early means paying the whole balance.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "car",
+            "principal": 13000,
+            "monthlyPayment": 360
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-007",
+    "deck": "lifeChoices",
+    "category": "vehicle",
+    "title": "Your Car Hits 150,000 Miles",
+    "principles": [
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "kidsText": "Your car is getting old. Keep driving it, buy used, or get a new one?",
+    "adultText": "The odometer rolls past 150,000. It still starts every morning. Keep it, buy a used one with cash, or finance new?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep driving it",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Keep driving it. It still starts.",
+        "adultText": "Change the oil and keep going. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "used",
+        "label": "Buy a used car for cash",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $7,000 cash for a newer used car.",
+        "adultText": "A five-year-old sedan for 7,000 cash. No payment.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 7000
+          }
+        ]
+      },
+      {
+        "id": "new",
+        "label": "Finance a new car",
+        "principles": [
+          "P5",
+          "P6"
+        ],
+        "kidsText": "Take a loan. Pay $520 every month.",
+        "adultText": "26,000 financed at 520 a month. It loses a fifth of its value when you drive it off the lot.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "car",
+            "principal": 26000,
+            "monthlyPayment": 520
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-008",
+    "deck": "lifeChoices",
+    "category": "vehicle",
+    "title": "New Bike Season",
+    "principles": [
+      "P4",
+      "P6"
+    ],
+    "kidsText": "Bikes are on sale. Keep your old bike, buy a used one, or get a new e-bike?",
+    "adultText": "Spring sales are on. Keep riding the old bike, buy a used one, or get a new electric bike?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep your old bike",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Pump up the tires and keep riding.",
+        "adultText": "New tires and a tune-up you do yourself. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "used",
+        "label": "Buy a used bike",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $200 for a used bike.",
+        "adultText": "A lightly used bike from a neighbor for 200.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 200
+          }
+        ]
+      },
+      {
+        "id": "ebike",
+        "label": "Buy a new e-bike",
+        "principles": [
+          "P6"
+        ],
+        "kidsText": "Pay $1,500 for a new electric bike.",
+        "adultText": "A new e-bike for 1,500 cash. Fun, fast, and worth half that in a year.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 1500
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-009",
+    "deck": "lifeChoices",
+    "category": "vehicle",
+    "title": "Motorcycle for the Summer",
+    "principles": [
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "kidsText": "A motorcycle would be fun. Skip it, buy used, or take a loan for a new one?",
+    "adultText": "Summer is coming and a friend is selling. Skip it, buy his used bike for cash, or finance a new one?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Skip it. Keep your money.",
+        "adultText": "Ride with friends on their bikes. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "used",
+        "label": "Buy the used motorcycle",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $4,000 cash for a used motorcycle.",
+        "adultText": "Your friend's bike for 4,000 cash. No payment.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 4000
+          }
+        ]
+      },
+      {
+        "id": "new",
+        "label": "Finance a new motorcycle",
+        "principles": [
+          "P5",
+          "P6"
+        ],
+        "kidsText": "Take a loan. Pay $250 every month.",
+        "adultText": "9,000 financed at 250 a month. Fun on sunny days, a payment every day.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "car",
+            "principal": 9000,
+            "monthlyPayment": 250
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-010",
+    "deck": "lifeChoices",
+    "category": "clothing",
+    "title": "Designer Sneakers Drop",
+    "principles": [
+      "P4",
+      "P6"
+    ],
+    "kidsText": "Famous sneakers come out today. Skip them, buy one pair, or use a store card?",
+    "adultText": "A limited release everyone is posting about. Skip it, buy one pair with cash, or open a store card for three pairs?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip the drop",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Your shoes are fine. Skip it.",
+        "adultText": "Your shoes are fine. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "one",
+        "label": "Buy one pair",
+        "principles": [
+          "P6"
+        ],
+        "kidsText": "Pay $300 for one pair.",
+        "adultText": "One pair for 300 cash. Worn twice, they are just shoes.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 300
+          }
+        ]
+      },
+      {
+        "id": "card",
+        "label": "Three pairs on a store card",
+        "principles": [
+          "P5",
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $45 every month for a long time.",
+        "adultText": "Three pairs on a store card: 900 owed at 45 a month.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "lifestyle",
+            "principal": 900,
+            "monthlyPayment": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-011",
+    "deck": "lifeChoices",
+    "category": "clothing",
+    "title": "Wardrobe Refresh",
+    "principles": [
+      "P4",
+      "P6"
+    ],
+    "kidsText": "Your clothes look a little old. Keep them, shop thrift, or buy brand names?",
+    "adultText": "New job, new season, same old clothes. Keep them, hit the thrift store, or shop the mall brands?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep what you have",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Your clothes still fit. Keep them.",
+        "adultText": "They still fit and nobody is keeping score. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "thrift",
+        "label": "Shop thrift stores",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $200 at the thrift store.",
+        "adultText": "A full refresh for 200 at thrift and consignment stores.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 200
+          }
+        ]
+      },
+      {
+        "id": "brands",
+        "label": "Buy brand names",
+        "principles": [
+          "P3",
+          "P6"
+        ],
+        "kidsText": "Pay $1,200 for new brand-name clothes.",
+        "adultText": "1,200 at the mall. Worth a tenth of that the day you cut the tags.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 1200
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-012",
+    "deck": "lifeChoices",
+    "category": "clothing",
+    "title": "Style Box Subscription",
+    "principles": [
+      "P6",
+      "P7"
+    ],
+    "kidsText": "New clothes mailed to you every month. Skip it, or pay $70 a month?",
+    "adultText": "A stylist picks clothes and mails a box every month. 70 a month until you cancel. Sign up?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Skip it and keep your money.",
+        "adultText": "Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "subscribe",
+        "label": "Subscribe for 70 a month",
+        "principles": [
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $70 every month until you cancel.",
+        "adultText": "A subscription of 70 a month. REPAY cancels it at no cost.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 70
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-013",
+    "deck": "lifeChoices",
+    "category": "clothing",
+    "title": "Winter Coat Sale",
+    "principles": [
+      "P4",
+      "P6"
+    ],
+    "kidsText": "Your coat is old. Keep it, buy one on sale, or get a fancy brand?",
+    "adultText": "The zipper sticks, but the coat is warm. Keep it, buy a sale coat, or get the brand everyone wears?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep your coat",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Fix the zipper and keep it.",
+        "adultText": "Fix the zipper for a few dollars. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "sale",
+        "label": "Buy a coat on sale",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $100 for a warm coat on sale.",
+        "adultText": "A warm coat for 100 at an end-of-season sale.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 100
+          }
+        ]
+      },
+      {
+        "id": "brand",
+        "label": "Buy the fancy brand",
+        "principles": [
+          "P3",
+          "P6"
+        ],
+        "kidsText": "Pay $600 for the fancy coat.",
+        "adultText": "600 for the logo. Just as warm as the sale coat.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 600
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-014",
+    "deck": "lifeChoices",
+    "category": "gadget",
+    "title": "New Phone Comes Out",
+    "principles": [
+      "P4",
+      "P6",
+      "P7"
+    ],
+    "kidsText": "A new phone just came out. Keep yours, pay cash, or pay each month?",
+    "adultText": "Your phone works, but the new one has a better camera. Keep yours, pay cash, or take the carrier's payment plan?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep your phone",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Your phone still works. Keep it.",
+        "adultText": "New battery, same phone. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "cash",
+        "label": "Pay cash",
+        "principles": [
+          "P6"
+        ],
+        "kidsText": "Pay $1,000 cash for the new phone.",
+        "adultText": "1,000 cash. Worth half that in a year.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 1000
+          }
+        ]
+      },
+      {
+        "id": "plan",
+        "label": "Payment plan",
+        "principles": [
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $50 every month for the phone.",
+        "adultText": "1,000 on the carrier plan at 50 a month. It feels free. It is not.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "lifestyle",
+            "principal": 1000,
+            "monthlyPayment": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-015",
+    "deck": "lifeChoices",
+    "category": "gadget",
+    "title": "Gaming Console",
+    "principles": [
+      "P4",
+      "P6",
+      "P7"
+    ],
+    "kidsText": "A new game system! Skip it, buy it, or buy it with a monthly game pass?",
+    "adultText": "The new console is out. Skip it, buy it with cash, or buy it plus the monthly game pass?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Play your old games. Skip it.",
+        "adultText": "Your old games still work. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "buy",
+        "label": "Buy the console",
+        "principles": [
+          "P6"
+        ],
+        "kidsText": "Pay $500 for the game system.",
+        "adultText": "500 cash. Next year's model will make it look old.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 500
+          }
+        ]
+      },
+      {
+        "id": "pass",
+        "label": "Console plus game pass",
+        "principles": [
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $500 now and $20 every month.",
+        "adultText": "500 cash plus a game pass at 20 a month until you cancel.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 500
+          },
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 20
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-016",
+    "deck": "lifeChoices",
+    "category": "gadget",
+    "title": "Laptop Upgrade",
+    "principles": [
+      "P4",
+      "P6"
+    ],
+    "kidsText": "Your computer is slow. Keep it, buy a fixed-up one, or get the best one?",
+    "adultText": "The old laptop is slow but works. Keep it, buy a refurbished one, or finance the top model?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep your laptop",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Clean it up and keep using it.",
+        "adultText": "Clear the junk and add memory yourself. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "refurb",
+        "label": "Buy refurbished",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $400 for a fixed-up laptop.",
+        "adultText": "A refurbished business laptop for 400 with a warranty.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 400
+          }
+        ]
+      },
+      {
+        "id": "top",
+        "label": "Finance the top model",
+        "principles": [
+          "P5",
+          "P6"
+        ],
+        "kidsText": "Pay $110 every month for the best laptop.",
+        "adultText": "2,400 financed at 110 a month. Fast, beautiful, and outdated in three years.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "lifestyle",
+            "principal": 2400,
+            "monthlyPayment": 110
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-017",
+    "deck": "lifeChoices",
+    "category": "gadget",
+    "title": "Smart Home Gadgets",
+    "principles": [
+      "P6",
+      "P7"
+    ],
+    "kidsText": "Talking speakers and smart lights. Skip them, buy them, or buy them with a monthly plan?",
+    "adultText": "Smart speakers, lights, and a doorbell camera. Skip it, buy the gear, or add the monitoring plan?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Flip the light switch yourself. Skip it.",
+        "adultText": "Light switches still work. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "buy",
+        "label": "Buy the gadgets",
+        "principles": [
+          "P6"
+        ],
+        "kidsText": "Pay $300 for the gadgets.",
+        "adultText": "300 for the starter kit.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 300
+          }
+        ]
+      },
+      {
+        "id": "monitor",
+        "label": "Gadgets plus monitoring",
+        "principles": [
+          "P6",
+          "P7"
+        ],
+        "kidsText": "Pay $300 now and $30 every month.",
+        "adultText": "300 for the kit plus a monitoring plan at 30 a month until you cancel.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 300
+          },
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-018",
+    "deck": "lifeChoices",
+    "category": "subscription",
+    "title": "Gym Membership",
+    "principles": [
+      "P7"
+    ],
+    "kidsText": "Join a gym? Exercise outside for free, join a gym, or join a fancy club?",
+    "adultText": "January energy. Run outside for free, join the basic gym, or the club with the smoothie bar?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Exercise outside",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Run and play outside for free.",
+        "adultText": "Free trails and a jump rope. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "basic",
+        "label": "Basic gym for 40 a month",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $40 every month until you cancel.",
+        "adultText": "A subscription of 40 a month. REPAY cancels it at no cost.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 40
+          }
+        ]
+      },
+      {
+        "id": "club",
+        "label": "Fancy club for 120 a month",
+        "principles": [
+          "P3",
+          "P7"
+        ],
+        "kidsText": "Pay $120 every month until you cancel.",
+        "adultText": "A subscription of 120 a month. Most members stop going by March.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 120
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-019",
+    "deck": "lifeChoices",
+    "category": "subscription",
+    "title": "Meal Kit Delivery",
+    "principles": [
+      "P7"
+    ],
+    "kidsText": "Dinner boxes mailed to your house. Cook at home, or pay every month for boxes?",
+    "adultText": "Pre-portioned dinners on your porch. Keep cooking from the store, two nights a week, or every night?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Keep cooking",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Cook with food from the store.",
+        "adultText": "Grocery store and a meal plan. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "some",
+        "label": "Two nights a week",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $120 every month until you cancel.",
+        "adultText": "A subscription of 120 a month for two dinners a week.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 120
+          }
+        ]
+      },
+      {
+        "id": "every",
+        "label": "Every night",
+        "principles": [
+          "P3",
+          "P7"
+        ],
+        "kidsText": "Pay $300 every month until you cancel.",
+        "adultText": "A subscription of 300 a month. Convenient, and more than twice the cost of groceries.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 300
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-020",
+    "deck": "lifeChoices",
+    "category": "subscription",
+    "title": "Phone Plan Upgrade",
+    "principles": [
+      "P7"
+    ],
+    "kidsText": "The phone store says get the best plan. Keep yours, or pay $30 more a month?",
+    "adultText": "The premium plan adds hotspot data and a streaming bonus for 30 more a month. Keep your plan or upgrade?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep your plan",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Keep the plan you have.",
+        "adultText": "Wi-Fi at home covers it. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "upgrade",
+        "label": "Upgrade for 30 a month",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $30 more every month.",
+        "adultText": "A subscription of 30 a month. REPAY cancels it at no cost.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-021",
+    "deck": "lifeChoices",
+    "category": "subscription",
+    "title": "Food Delivery Habit",
+    "principles": [
+      "P3",
+      "P7"
+    ],
+    "kidsText": "Food brought to your door. Skip it, join for $10 a month, or order every week?",
+    "adultText": "Free delivery with a membership. Skip it, join for 10 a month, or join and order takeout every week?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Eat at home and keep your money.",
+        "adultText": "Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "join",
+        "label": "Join for 10 a month",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $10 every month.",
+        "adultText": "A membership of 10 a month. REPAY cancels it at no cost.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 10
+          }
+        ]
+      },
+      {
+        "id": "weekly",
+        "label": "Order every week",
+        "principles": [
+          "P3",
+          "P7"
+        ],
+        "kidsText": "Pay $160 every month for weekly takeout.",
+        "adultText": "Membership plus weekly family takeout: 160 a month until you cancel.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 160
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-022",
+    "deck": "lifeChoices",
+    "category": "subscription",
+    "title": "Music and Audiobook Apps",
+    "principles": [
+      "P7"
+    ],
+    "kidsText": "Music apps! Use the free one, pay for one app, or get the family bundle?",
+    "adultText": "Use the free version with ads, pay for one app at 10 a month, or get the family bundle at 30?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "free",
+        "label": "Use the free version",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Listen for free with ads.",
+        "adultText": "A few ads never hurt anyone. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "one",
+        "label": "One app for 10 a month",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $10 every month.",
+        "adultText": "A subscription of 10 a month.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 10
+          }
+        ]
+      },
+      {
+        "id": "bundle",
+        "label": "Family bundle for 30 a month",
+        "principles": [
+          "P7"
+        ],
+        "kidsText": "Pay $30 every month.",
+        "adultText": "A subscription of 30 a month for music, audiobooks, and podcasts.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "addSubscription",
+            "monthlyCost": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-023",
+    "deck": "lifeChoices",
+    "category": "bigLife",
+    "title": "Bigger House",
+    "principles": [
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "kidsText": "A bigger house is for sale. Stay in your home, or move to the big one?",
+    "adultText": "Four bedrooms, a three-car garage, and a bigger payment. Stay where you are, or move up?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "stay",
+        "label": "Stay where you are",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Your home is big enough. Stay.",
+        "adultText": "Your house fits your family. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "move",
+        "label": "Move to the bigger house",
+        "principles": [
+          "P3",
+          "P5"
+        ],
+        "kidsText": "Pay $5,000 now and $450 more every month.",
+        "adultText": "5,000 toward the down payment and 450 more a month in mortgage, taxes, and insurance on 50,000 more debt.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 5000
+          },
+          {
+            "kind": "addLoan",
+            "loanKind": "lifestyle",
+            "principal": 50000,
+            "monthlyPayment": 450
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-024",
+    "deck": "lifeChoices",
+    "category": "bigLife",
+    "title": "Cousin's Destination Wedding",
+    "principles": [
+      "P3",
+      "P4"
+    ],
+    "kidsText": "Your cousin is getting married far away. Send a card, or fly there?",
+    "adultText": "A beach wedding two time zones away. Send a gift and a video message, fly in for the weekend, or stay the whole week?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "card",
+        "label": "Send a card and a video",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Send a card and a happy video.",
+        "adultText": "A heartfelt card and a toast by video. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "weekend",
+        "label": "Fly in for the weekend",
+        "principles": [
+          "P3",
+          "P4"
+        ],
+        "kidsText": "Pay $1,800 for the trip.",
+        "adultText": "Flights, hotel, and a gift for 1,800 cash.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 1800
+          }
+        ]
+      },
+      {
+        "id": "week",
+        "label": "Stay the whole week",
+        "principles": [
+          "P3"
+        ],
+        "kidsText": "Pay $4,000 for a whole week there.",
+        "adultText": "A week at the resort for 4,000 cash.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 4000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-025",
+    "deck": "lifeChoices",
+    "category": "bigLife",
+    "title": "Boat Show Deal",
+    "principles": [
+      "P3",
+      "P4",
+      "P6"
+    ],
+    "kidsText": "A boat for the lake! Skip it, buy a used one, or take a loan for a new one?",
+    "adultText": "The boat show has deals. Skip it, buy a used fishing boat with cash, or finance a new pontoon?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "skip",
+        "label": "Skip it",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Fish from the dock. Skip the boat.",
+        "adultText": "Rent a boat twice a summer. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "used",
+        "label": "Buy a used boat",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Pay $8,000 cash for a used boat.",
+        "adultText": "A used fishing boat and trailer for 8,000 cash.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 8000
+          }
+        ]
+      },
+      {
+        "id": "new",
+        "label": "Finance a new pontoon",
+        "principles": [
+          "P3",
+          "P5",
+          "P6"
+        ],
+        "kidsText": "Take a loan. Pay $400 every month.",
+        "adultText": "30,000 financed at 400 a month, plus a boat that loses value every season.",
+        "kidsOk": false,
+        "effects": [
+          {
+            "kind": "addLoan",
+            "loanKind": "lifestyle",
+            "principal": 30000,
+            "monthlyPayment": 400
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-026",
+    "deck": "lifeChoices",
+    "category": "bigLife",
+    "title": "Neighbor's House Fire",
+    "principles": [
+      "P10"
+    ],
+    "kidsText": "Your neighbor's house caught fire. Everyone is safe. How will you help?",
+    "adultText": "Your neighbors lost their kitchen to a fire. Everyone is safe. Help with your hands, or with your wallet too?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "help",
+        "label": "Bring meals and help clean",
+        "principles": [
+          "P10"
+        ],
+        "kidsText": "Bring food and help clean up. Your time is a gift.",
+        "adultText": "Meals for a week and a Saturday hauling debris. Generosity is not only money. Nothing changes.",
+        "kidsOk": true,
+        "effects": []
+      },
+      {
+        "id": "give",
+        "label": "Give $500",
+        "principles": [
+          "P10"
+        ],
+        "kidsText": "Give $500 to help them.",
+        "adultText": "500 toward a hotel and new clothes for the kids.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 500
+          }
+        ]
+      },
+      {
+        "id": "big",
+        "label": "Give $1,500",
+        "principles": [
+          "P10"
+        ],
+        "kidsText": "Give $1,500 to help them.",
+        "adultText": "1,500 to cover their insurance deductible.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "payCash",
+            "amount": 1500
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-027",
+    "deck": "lifeChoices",
+    "category": "windfall",
+    "title": "Work Bonus",
+    "principles": [
+      "P4",
+      "P5",
+      "P8"
+    ],
+    "kidsText": "You got a $3,000 bonus at work! Spend it, invest it, or pay off debt?",
+    "adultText": "A 3,000 bonus for a great year. Spend it, invest it in an index fund, or pay down your most expensive loan?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "spend",
+        "label": "Spend it",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Buy fun stuff with all $3,000.",
+        "adultText": "A new TV and a weekend away. The 3,000 is gone.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 3000
+          },
+          {
+            "kind": "payCash",
+            "amount": 3000
+          }
+        ]
+      },
+      {
+        "id": "invest",
+        "label": "Invest it in an index fund",
+        "principles": [
+          "P4",
+          "P8"
+        ],
+        "kidsText": "Put the $3,000 in an index fund. It grows every month.",
+        "adultText": "Index fund: grows 4 percent a month and pays out 1 percent of its value each Payday.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 3000
+          },
+          {
+            "kind": "investGrowth",
+            "assetType": "index",
+            "amount": 3000,
+            "growthPercent": 4,
+            "payoutPercent": 1
+          }
+        ]
+      },
+      {
+        "id": "payDebt",
+        "label": "Pay down your biggest loan",
+        "principles": [
+          "P5"
+        ],
+        "kidsText": "Pay $3,000 toward your loan with the biggest payment.",
+        "adultText": "Pays up to 3,000 toward the loan with the highest monthly payment. Mortgages are not loans here.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 3000
+          },
+          {
+            "kind": "repayLargestLoan",
+            "amount": 3000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-028",
+    "deck": "lifeChoices",
+    "category": "windfall",
+    "title": "Inheritance",
+    "principles": [
+      "P4",
+      "P8",
+      "P10"
+    ],
+    "kidsText": "A great-aunt left you $10,000. Give some and invest, pay off debt, or spend it?",
+    "adultText": "Your great-aunt left you 10,000 and a note: do some good with it. Give and invest, pay down debt, or spend it?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "giveInvest",
+        "label": "Give 1,000 and invest 9,000",
+        "principles": [
+          "P8",
+          "P10"
+        ],
+        "kidsText": "Give $1,000 away and put $9,000 in an index fund.",
+        "adultText": "1,000 to her church and 9,000 in an index fund that grows 4 percent a month and pays out 1 percent.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 10000
+          },
+          {
+            "kind": "payCash",
+            "amount": 1000
+          },
+          {
+            "kind": "investGrowth",
+            "assetType": "index",
+            "amount": 9000,
+            "growthPercent": 4,
+            "payoutPercent": 1
+          }
+        ]
+      },
+      {
+        "id": "payDebt",
+        "label": "Pay down your biggest loan",
+        "principles": [
+          "P5"
+        ],
+        "kidsText": "Pay $10,000 toward your loan with the biggest payment.",
+        "adultText": "Pays up to 10,000 toward the loan with the highest monthly payment. Mortgages are not loans here.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 10000
+          },
+          {
+            "kind": "repayLargestLoan",
+            "amount": 10000
+          }
+        ]
+      },
+      {
+        "id": "spend",
+        "label": "Spend it",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Spend all $10,000 on fun things.",
+        "adultText": "A new car down payment and a big trip. The 10,000 is gone.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 10000
+          },
+          {
+            "kind": "payCash",
+            "amount": 10000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-029",
+    "deck": "lifeChoices",
+    "category": "windfall",
+    "title": "Garage Sale Money",
+    "principles": [
+      "P1",
+      "P4",
+      "P8"
+    ],
+    "kidsText": "Your garage sale made $400! Save it, spend it, or keep it as cash?",
+    "adultText": "You cleared the garage and made 400. Put it in savings, spend it on a night out, or keep it in your wallet?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "save",
+        "label": "Put it in savings",
+        "principles": [
+          "P1",
+          "P8"
+        ],
+        "kidsText": "Put $400 in savings. It grows a tiny bit every month.",
+        "adultText": "Savings: grows 1 percent a month and stays there for emergencies.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 400
+          },
+          {
+            "kind": "investGrowth",
+            "assetType": "savings",
+            "amount": 400,
+            "growthPercent": 1,
+            "payoutPercent": 0
+          }
+        ]
+      },
+      {
+        "id": "spend",
+        "label": "Spend it",
+        "principles": [
+          "P4"
+        ],
+        "kidsText": "Spend all $400 on a fun night out.",
+        "adultText": "A nice dinner and a movie. The 400 is gone.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 400
+          },
+          {
+            "kind": "payCash",
+            "amount": 400
+          }
+        ]
+      },
+      {
+        "id": "keep",
+        "label": "Keep it as cash",
+        "principles": [
+          "P1"
+        ],
+        "kidsText": "Keep the $400 as cash for later.",
+        "adultText": "400 more cash on hand.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 400
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "life-030",
+    "deck": "lifeChoices",
+    "category": "windfall",
+    "title": "Overtime Paycheck",
+    "principles": [
+      "P1",
+      "P4",
+      "P5"
+    ],
+    "kidsText": "You worked extra and earned $1,500 more! Save it, spend it, or pay debt?",
+    "adultText": "A month of overtime adds 1,500. Build your emergency fund, buy gadgets, or pay down your biggest loan?",
+    "kidsOk": true,
+    "options": [
+      {
+        "id": "save",
+        "label": "Build your emergency fund",
+        "principles": [
+          "P1",
+          "P8"
+        ],
+        "kidsText": "Put $1,500 in savings for surprises.",
+        "adultText": "Savings: grows 1 percent a month and is there when the furnace dies.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 1500
+          },
+          {
+            "kind": "investGrowth",
+            "assetType": "savings",
+            "amount": 1500,
+            "growthPercent": 1,
+            "payoutPercent": 0
+          }
+        ]
+      },
+      {
+        "id": "spend",
+        "label": "Buy gadgets",
+        "principles": [
+          "P4",
+          "P6"
+        ],
+        "kidsText": "Spend all $1,500 on gadgets.",
+        "adultText": "New headphones, a tablet, and a smartwatch. The 1,500 is gone.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 1500
+          },
+          {
+            "kind": "payCash",
+            "amount": 1500
+          }
+        ]
+      },
+      {
+        "id": "payDebt",
+        "label": "Pay down your biggest loan",
+        "principles": [
+          "P5"
+        ],
+        "kidsText": "Pay $1,500 toward your loan with the biggest payment.",
+        "adultText": "Pays up to 1,500 toward the loan with the highest monthly payment. Mortgages are not loans here.",
+        "kidsOk": true,
+        "effects": [
+          {
+            "kind": "gainCash",
+            "amount": 1500
+          },
+          {
+            "kind": "repayLargestLoan",
+            "amount": 1500
+          }
+        ]
+      }
+    ]
   }
 ]

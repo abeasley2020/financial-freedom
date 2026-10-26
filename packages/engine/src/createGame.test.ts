@@ -30,16 +30,16 @@ describe('createGame', () => {
 
   it('seats each player at position 0 with the profession starting cash and salary', () => {
     const [ada, grace] = createGame(options).players;
-    expect(ada).toMatchObject({ id: 'p1', name: 'Ada', professionId: 'teacher', position: 0, cash: 400, salary: 3_300 });
-    expect(grace).toMatchObject({ id: 'p2', professionId: 'doctor', position: 0, cash: 3_000, salary: 13_000 });
+    expect(ada).toMatchObject({ id: 'p1', name: 'Ada', professionId: 'teacher', position: 0, cash: 2_500, salary: 5_300 });
+    expect(grace).toMatchObject({ id: 'p2', professionId: 'doctor', position: 0, cash: 10_000, salary: 19_900 });
     expect(ada).toMatchObject({ assets: [], favorTokens: 0, isOut: false, hasEscaped: false });
   });
 
   it('builds starting liabilities with monthlyPayment from the fixed percent per kind', () => {
     const [ada] = createGame(options).players;
     expect(ada?.liabilities).toEqual([
-      { id: 'p1-student-0', kind: 'student', principal: 12_000, monthlyPayment: 120 },
-      { id: 'p1-car-1', kind: 'car', principal: 6_000, monthlyPayment: 120 },
+      { id: 'p1-student-0', kind: 'student', principal: 30_000, monthlyPayment: 300 },
+      { id: 'p1-car-1', kind: 'car', principal: 10_000, monthlyPayment: 200 },
       { id: 'p1-credit-2', kind: 'credit', principal: 2_000, monthlyPayment: 60 },
     ]);
   });

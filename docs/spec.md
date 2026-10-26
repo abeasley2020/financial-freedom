@@ -81,7 +81,7 @@ Numbers rule (**proposed**; Stage C writes the numbers and records sources in `d
 - Starting monthly cash flow (salary minus totalExpenses) between 10 and 25 percent of salary.
 - Starting cash between one half and two months of totalExpenses.
 
-The six v1 professions stay in the fixtures, with their v1 numbers, until Stage C replaces them.
+Stage C (2026-10-26) wrote all sixteen into `packages/shared/src/data/professions.json`; sources and reasoning are in `docs/content-notes.md`. Salary is gross median pay, so baseExpenses includes taxes.
 
 Liability payments: the profession table's Expenses column is baseExpenses. Each liability adds a monthly payment, floored to whole dollars: student loan 1% of principal, car loan 2%, credit card 3%, mortgage 0% (the deal card's monthlyCashFlow is already net of the mortgage payment), bank loan 10%, lifestyle loan and Life Choices car loan the option's stated monthly payment, subscription the option's stated monthly cost with principal 0. totalExpenses = baseExpenses + the sum of those payments.
 

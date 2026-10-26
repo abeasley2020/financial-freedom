@@ -38,7 +38,7 @@ describe('PASS: declining a deal', () => {
     });
     const next = apply(offered(holder, 'small-005', 35), PASS);
     expect(next.players[0]?.assets).toEqual(holder.players[0]?.assets);
-    expect(next.players[0]?.cash).toBe(400 + 700);
+    expect(next.players[0]?.cash).toBe(2_500 + 740);
   });
 
   it('PASS: changes no cash, assets, liabilities, or position', () => {

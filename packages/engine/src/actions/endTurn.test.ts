@@ -60,8 +60,8 @@ describe('END_TURN: win condition', () => {
     });
 
   it('END_TURN: marks hasEscaped and finishes the game when passiveIncome equals totalExpenses', () => {
-    // Teacher totalExpenses = 2,300 + 300 = 2,600
-    const next = apply(afterRoll(escaping(2_600)), END_TURN);
+    // Teacher totalExpenses = 4,000 + 560 = 4,560
+    const next = apply(afterRoll(escaping(4_560)), END_TURN);
     expect(next.players[0]?.hasEscaped).toBe(true);
     expect(next.game.phase).toBe('finished');
     expect(next.game.currentPlayerId).toBe('p1');
@@ -69,7 +69,7 @@ describe('END_TURN: win condition', () => {
   });
 
   it('END_TURN: does not escape one dollar short and the game continues', () => {
-    const next = apply(afterRoll(escaping(2_599)), END_TURN);
+    const next = apply(afterRoll(escaping(4_559)), END_TURN);
     expect(next.players[0]?.hasEscaped).toBe(false);
     expect(next.game.phase).toBe('playing');
     expect(next.game.currentPlayerId).toBe('p2');
@@ -191,7 +191,7 @@ describe('END_TURN: the round limit (spec v2: 15 rounds standard, 10 kids; winne
     // The Teacher earns 50% Freedom from one asset; the Doctor sits on a pile of cash and 0%.
     const rich = withPlayer(
       withPlayer(twoPlayerGame(), 'p1', {
-        assets: [{ id: 'a', cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 1_300 }],
+        assets: [{ id: 'a', cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_280 }],
       }),
       'p2',
       { cash: 200_000 },
@@ -220,7 +220,7 @@ describe('END_TURN: the round limit (spec v2: 15 rounds standard, 10 kids; winne
 
   it('END_TURN: an escape still ends the game at once, before the limit', () => {
     const escaper = withPlayer(twoPlayerGame(), 'p1', {
-      assets: [{ id: 'a', cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_600 }],
+      assets: [{ id: 'a', cardId: 'big-001', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 4_560 }],
     });
     const next = turn(escaper, 'p1');
     expect(next.game.phase).toBe('finished');

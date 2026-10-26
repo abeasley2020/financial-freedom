@@ -16,8 +16,10 @@ import { aboutToRoll, twoPlayerGame, withGame, withPlayer } from '../test/fixtur
 const ROLL: Action = { type: 'ROLL', playerId: 'p1' };
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-/** Ada the Teacher: 3,300 salary − (2,300 base + 300 debt) = 700 per Payday. */
-const TEACHER_CASH_FLOW = 700;
+/** Ada the Teacher: 5,300 salary − (4,000 base + 560 debt) = 740 per Payday. */
+const TEACHER_CASH_FLOW = 740;
+/** Ada the Teacher's starting cash. */
+const TEACHER_START_CASH = 2_500;
 
 describe('ROLL: movement', () => {
   it('ROLL: moves the current player by the die value', () => {
@@ -42,18 +44,18 @@ describe('ROLL: Payday every turn (spec, Core rules, turn step 1; decided 2026-1
   it('ROLL: credits monthly cash flow at the start of the turn, before the die is rolled', () => {
     const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
     expect(p1(next).position).toBe(3);
-    expect(p1(next).cash).toBe(400 + TEACHER_CASH_FLOW);
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW);
   });
 
   it('ROLL: credits Payday on the very first turn of the game', () => {
     const next = apply(twoPlayerGame(), ROLL);
-    expect(p1(next).cash).toBe(400 + TEACHER_CASH_FLOW);
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW);
   });
 
   it('ROLL: credits exactly one Payday per turn no matter how far the player moves', () => {
     const next = apply(aboutToRoll(twoPlayerGame(), 22, 6), ROLL);
     expect(p1(next).position).toBe(4);
-    expect(p1(next).cash).toBe(400 + TEACHER_CASH_FLOW);
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW);
   });
 
   it('ROLL: the board has no Payday space', () => {
@@ -65,7 +67,7 @@ describe('ROLL: Payday every turn (spec, Core rules, turn step 1; decided 2026-1
       assets: [{ id: 'a1', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 }],
     });
     const next = apply(aboutToRoll(owner, 2, 1), ROLL);
-    expect(p1(next).cash).toBe(400 + 700 + 160);
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW + 160);
   });
 
   it('ROLL: Payday deducts a negative monthly cash flow', () => {
@@ -77,14 +79,14 @@ describe('ROLL: Payday every turn (spec, Core rules, turn step 1; decided 2026-1
       ],
     });
     const next = apply(aboutToRoll(indebted, 2, 1), ROLL);
-    expect(p1(next).cash).toBe(400 + (700 - 1_000));
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + (TEACHER_CASH_FLOW - 1_000));
   });
 
   it('ROLL: logs payday and paydaySnapshot before the die, with the snapshot taken after the credit', () => {
     const next = apply(aboutToRoll(twoPlayerGame(), 2, 1), ROLL);
     expect(next.game.log[0]?.events.slice(0, 3)).toEqual([
       { kind: 'payday', amount: TEACHER_CASH_FLOW },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100, roundNumber: 1 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_560, cash: 3_240, roundNumber: 1 },
       { kind: 'rolled', value: 1 },
     ]);
   });
@@ -164,7 +166,7 @@ describe('ROLL: resolving the landed space', () => {
     expect(BOARD[6]).toBe('setback');
     expect(next.pending).toEqual({ kind: 'none' });
     expect(next.decks.setback).toEqual({ drawPile: rest, discardPile: [top] });
-    expect(p1(next).cash).toBeLessThan(400 + 700 + 4_000);
+    expect(p1(next).cash).toBeLessThan(TEACHER_START_CASH + TEACHER_CASH_FLOW + 4_000);
   });
 
   it('ROLL: in kids mode, Opportunity draws from the small deals deck into pending buyOrPass', () => {
@@ -257,7 +259,7 @@ describe('ROLL: log and determinism', () => {
         action: ROLL,
         events: [
           { kind: 'payday', amount: TEACHER_CASH_FLOW },
-          { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 2_600, cash: 1_100, roundNumber: 1 },
+          { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_560, cash: 3_240, roundNumber: 1 },
           { kind: 'rolled', value: 1 },
           { kind: 'moved', from: 2, to: 3 },
         ],
@@ -320,7 +322,7 @@ describe('ROLL: rejections', () => {
     const result = reduce(before, ROLL);
     expect(result.ok).toBe(false);
     expect(before.game.log).toEqual([]);
-    expect(p1(before).cash).toBe(400);
+    expect(p1(before).cash).toBe(TEACHER_START_CASH);
   });
 });
 
@@ -332,15 +334,15 @@ describe('ROLL: Payday grows growth assets before crediting cash flow (spec v2, 
     const owner = withPlayer(twoPlayerGame(), 'p1', { assets: [index] });
     const next = apply(aboutToRoll(owner, 2, 1), ROLL);
     expect(p1(next).assets[0]).toMatchObject({ marketValue: 2_080 });
-    // 700 base cash flow + pct(2,080, 1) = 20.
-    expect(p1(next).cash).toBe(400 + 700 + 20);
+    // 740 base cash flow + pct(2,080, 1) = 20.
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW + 20);
   });
 
   it('ROLL: growth is floored and a 0 payout pays nothing', () => {
     const owner = withPlayer(twoPlayerGame(), 'p1', { assets: [savings, { ...index, marketValue: 1_050, growthPercent: 1 }] });
     const next = apply(aboutToRoll(owner, 2, 1), ROLL);
     expect(p1(next).assets.map((a) => (a.type === 'savings' || a.type === 'index' ? a.marketValue : 0))).toEqual([101, 1_060]);
-    expect(p1(next).cash).toBe(400 + 700 + 10);
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW + 10);
   });
 
   it('ROLL: logs one valueChanged per growth asset before the payday event, and the snapshot shows the grown passive income', () => {
@@ -348,8 +350,8 @@ describe('ROLL: Payday grows growth assets before crediting cash flow (spec v2, 
     const next = apply(aboutToRoll(owner, 2, 1), ROLL);
     expect(next.game.log[0]?.events.slice(0, 3)).toEqual([
       { kind: 'valueChanged', assetId: 'idx', delta: 80, marketValue: 2_080 },
-      { kind: 'payday', amount: 720 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 20, totalExpenses: 2_600, cash: 1_120, roundNumber: 1 },
+      { kind: 'payday', amount: 760 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 20, totalExpenses: 4_560, cash: 3_260, roundNumber: 1 },
     ]);
   });
 
@@ -370,6 +372,6 @@ describe('ROLL: Payday grows growth assets before crediting cash flow (spec v2, 
     const p2Done = apply(p2Rolled, { type: 'SKIP_GIVE', playerId: 'p2' });
     const next = apply(p2Done, { type: 'END_TURN', playerId: 'p2' });
     expect(p1(next).assets[0]).toMatchObject({ marketValue: 2_080 });
-    expect(p1(next).cash).toBe(400 + 720);
+    expect(p1(next).cash).toBe(TEACHER_START_CASH + TEACHER_CASH_FLOW + 20);
   });
 });

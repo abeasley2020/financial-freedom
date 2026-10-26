@@ -15,8 +15,8 @@ import { offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 //   small-007 Lakeshore Utilities: stock, 200 shares, price range 50-90, dividend 1/share
 //   small-004 Total Market Index Fund: index, minimum 500, grows 4%/mo, pays 1%/mo
 //   small-008 High-Yield Savings: savings, minimum 100, grows 1%/mo, pays 0
-// Ada the Teacher starts with 400 cash and 700/mo cash flow. Every ROLL credits
-// that Payday before the die, so `offered(withCash(x), ...)` leaves her holding x + 700.
+// Ada the Teacher starts with 2,500 cash and 740/mo cash flow. Every ROLL credits
+// that Payday before the die, so `offered(withCash(x), ...)` leaves her holding x + 740.
 
 const BUY: Action = { type: 'BUY', playerId: 'p1' };
 const buyShares = (shares: number): Action => ({ type: 'BUY', playerId: 'p1', shares });
@@ -27,7 +27,7 @@ const withCash = (cash: number) => withPlayer(twoPlayerGame(), 'p1', { cash });
 describe('BUY: a financed deal', () => {
   it('BUY: pays the down payment and adds the asset with the card numbers', () => {
     const next = apply(offered(withCash(10_000), 'small-001'), BUY);
-    expect(p1(next).cash).toBe(10_700 - 5_000);
+    expect(p1(next).cash).toBe(10_740 - 5_000);
     expect(p1(next).assets).toEqual([
       {
         id: expect.any(String) as string,
@@ -40,7 +40,7 @@ describe('BUY: a financed deal', () => {
     ]);
     expect(next.pending).toEqual({ kind: 'none' });
     expect(passiveIncome(p1(next))).toBe(160);
-    expect(monthlyCashFlow(p1(next))).toBe(700 + 160);
+    expect(monthlyCashFlow(p1(next))).toBe(740 + 160);
   });
 
   it('BUY: adds one mortgage liability linked to the asset, with no monthly payment', () => {
@@ -55,7 +55,7 @@ describe('BUY: a financed deal', () => {
   });
 
   it('BUY: adds no mortgage when the card is paid in full', () => {
-    const before = offered(withCash(2_300), 'small-003');
+    const before = offered(withCash(2_260), 'small-003');
     const next = apply(before, BUY);
     expect(p1(next).cash).toBe(0);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
@@ -64,7 +64,7 @@ describe('BUY: a financed deal', () => {
 
   it('BUY: works the same for a big deal', () => {
     const next = apply(offered(withCash(40_000), 'big-001'), BUY);
-    expect(p1(next).cash).toBe(40_700 - 30_000);
+    expect(p1(next).cash).toBe(40_740 - 30_000);
     expect(p1(next).assets[0]).toMatchObject({ cardId: 'big-001', type: 'business', purchasePrice: 120_000, monthlyCashFlow: 1_400 });
     expect(p1(next).liabilities.at(-1)).toMatchObject({ kind: 'mortgage', principal: 90_000, monthlyPayment: 0 });
   });
@@ -76,12 +76,12 @@ describe('BUY: a financed deal', () => {
   });
 
   it('BUY: accepts when cash exactly equals the down payment, leaving zero cash', () => {
-    const next = apply(offered(withCash(4_300), 'small-001'), BUY);
+    const next = apply(offered(withCash(4_260), 'small-001'), BUY);
     expect(p1(next).cash).toBe(0);
   });
 
   it('BUY: rejected with INSUFFICIENT_CASH one dollar short, and the offer stays pending', () => {
-    const before = offered(withCash(4_299), 'small-001');
+    const before = offered(withCash(4_259), 'small-001');
     expect(p1(before).cash).toBe(4_999);
     expect(reject(before, BUY)).toBe('INSUFFICIENT_CASH');
     expect(before.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-001' });
@@ -102,7 +102,7 @@ describe('BUY: a stock', () => {
   it('BUY: costs shares × the rolled share price and creates a lot with no liability', () => {
     const before = offered(withCash(400), 'small-005', 20);
     const next = apply(before, buyShares(10));
-    expect(p1(next).cash).toBe(1_100 - 200);
+    expect(p1(next).cash).toBe(1_140 - 200);
     expect(p1(next).assets).toEqual([
       {
         id: expect.any(String) as string,
@@ -123,7 +123,7 @@ describe('BUY: a stock', () => {
     if (card?.deck !== 'smallDeals' || card.type !== 'stock') throw new Error('fixture small-007 must be a stock');
     expect(card.dividendPerShare).toBe(1);
     const next = apply(offered(withCash(5_000), 'small-007', 60), buyShares(25));
-    expect(p1(next).cash).toBe(5_700 - 1_500);
+    expect(p1(next).cash).toBe(5_740 - 1_500);
     expect(p1(next).assets[0]).toMatchObject({ cardId: 'small-007', shares: 25, monthlyCashFlow: 25 });
     expect(passiveIncome(p1(next))).toBe(25);
   });
@@ -134,9 +134,9 @@ describe('BUY: a stock', () => {
   });
 
   it('BUY: accepts at exactly shares × price and rejects one dollar short', () => {
-    // 400 + 700 Payday = 1,100 = 55 shares x 20.
-    expect(p1(apply(offered(withCash(400), 'small-005', 20), buyShares(55))).cash).toBe(0);
-    expect(reject(offered(withCash(399), 'small-005', 20), buyShares(55))).toBe('INSUFFICIENT_CASH');
+    // 360 + 740 Payday = 1,100 = 55 shares x 20.
+    expect(p1(apply(offered(withCash(360), 'small-005', 20), buyShares(55))).cash).toBe(0);
+    expect(reject(offered(withCash(359), 'small-005', 20), buyShares(55))).toBe('INSUFFICIENT_CASH');
   });
 
   it('BUY: rejected with INVALID_SHARES when a stock purchase names no shares', () => {
@@ -164,7 +164,7 @@ describe('BUY: a stock', () => {
     expect(lots.map((a) => a.cardId)).toEqual(['small-005', 'small-005']);
     expect(lots[0]?.id).not.toBe(lots[1]?.id);
     expect(lots[1]).toMatchObject({ shares: 5, purchasePrice: 150 });
-    expect(p1(second).cash).toBe(1_000 + 700 - 200 + 700 - 150);
+    expect(p1(second).cash).toBe(1_000 + 740 - 200 + 740 - 150);
   });
 
   it('BUY: throws when a stock offer carries no share price (programmer bug)', () => {
@@ -236,7 +236,7 @@ describe('BUY: rejections', () => {
   });
 
   it('BUY: a rejected purchase is not logged', () => {
-    const before = deepFreeze(offered(withCash(4_299), 'small-001'));
+    const before = deepFreeze(offered(withCash(4_259), 'small-001'));
     const logBefore = before.game.log.length;
     expect(reduce(before, BUY).ok).toBe(false);
     expect(before.game.log).toHaveLength(logBefore);
@@ -248,7 +248,7 @@ describe('BUY: a growth asset (spec v2, Growth assets)', () => {
     const before = offered(withCash(3_000), 'small-004');
     expect(before.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-004' });
     const next = apply(before, invest(2_000));
-    expect(p1(next).cash).toBe(3_700 - 2_000);
+    expect(p1(next).cash).toBe(3_740 - 2_000);
     expect(p1(next).assets).toEqual([
       {
         id: expect.any(String) as string,
@@ -275,11 +275,11 @@ describe('BUY: a growth asset (spec v2, Growth assets)', () => {
 
   it('BUY: accepts the card minimum and the whole cash balance', () => {
     expect(p1(apply(offered(withCash(3_000), 'small-004'), invest(500))).assets[0]).toMatchObject({ marketValue: 500 });
-    expect(p1(apply(offered(withCash(1_300), 'small-004'), invest(2_000))).cash).toBe(0);
+    expect(p1(apply(offered(withCash(1_260), 'small-004'), invest(2_000))).cash).toBe(0);
   });
 
   it('BUY: rejected with INSUFFICIENT_CASH when the amount exceeds cash', () => {
-    const before = offered(withCash(1_200), 'small-004');
+    const before = offered(withCash(1_160), 'small-004');
     expect(p1(before).cash).toBe(1_900);
     expect(reject(before, invest(2_000))).toBe('INSUFFICIENT_CASH');
     expect(before.pending).toEqual({ kind: 'buyOrPass', cardId: 'small-004' });

@@ -7,7 +7,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { BoardSchema } from '../board';
-import { CardSchema, DealCardSchema, DECK_IDS, type DeckId } from '../cards';
+import { ASSET_TYPES, CardSchema, DealCardSchema, DECK_IDS, LIFE_CHOICE_CATEGORIES, type DeckId } from '../cards';
 import { PRINCIPLE_IDS } from '../principles';
 import { ProfessionSchema } from '../professions';
 import rawBoard from './board.json';
@@ -16,7 +16,7 @@ import rawLifeChoices from './cards/life-choices.json';
 import rawMarket from './cards/market.json';
 import rawSetback from './cards/setback.json';
 import rawSmallDeals from './cards/small-deals.json';
-import { BOARD, CARDS_BY_DECK, PROFESSIONS, SMALL_DEALS } from './index';
+import { BIG_DEALS, BOARD, CARDS_BY_DECK, LIFE_CHOICES_CARDS, MARKET_CARDS, PROFESSIONS, SETBACK_CARDS, SMALL_DEALS } from './index';
 import rawProfessions from './professions.json';
 
 const RAW_DECKS: Record<DeckId, unknown> = {
@@ -37,25 +37,45 @@ describe('fixtures: professions.json', () => {
     expect(result.success, issues(result)).toBe(true);
   });
 
-  it('holds exactly the six professions from the spec', () => {
-    const ids = PROFESSIONS.map((p) => p.id).sort();
-    expect(ids).toEqual(['doctor', 'electrician', 'engineer', 'nurse', 'police-officer', 'teacher']);
+  it('holds exactly the sixteen professions from the spec, in the spec order', () => {
+    expect(PROFESSIONS.map((p) => p.name)).toEqual([
+      'Restaurant Server',
+      'Retail Manager',
+      'Truck Driver',
+      'Welder',
+      'Electrician',
+      'Teacher',
+      'Police Officer',
+      'Firefighter',
+      'Army Sergeant',
+      'Nurse',
+      'Farmer',
+      'Real Estate Agent',
+      'Software Developer',
+      'Engineer',
+      'Pharmacist',
+      'Doctor',
+    ]);
   });
 
-  it('matches the spec table for the Teacher', () => {
+  it('matches docs/content-notes.md for the Teacher', () => {
     const teacher = PROFESSIONS.find((p) => p.id === 'teacher');
     expect(teacher).toEqual({
       id: 'teacher',
       name: 'Teacher',
-      salary: 3_300,
-      baseExpenses: 2_300,
-      startingCash: 400,
+      salary: 5_300,
+      baseExpenses: 4_000,
+      startingCash: 2_500,
       startingLiabilities: [
-        { kind: 'student', principal: 12_000 },
-        { kind: 'car', principal: 6_000 },
+        { kind: 'student', principal: 30_000 },
+        { kind: 'car', principal: 10_000 },
         { kind: 'credit', principal: 2_000 },
       ],
     });
+  });
+
+  it('every salary is rounded to $100 (spec, Professions numbers rule)', () => {
+    for (const p of PROFESSIONS) expect(p.salary % 100, p.id).toBe(0);
   });
 
   it('has unique ids', () => {
@@ -83,9 +103,9 @@ describe('fixtures: cards/*.json', () => {
     expect(result.success, issues(result)).toBe(true);
   });
 
-  it('ships 26 starter cards across the five decks (21 v1 cards plus the Stage B fixtures: subscription, windfall, savings, two market value moves)', () => {
-    const total = DECK_IDS.reduce((n, deck) => n + CARDS_BY_DECK[deck].length, 0);
-    expect(total).toBe(26);
+  it('ships the spec deck counts: 40 small deals, 25 big deals, 20 market, 30 Life Choices, 10 setback', () => {
+    const counts = Object.fromEntries(DECK_IDS.map((deck) => [deck, CARDS_BY_DECK[deck].length]));
+    expect(counts).toEqual({ smallDeals: 40, bigDeals: 25, market: 20, lifeChoices: 30, setback: 10 });
   });
 
   it('growth deal cards stay inside the spec ranges: growthPercent 1 to 6, payoutPercent 0 to 2', () => {
@@ -165,9 +185,15 @@ describe('fixtures: cards/*.json', () => {
     expect(stocks.length).toBeGreaterThan(0);
   });
 
-  // Spec v2, Engineering practices, content tests. The per-principle minimum
-  // (every principle on at least 3 cards) waits for Stage C's full decks.
+  // Spec v2, Engineering practices, content tests.
   const everyCard = DECK_IDS.flatMap((deck) => CARDS_BY_DECK[deck]);
+
+  it('every principle appears on at least 3 cards', () => {
+    for (const id of PRINCIPLE_IDS) {
+      const cards = everyCard.filter((c) => c.principles.includes(id)).map((c) => c.id);
+      expect(cards.length, `${id} on ${cards.join(', ')}`).toBeGreaterThanOrEqual(3);
+    }
+  });
 
   it('every card carries at least one known principle', () => {
     for (const card of everyCard) {
@@ -200,6 +226,79 @@ describe('fixtures: cards/*.json', () => {
     for (const deck of DECK_IDS) {
       expect(CARDS_BY_DECK[deck].some((c) => c.kidsOk), deck).toBe(true);
     }
+  });
+});
+
+describe('content coverage (Stage C: the plan decisions table, kids numbers, growth ranges)', () => {
+  const deals = [...SMALL_DEALS, ...BIG_DEALS];
+
+  it('every asset type appears in the deal decks, and stocks come with and without a dividend', () => {
+    for (const type of ASSET_TYPES) expect(deals.some((c) => c.type === type), type).toBe(true);
+    const stocks = deals.filter((c) => c.type === 'stock');
+    expect(stocks.some((c) => (c.dividendPerShare ?? 0) > 0)).toBe(true);
+    expect(stocks.some((c) => (c.dividendPerShare ?? 0) === 0)).toBe(true);
+  });
+
+  it('big deal down payments are $6,000 to $50,000 (spec, Card decks)', () => {
+    const outside = BIG_DEALS.filter((c) => c.downPayment < 6_000 || c.downPayment > 50_000).map((c) => c.id);
+    expect(outside).toEqual([]);
+  });
+
+  it('every Life Choices category, Life Choices effect, and Market effect from the spec is used', () => {
+    for (const category of LIFE_CHOICE_CATEGORIES) {
+      expect(LIFE_CHOICES_CARDS.some((c) => c.category === category), category).toBe(true);
+    }
+    const lifeEffects = new Set<string>(LIFE_CHOICES_CARDS.flatMap((c) => c.options.flatMap((o) => o.effects.map((e) => e.kind))));
+    for (const kind of ['payCash', 'gainCash', 'addLoan', 'addSubscription', 'investGrowth', 'repayLargestLoan']) {
+      expect(lifeEffects.has(kind), kind).toBe(true);
+    }
+    const marketEffects = new Set<string>(MARKET_CARDS.flatMap((c) => c.effects.map((e) => e.kind)));
+    for (const kind of ['offerBuyout', 'forceSale', 'changeCashFlow', 'splitShares', 'changeMarketValue']) {
+      expect(marketEffects.has(kind), kind).toBe(true);
+    }
+  });
+
+  it('windfall options invest only inside the growth ranges: growthPercent 1 to 6, payoutPercent 0 to 2', () => {
+    const invests = LIFE_CHOICES_CARDS.flatMap((c) => c.options.flatMap((o) => o.effects.flatMap((e) => (e.kind === 'investGrowth' ? [{ id: `${c.id}/${o.id}`, e }] : []))));
+    expect(invests.length).toBeGreaterThan(0);
+    for (const { id, e } of invests) {
+      expect(e.growthPercent, id).toBeGreaterThanOrEqual(1);
+      expect(e.growthPercent, id).toBeLessThanOrEqual(6);
+      expect(e.payoutPercent, id).toBeGreaterThanOrEqual(0);
+      expect(e.payoutPercent, id).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it('kids numbers are round: multiples of $100 for cash and $10 for monthly amounts (spec, Kids mode)', () => {
+    const odd: string[] = [];
+    const cash = (id: string, n: number) => {
+      if (n % 100 !== 0) odd.push(`${id} cash ${String(n)}`);
+    };
+    const monthly = (id: string, n: number) => {
+      if (n % 10 !== 0) odd.push(`${id} monthly ${String(n)}`);
+    };
+    for (const c of deals.filter((d) => d.kidsOk)) {
+      cash(c.id, c.price);
+      cash(c.id, c.downPayment);
+      monthly(c.id, c.monthlyCashFlow);
+    }
+    for (const c of SETBACK_CARDS.filter((d) => d.kidsOk)) cash(c.id, c.cashCost);
+    for (const c of MARKET_CARDS.filter((d) => d.kidsOk)) {
+      for (const e of c.effects) if (e.kind === 'changeCashFlow') monthly(c.id, e.delta);
+    }
+    for (const c of LIFE_CHOICES_CARDS.filter((d) => d.kidsOk)) {
+      for (const o of c.options.filter((x) => x.kidsOk)) {
+        const id = `${c.id}/${o.id}`;
+        for (const e of o.effects) {
+          if (e.kind === 'addLoan') {
+            cash(id, e.principal);
+            monthly(id, e.monthlyPayment);
+          } else if (e.kind === 'addSubscription') monthly(id, e.monthlyCost);
+          else cash(id, e.amount);
+        }
+      }
+    }
+    expect(odd).toEqual([]);
   });
 });
 

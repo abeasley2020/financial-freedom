@@ -69,5 +69,380 @@
     "downPayment": 50000,
     "mortgage": 150000,
     "monthlyCashFlow": 1900
+  },
+  {
+    "id": "big-005",
+    "deck": "bigDeals",
+    "title": "Fourplex Near the Hospital",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Four homes in one building. Nurses and doctors rent them.",
+    "adultText": "Four two-bedroom units a block from the regional hospital. Medical staff keep it full year-round.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 240000,
+    "downPayment": 24000,
+    "mortgage": 216000,
+    "monthlyCashFlow": 900
+  },
+  {
+    "id": "big-006",
+    "deck": "bigDeals",
+    "title": "Six-Unit Brick Walkup",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Six apartments in an old brick building. The rent pays the loan.",
+    "adultText": "Three floors, six units, original hardwood. Rents are a little low, and the building is in good shape.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 360000,
+    "downPayment": 36000,
+    "mortgage": 324000,
+    "monthlyCashFlow": 1300
+  },
+  {
+    "id": "big-007",
+    "deck": "bigDeals",
+    "title": "Twelve-Unit Apartment Complex",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Twelve apartments with a manager. Lots of rent every month.",
+    "adultText": "Two buildings, twelve units, a manager on site, and a parking lot. A real business with real paperwork.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 600000,
+    "downPayment": 50000,
+    "mortgage": 550000,
+    "monthlyCashFlow": 2600
+  },
+  {
+    "id": "big-008",
+    "deck": "bigDeals",
+    "title": "Mobile Home Park",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Forty spots where people park their homes. They pay you rent for the land.",
+    "adultText": "Forty lots with water and power hookups. Residents own their homes and rent the land, so repairs are rare.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 400000,
+    "downPayment": 45000,
+    "mortgage": 355000,
+    "monthlyCashFlow": 2300
+  },
+  {
+    "id": "big-009",
+    "deck": "bigDeals",
+    "title": "Three Rental Houses",
+    "principles": [
+      "P2",
+      "P3",
+      "P9"
+    ],
+    "kidsText": "Three houses in different parts of town, all rented out.",
+    "adultText": "A retiring landlord sells three single-family rentals as a package. Three tenants means one vacancy never sinks you.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 270000,
+    "downPayment": 27000,
+    "mortgage": 243000,
+    "monthlyCashFlow": 1000
+  },
+  {
+    "id": "big-010",
+    "deck": "bigDeals",
+    "title": "Lake Cabin Rental",
+    "principles": [
+      "P2",
+      "P3",
+      "P9"
+    ],
+    "kidsText": "A cabin by the lake. Families rent it for vacations.",
+    "adultText": "Three bedrooms on the water, booked online by the week. Summer pays for the year; a cleaning crew handles turnovers.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 220000,
+    "downPayment": 22000,
+    "mortgage": 198000,
+    "monthlyCashFlow": 700
+  },
+  {
+    "id": "big-011",
+    "deck": "bigDeals",
+    "title": "Small Office Building",
+    "principles": [
+      "P2",
+      "P3",
+      "P9"
+    ],
+    "kidsText": "A building with offices. Businesses pay you rent.",
+    "adultText": "Two stories, five tenants: an insurance agent, a dentist, and three small firms. Longer leases than apartments.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 300000,
+    "downPayment": 30000,
+    "mortgage": 270000,
+    "monthlyCashFlow": 1100
+  },
+  {
+    "id": "big-012",
+    "deck": "bigDeals",
+    "title": "Strip Mall with Four Shops",
+    "principles": [
+      "P2",
+      "P5",
+      "P9"
+    ],
+    "kidsText": "Four stores in a row. Each store pays you rent.",
+    "adultText": "A pizza place, a nail salon, a tax office, and a phone store. If one leaves, the other three carry the loan.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 500000,
+    "downPayment": 50000,
+    "mortgage": 450000,
+    "monthlyCashFlow": 2400
+  },
+  {
+    "id": "big-013",
+    "deck": "bigDeals",
+    "title": "Medical Office Condo",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "An office a doctor rents from you. Doctors stay a long time.",
+    "adultText": "One suite in a medical office park, leased to a family practice for ten years. Boring and reliable.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 180000,
+    "downPayment": 18000,
+    "mortgage": 162000,
+    "monthlyCashFlow": 600
+  },
+  {
+    "id": "big-014",
+    "deck": "bigDeals",
+    "title": "Sandwich Shop Franchise",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A sandwich shop with a famous name. A manager runs it.",
+    "adultText": "A franchise location with a proven menu and a manager in place. Royalties eat some profit; the brand brings the crowd.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 250000,
+    "downPayment": 50000,
+    "mortgage": 200000,
+    "monthlyCashFlow": 1900
+  },
+  {
+    "id": "big-015",
+    "deck": "bigDeals",
+    "title": "Self-Storage Units",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Rooms people rent to store their stuff. Lots of small rents add up.",
+    "adultText": "One hundred twenty climate-controlled units behind a gate. Few repairs, no tenants calling at midnight.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 350000,
+    "downPayment": 40000,
+    "mortgage": 310000,
+    "monthlyCashFlow": 2000
+  },
+  {
+    "id": "big-016",
+    "deck": "bigDeals",
+    "title": "Child Care Center",
+    "principles": [
+      "P2",
+      "P3",
+      "P9"
+    ],
+    "kidsText": "A place where little kids play and learn while parents work.",
+    "adultText": "A licensed center for sixty children with a waiting list. Staffing is the hard part; demand is not.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 180000,
+    "downPayment": 30000,
+    "mortgage": 150000,
+    "monthlyCashFlow": 1200
+  },
+  {
+    "id": "big-017",
+    "deck": "bigDeals",
+    "title": "Auto Repair Shop",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A garage that fixes cars. Mechanics do the work, and you own it.",
+    "adultText": "Four bays, three mechanics, and a loyal customer list. The owner is retiring and will train you for a month.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 150000,
+    "downPayment": 25000,
+    "mortgage": 125000,
+    "monthlyCashFlow": 1100
+  },
+  {
+    "id": "big-018",
+    "deck": "bigDeals",
+    "title": "Coffee Shop",
+    "principles": [
+      "P2",
+      "P9"
+    ],
+    "kidsText": "A coffee shop on Main Street. Some months are great, some are slow.",
+    "adultText": "A busy corner cafe with a good lease. Margins are thin, and a new chain across the street could hurt.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 90000,
+    "downPayment": 15000,
+    "mortgage": 75000,
+    "monthlyCashFlow": 500
+  },
+  {
+    "id": "big-019",
+    "deck": "bigDeals",
+    "title": "Landscaping Company",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Trucks and crews that mow and plant for many customers.",
+    "adultText": "Two trucks, two crews, and a hundred contracts with homes and businesses. Plows snow in the winter.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 70000,
+    "downPayment": 10000,
+    "mortgage": 60000,
+    "monthlyCashFlow": 600
+  },
+  {
+    "id": "big-020",
+    "deck": "bigDeals",
+    "title": "Fitness Studio Franchise",
+    "principles": [
+      "P2",
+      "P5",
+      "P9"
+    ],
+    "kidsText": "A gym with classes. Members pay every month.",
+    "adultText": "A boutique studio with four hundred members. Monthly dues are steady until a cheaper gym opens nearby.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 160000,
+    "downPayment": 30000,
+    "mortgage": 130000,
+    "monthlyCashFlow": 1000
+  },
+  {
+    "id": "big-021",
+    "deck": "bigDeals",
+    "title": "ATM Route",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Cash machines in stores. Each time someone uses one, you earn a fee.",
+    "adultText": "Fifteen cash machines in convenience stores and bars. You keep part of every fee and refill them weekly.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 40000,
+    "downPayment": 8000,
+    "mortgage": 32000,
+    "monthlyCashFlow": 450
+  },
+  {
+    "id": "big-022",
+    "deck": "bigDeals",
+    "title": "RV and Boat Storage Lot",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A big fenced lot where people park campers and boats.",
+    "adultText": "Four acres of gravel, a fence, and cameras near the lake. Owners pay monthly to park campers and boats.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 120000,
+    "downPayment": 20000,
+    "mortgage": 100000,
+    "monthlyCashFlow": 900
+  },
+  {
+    "id": "big-023",
+    "deck": "bigDeals",
+    "title": "Lots by the New Interchange",
+    "principles": [
+      "P4",
+      "P9"
+    ],
+    "kidsText": "Empty land near a new highway exit. It may be worth a lot later.",
+    "adultText": "Three commercial lots by an interchange still under construction. Taxes cost you now; a gas station chain may call later.",
+    "kidsOk": true,
+    "type": "land",
+    "price": 45000,
+    "downPayment": 9000,
+    "mortgage": 36000,
+    "monthlyCashFlow": -40
+  },
+  {
+    "id": "big-024",
+    "deck": "bigDeals",
+    "title": "Timberland Tract",
+    "principles": [
+      "P4",
+      "P8",
+      "P9"
+    ],
+    "kidsText": "A forest you own. The trees grow, and the land may be worth more later.",
+    "adultText": "Eighty acres of pine planted fifteen years ago. Taxes cost a little now; the trees and the land both grow in value.",
+    "kidsOk": true,
+    "type": "land",
+    "price": 80000,
+    "downPayment": 16000,
+    "mortgage": 64000,
+    "monthlyCashFlow": -30
+  },
+  {
+    "id": "big-025",
+    "deck": "bigDeals",
+    "title": "Jumbo CD",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "Lock up a big pile of money at the bank. It grows every month.",
+    "adultText": "A large-balance certificate with a better rate. Ten thousand minimum, insured, and it pays you every month.",
+    "kidsOk": true,
+    "type": "cd",
+    "price": 10000,
+    "downPayment": 10000,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 2,
+    "payoutPercent": 1
   }
 ]

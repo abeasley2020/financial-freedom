@@ -17,7 +17,7 @@ import { drawn, offered, twoPlayerGame, withGame, withPlayer, withZeroCashFlow }
 // Deal fixtures: small-001 Duplex (rental 50,000, mortgage 45,000, +160),
 //   small-002 Condo (rental 45,000, mortgage 41,000, +120), big-003 Forty Acres
 //   (land 60,000, mortgage 48,000, -50), small-005 Birchwood (stock).
-// Ada the Teacher (p1) starts with 400 cash. `facing` pins her salary to her
+// Ada the Teacher (p1) starts with 2,500 cash. `facing` pins her salary to her
 // totalExpenses so the Payday that opens the turn adds $0 and the sale math
 // below reads straight off the card.
 
@@ -52,7 +52,7 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
     expect(before.pending).toEqual({ kind: 'marketChoice', cardId: 'market-001' });
     const next = apply(before, ACCEPT);
     // 200% of 50,000 = 100,000; minus the 45,000 mortgage = 55,000 kept.
-    expect(p1(next).cash).toBe(400 + 55_000);
+    expect(p1(next).cash).toBe(2_500 + 55_000);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).liabilities.find((l) => l.id === 'dup-mortgage')).toBeUndefined();
     expect(p1(next).liabilities).toHaveLength(3);
@@ -71,7 +71,7 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
   it('ACCEPT_MARKET: an unmortgaged asset pays the whole price to the player', () => {
     const paidOff: Asset = { ...duplex, downPaid: 50_000 };
     const next = apply(facing('market-001', [paidOff]), ACCEPT);
-    expect(p1(next).cash).toBe(400 + 100_000);
+    expect(p1(next).cash).toBe(2_500 + 100_000);
   });
 
   it('ACCEPT_MARKET: the mortgage is retired even when the proceeds fall short of it; the player keeps nothing', () => {
@@ -81,7 +81,7 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
     // market-001 pays 200% = 100,000, so make the mortgage larger than that instead.
     const bigger: Liability = { ...duplexMortgage, principal: 120_000 };
     const next = apply(facing('market-001', [duplex], [bigger]), ACCEPT);
-    expect(p1(next).cash).toBe(400);
+    expect(p1(next).cash).toBe(2_500);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).liabilities.some((l) => l.kind === 'mortgage')).toBe(false);
     expect(before.pending.kind).toBe('marketChoice');
@@ -91,7 +91,7 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
     const before = facing('market-001', [duplex, condo], [duplexMortgage, condoMortgage]);
     const next = apply(before, acceptAsset('con'));
     // 200% of 45,000 = 90,000; minus 41,000 = 49,000.
-    expect(p1(next).cash).toBe(400 + 49_000);
+    expect(p1(next).cash).toBe(2_500 + 49_000);
     expect(p1(next).assets).toEqual([duplex]);
     expect(p1(next).liabilities.map((l) => l.id)).toContain('dup-mortgage');
     expect(p1(next).liabilities.map((l) => l.id)).not.toContain('con-mortgage');
@@ -129,8 +129,8 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
     const bought = apply(offered(withPlayer(twoPlayerGame(), 'p1', { cash: 10_000 }), 'small-001'), { type: 'BUY', playerId: 'p1' });
     const nextTurn = withGame(apply(bought, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const next = apply(drawn(nextTurn, 'market-001'), ACCEPT);
-    // 10,000 + 700 Payday - 5,000 down, then a second Payday of 700 + 160 rent, then the sale.
-    expect(p1(next).cash).toBe(10_700 - 5_000 + 860 + 55_000);
+    // 10,000 + 740 Payday - 5,000 down, then a second Payday of 740 + 160 rent, then the sale.
+    expect(p1(next).cash).toBe(10_740 - 5_000 + 900 + 55_000);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).liabilities.some((l) => l.kind === 'mortgage')).toBe(false);
     expect(next.decks.smallDeals.discardPile).toContain('small-001');
@@ -148,7 +148,7 @@ describe('ACCEPT_MARKET: cash flow changes', () => {
       robotics,
     ]);
     expect(passiveIncome(p1(next))).toBe(80);
-    expect(p1(next).cash).toBe(400);
+    expect(p1(next).cash).toBe(2_500);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
   });
 
@@ -170,14 +170,14 @@ describe('ACCEPT_MARKET: stock splits', () => {
     const next = apply(before, ACCEPT);
     expect(p1(next).assets).toEqual([{ ...robotics, shares: 20 }, { ...utilities, shares: 50 }, duplex]);
     expect(passiveIncome(p1(next))).toBe(passiveIncome(p1(before)));
-    expect(p1(next).cash).toBe(400);
+    expect(p1(next).cash).toBe(2_500);
   });
 
   it('ACCEPT_MARKET: split shares can be sold later at the new count', () => {
     const split = apply(facing('market-003', [robotics]), ACCEPT);
     const nextTurn = withGame(apply(split, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const sold = apply(offered(nextTurn, 'small-005', 10), { type: 'SELL_ASSET', playerId: 'p1', assetId: 'rob' });
-    expect(p1(sold).cash).toBe(400 + 200);
+    expect(p1(sold).cash).toBe(2_500 + 200);
     expect(p1(sold).assets).toEqual([]);
   });
 });
@@ -187,7 +187,7 @@ describe('ACCEPT_MARKET: forced sales', () => {
     const before = facing('market-004', [acres, duplex], [acresMortgage, duplexMortgage]);
     const next = apply(before, ACCEPT);
     // 150% of 60,000 = 90,000; minus 48,000 mortgage = 42,000.
-    expect(p1(next).cash).toBe(400 + 42_000);
+    expect(p1(next).cash).toBe(2_500 + 42_000);
     expect(p1(next).assets).toEqual([duplex]);
     expect(p1(next).liabilities.map((l) => l.id)).toEqual(['p1-student-0', 'p1-car-1', 'p1-credit-2', 'dup-mortgage']);
     expect(next.decks.bigDeals.discardPile).toEqual([...before.decks.bigDeals.discardPile, 'big-003']);
@@ -197,7 +197,7 @@ describe('ACCEPT_MARKET: forced sales', () => {
     const second: Asset = { ...acres, id: 'acr2', purchasePrice: 20_000, downPaid: 20_000 };
     const next = apply(facing('market-004', [acres, second], [acresMortgage]), ACCEPT);
     expect(p1(next).assets).toEqual([]);
-    expect(p1(next).cash).toBe(400 + 42_000 + 30_000);
+    expect(p1(next).cash).toBe(2_500 + 42_000 + 30_000);
   });
 });
 
@@ -303,7 +303,7 @@ describe('ACCEPT_MARKET: market value moves (spec v2, Market cards: changeMarket
     const next = apply(before, ACCEPT);
     expect(p1(next).assets).toEqual([{ ...index, marketValue: 1_600 }, savings, duplex]);
     expect(passiveIncome(p1(next))).toBe(16 + 160);
-    expect(p1(next).cash).toBe(400);
+    expect(p1(next).cash).toBe(2_500);
   });
 
   it('ACCEPT_MARKET: a boom raises marketValue', () => {

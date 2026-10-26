@@ -13,8 +13,8 @@ import { drawn, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 //   life-003 Big Screen and Sound System (gadget):   keep [] | cash payCash 1,800 | finance addLoan lifestyle 1,800 at 90/mo
 //   life-004 Streaming Bundle (subscription):        skip [] | subscribe addSubscription 60/mo
 //   life-005 Tax Refund (windfall, 2,000):           spend gain 2,000 + pay 2,000 | invest gain 2,000 + investGrowth index 2,000 (4%, 1%) | payDebt gain 2,000 + repayLargestLoan 2,000
-// Ada the Teacher (p1) starts with 400 cash, totalExpenses 2,600, cash flow 700; `drawn` walks a real
-// ROLL onto Life Choices (space 1), so its Payday adds 700 first: she faces the card holding 1,100.
+// Ada the Teacher (p1) starts with 2,500 cash, totalExpenses 4,560, cash flow 740; `drawn` walks a real
+// ROLL onto Life Choices (space 1), so its Payday adds 740 first: she faces the card holding 3,240.
 
 const choose = (optionId: string, playerId = 'p1'): Action => ({ type: 'CHOOSE_LIFE_OPTION', playerId, optionId });
 const p1 = (state: GameState) => playerById(state, 'p1');
@@ -33,7 +33,7 @@ describe('CHOOSE_LIFE_OPTION: the free option', () => {
 
   it('CHOOSE_LIFE_OPTION: the free option is always affordable, even with zero cash', () => {
     const next = apply(drawn(withCash(0), 'life-002'), choose('stay'));
-    expect(p1(next).cash).toBe(700);
+    expect(p1(next).cash).toBe(740);
     expect(next.pending).toEqual({ kind: 'none' });
   });
 
@@ -50,29 +50,29 @@ describe('CHOOSE_LIFE_OPTION: paying cash', () => {
   it('CHOOSE_LIFE_OPTION: payCash takes the amount from cash and adds no liability', () => {
     const before = drawn(withCash(5_000), 'life-001');
     const next = apply(before, choose('used'));
-    expect(p1(next).cash).toBe(5_700 - 4_000);
+    expect(p1(next).cash).toBe(5_740 - 4_000);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
-    expect(monthlyCashFlow(p1(next))).toBe(700);
+    expect(monthlyCashFlow(p1(next))).toBe(740);
   });
 
   it('CHOOSE_LIFE_OPTION: accepts when cash exactly equals the cost, leaving zero', () => {
-    expect(p1(apply(drawn(withCash(1_800), 'life-002'), choose('go'))).cash).toBe(0);
+    expect(p1(apply(drawn(withCash(1_760), 'life-002'), choose('go'))).cash).toBe(0);
   });
 
   it('CHOOSE_LIFE_OPTION: rejected with INSUFFICIENT_CASH one dollar short, and the card stays pending', () => {
-    const before = drawn(withCash(1_799), 'life-002');
+    const before = drawn(withCash(1_759), 'life-002');
     expect(p1(before).cash).toBe(2_499);
     expect(reject(before, choose('go'))).toBe('INSUFFICIENT_CASH');
     expect(before.pending).toEqual({ kind: 'lifeChoice', cardId: 'life-002' });
   });
 
   it('CHOOSE_LIFE_OPTION: a short player can BORROW first and then pay (spec, turn step 4)', () => {
-    const short = drawn(twoPlayerGame(), 'life-002');
+    const short = drawn(withCash(0), 'life-002');
     expect(reject(short, choose('go'))).toBe('INSUFFICIENT_CASH');
     const funded = apply(short, { type: 'BORROW', playerId: 'p1', amount: 2_000 });
     expect(funded.pending).toEqual({ kind: 'lifeChoice', cardId: 'life-002' });
     const paid = apply(funded, choose('go'));
-    expect(p1(paid).cash).toBe(1_100 + 2_000 - 2_500);
+    expect(p1(paid).cash).toBe(740 + 2_000 - 2_500);
     expect(paid.pending).toEqual({ kind: 'none' });
   });
 });
@@ -81,13 +81,13 @@ describe('CHOOSE_LIFE_OPTION: loans and subscriptions', () => {
   it('CHOOSE_LIFE_OPTION: addLoan adds a car loan with the stated payment, principal, and source card; cash unchanged', () => {
     const before = drawn(twoPlayerGame(), 'life-001');
     const next = apply(before, choose('new'));
-    expect(p1(next).cash).toBe(1_100);
+    expect(p1(next).cash).toBe(3_240);
     expect(p1(next).liabilities).toEqual([
       ...p1(before).liabilities,
       { id: expect.any(String) as string, kind: 'car', principal: 12_000, monthlyPayment: 380, sourceCardId: 'life-001' },
     ]);
-    expect(totalExpenses(p1(next))).toBe(2_600 + 380);
-    expect(monthlyCashFlow(p1(next))).toBe(700 - 380);
+    expect(totalExpenses(p1(next))).toBe(4_560 + 380);
+    expect(monthlyCashFlow(p1(next))).toBe(740 - 380);
   });
 
   it('CHOOSE_LIFE_OPTION: addLoan of kind lifestyle works the same way', () => {
@@ -108,13 +108,13 @@ describe('CHOOSE_LIFE_OPTION: loans and subscriptions', () => {
     const loans = p1(second).liabilities.filter((l) => l.kind === 'lifestyle');
     expect(loans).toHaveLength(2);
     expect(loans[0]?.id).not.toBe(loans[1]?.id);
-    expect(monthlyCashFlow(p1(second))).toBe(700 - 180);
+    expect(monthlyCashFlow(p1(second))).toBe(740 - 180);
   });
 
   it('CHOOSE_LIFE_OPTION: addSubscription adds a subscription liability with principal 0 and the monthly cost', () => {
     const before = drawn(twoPlayerGame(), 'life-004');
     const next = apply(before, choose('subscribe'));
-    expect(p1(next).cash).toBe(1_100);
+    expect(p1(next).cash).toBe(3_240);
     expect(p1(next).liabilities.at(-1)).toEqual({
       id: expect.any(String) as string,
       kind: 'subscription',
@@ -122,14 +122,14 @@ describe('CHOOSE_LIFE_OPTION: loans and subscriptions', () => {
       monthlyPayment: 60,
       sourceCardId: 'life-004',
     });
-    expect(debtPayments(p1(next))).toBe(300 + 60);
+    expect(debtPayments(p1(next))).toBe(560 + 60);
   });
 
   it('CHOOSE_LIFE_OPTION: a subscription charges every Payday until cancelled', () => {
     const subscribed = apply(drawn(twoPlayerGame(), 'life-004'), choose('subscribe'));
     const nextTurn = withGame(apply(subscribed, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const paid = drawn(nextTurn, 'life-002');
-    expect(p1(paid).cash).toBe(1_100 + 700 - 60);
+    expect(p1(paid).cash).toBe(3_240 + 740 - 60);
   });
 
   it('CHOOSE_LIFE_OPTION: a Life Choices loan is allowed in kids mode (it is not a bank loan)', () => {
@@ -147,14 +147,14 @@ describe('CHOOSE_LIFE_OPTION: windfalls', () => {
   it('CHOOSE_LIFE_OPTION: spending a windfall gains and pays the cash, net zero today', () => {
     const before = drawn(twoPlayerGame(), 'life-005');
     const next = apply(before, choose('spend'));
-    expect(p1(next).cash).toBe(1_100);
+    expect(p1(next).cash).toBe(3_240);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
   });
 
   it('CHOOSE_LIFE_OPTION: investGrowth turns the windfall into a growth asset at marketValue, with derived cash flow', () => {
     const next = apply(drawn(twoPlayerGame(), 'life-005'), choose('invest'));
-    expect(p1(next).cash).toBe(1_100);
+    expect(p1(next).cash).toBe(3_240);
     expect(p1(next).assets).toEqual([
       {
         id: expect.any(String) as string,
@@ -169,21 +169,29 @@ describe('CHOOSE_LIFE_OPTION: windfalls', () => {
     ]);
     expect(p1(next).assets[0]).not.toHaveProperty('monthlyCashFlow');
     expect(passiveIncome(p1(next))).toBe(20);
-    expect(monthlyCashFlow(p1(next))).toBe(720);
+    expect(monthlyCashFlow(p1(next))).toBe(760);
   });
 
   it('CHOOSE_LIFE_OPTION: repayLargestLoan pays down the loan with the highest payment (ties: highest principal) and recomputes a percent-based payment', () => {
-    // Teacher: student 12,000 at 120/mo, car 6,000 at 120/mo, credit 2,000 at 60/mo. Student wins the tie.
-    const before = drawn(twoPlayerGame(), 'life-005');
+    // Student 20,000 at 200/mo, car 10,000 at 200/mo, credit 2,000 at 60/mo. Student wins the tie on principal.
+    const base = twoPlayerGame();
+    const tied = withPlayer(base, 'p1', {
+      liabilities: [
+        { id: 'p1-student-0', kind: 'student', principal: 20_000, monthlyPayment: 200 },
+        { id: 'p1-car-1', kind: 'car', principal: 10_000, monthlyPayment: 200 },
+        ...p1(base).liabilities.filter((l) => l.kind === 'credit'),
+      ],
+    });
+    const before = drawn(tied, 'life-005');
     const next = apply(before, choose('payDebt'));
-    expect(p1(next).cash).toBe(1_100);
+    expect(p1(next).cash).toBe(p1(before).cash);
     expect(p1(next).liabilities.find((l) => l.id === 'p1-student-0')).toEqual({
       id: 'p1-student-0',
       kind: 'student',
-      principal: 10_000,
-      monthlyPayment: 100,
+      principal: 18_000,
+      monthlyPayment: 180,
     });
-    expect(debtPayments(p1(next))).toBe(300 - 20);
+    expect(debtPayments(p1(next))).toBe(460 - 20);
   });
 
   it('CHOOSE_LIFE_OPTION: repayLargestLoan removes a loan it pays off and keeps the leftover windfall as cash', () => {
@@ -193,8 +201,8 @@ describe('CHOOSE_LIFE_OPTION: windfalls', () => {
     const onlyCredit = withPlayer(base, 'p1', { liabilities: [credit] });
     const next = apply(drawn(onlyCredit, 'life-005'), choose('payDebt'));
     expect(p1(next).liabilities).toEqual([]);
-    // Cash flow is 700 + 240 (two loans gone) = 940 at Payday, then +2,000 windfall, −2,000 paid.
-    expect(p1(next).cash).toBe(400 + 940 + 2_000 - 2_000);
+    // Cash flow is 740 + 500 (two loans gone) = 1,240 at Payday, then +2,000 windfall, −2,000 paid.
+    expect(p1(next).cash).toBe(2_500 + 1_240 + 2_000 - 2_000);
   });
 
   it('CHOOSE_LIFE_OPTION: repayLargestLoan never targets a mortgage or a subscription', () => {
@@ -220,7 +228,7 @@ describe('CHOOSE_LIFE_OPTION: windfalls', () => {
 
   it('CHOOSE_LIFE_OPTION: repayLargestLoan with no loans pays nothing and the windfall stays as cash', () => {
     const next = apply(drawn(withPlayer(twoPlayerGame(), 'p1', { liabilities: [] }), 'life-005'), choose('payDebt'));
-    expect(p1(next).cash).toBe(400 + 1_000 + 2_000);
+    expect(p1(next).cash).toBe(2_500 + 1_300 + 2_000);
   });
 });
 
@@ -297,7 +305,7 @@ describe('CHOOSE_LIFE_OPTION: log and determinism', () => {
     expect(partial.game.log.at(-1)?.events.slice(1)).toEqual([
       { kind: 'cashChanged', delta: 2_000, reason: 'windfall' },
       { kind: 'cashChanged', delta: -2_000, reason: 'repay' },
-      { kind: 'paidDown', liabilityId: 'p1-student-0', amount: 2_000, principal: 10_000, monthlyPayment: 100 },
+      { kind: 'paidDown', liabilityId: 'p1-student-0', amount: 2_000, principal: 28_000, monthlyPayment: 280 },
     ]);
     const credit = p1(base).liabilities.find((l) => l.kind === 'credit');
     if (credit === undefined) throw new Error('fixture: teacher has a credit card');
