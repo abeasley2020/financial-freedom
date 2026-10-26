@@ -17,7 +17,7 @@ Stage C is complete on branch `ccr-af56ad4e-r2r1ks` (not merged to main). `pnpm 
 
 **Simulator on the new content (not tuned; `docs/sim/stage-c-content.md`):** 99.4% of games end at the round limit, 0% by escape, 0.6% with one player left. 0.9% of seats go bankrupt. The median game is 43 turns. Win rates run from 4.4% (Restaurant Server, 12% bankrupt) to 59.9% (Doctor). Pharmacist and Software Developer are also above 45%. Kids mode: 100% end at the round limit and nobody is stuck. Reading for Stage D: Freedom percentage alone does not level salaries, because high earners have more cash to invest from turn one. Escape is still out of reach in 15 rounds.
 
-**Questions for Andre** (each has a default already in the data):
+**Questions for Andre: all three decided 2026-10-26, defaults approved as written.** Salary stays gross, the Doctor keeps the BLS floor for now, and deal returns are left for Stage D to tune.
 
 1. **Gross vs take-home salary.** The spec says "median pay", so salary is gross and baseExpenses carries the taxes. Default: keep. The alternative is take-home salary with smaller baseExpenses, which shrinks every number but changes no ratios.
 2. **Doctor salary.** BLS gives only a floor ($239,200 or more), and the Doctor is the strongest profession in the sim. Default: keep the floor for Stage C and let Stage D decide whether "early career" means a lower salary.
@@ -188,7 +188,7 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage C is done (2026-10-26). Andre's gate: read `docs/cards.md` for realism (about 45 minutes) and answer the three Stage C questions above. Then Stage D (balance tuning; baseline in `docs/sim/stage-c-content.md`), then Stage E (debrief engine).
+Stage C is done (2026-10-26). Its three questions were decided 2026-10-26. Next: merge the Stage C branch to main, then Stage D (balance tuning; baseline in `docs/sim/stage-c-content.md`; escape within 15 rounds must become reachable, and Doctor salary and deal returns are open levers), then Stage E (debrief engine).
 
 ## Deferred from the scaffold
 
