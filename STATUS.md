@@ -28,7 +28,7 @@ Two other seed ranges also met all ten. Full report: `docs/sim/tuned.md`. Log of
 5. **Smaller levers:** cheaper Setbacks, bigger windfalls, and more generous Market buyers. The card texts that quote these numbers are fixed.
 6. **Golden games** re-recorded with Andre's approval: the four Stage C setups keep their endings (the four-player game moved to seed 1, because seed 0 now escapes), plus the first escape recording, `escape-three-players`.
 
-**Open questions for Andre (none block Stage E):**
+**Questions for Andre: all five decided 2026-10-27, defaults kept as written.** No rule or card changes. Items 1, 2, and 5 are things to watch at the first playtests (Stage H).
 
 1. **Every deal now beats the bank,** so borrowing for any deal is always right: 355 of 359 escapers borrowed. Default: keep, and watch at the first playtest whether players learn "borrow for everything".
 2. **Escapes are now 36%,** above the 15% floor, after the test-named deals were raised. The Doctor sits at 44.1%, close to the 45% ceiling. Default: keep; trim if a playtest feels too easy.
