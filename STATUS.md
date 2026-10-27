@@ -4,7 +4,7 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 
 ## Morning summary (Stage E, 2026-10-27)
 
-**Stage E is complete and `pnpm check` is green** (819 tests, 29 properties, zero lint warnings; Stage D ended at 738 and 22) on branch `feat/stage-e-debrief`, pushed, with a PR open against main and not merged. **Your gate: read `docs/debrief-samples.md` and judge whether it teaches.** No dependencies were added, no golden game was regenerated, and no engine rule changed.
+**Stage E is complete and `pnpm check` is green** (819 tests, 29 properties, zero lint warnings; Stage D ended at 738 and 22) on branch `feat/stage-e-debrief-engine`, pushed, with a PR open against main and not merged. **Your gate: read `docs/debrief-samples.md` and judge whether it teaches.** No dependencies were added, no golden game was regenerated, and no engine rule changed.
 
 **What was built:**
 
@@ -41,6 +41,7 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 
     The debrief does not rely on round markers: a player's round is their own count of Paydays, which is exact because every turn, taken or skipped, starts with that seat's Payday. Default: fix (a) and (c) in the engine as a small follow-up, test-first, once you approve re-recording any golden game they change; (b) then follows from (a).
 11. **`tsx` scope.** tsx was approved for the simulation script. `pnpm debrief:samples` (`packages/engine/sim/debriefSamples.ts`) is a second script in `sim/` that plays sim games through it. Default: treat it as part of the simulation tooling.
+12. **Two Stage E branches.** An earlier unattended run (commit `e5ad498`, 2026-10-27 03:27 UTC) left a different Stage E attempt on `origin/feat/stage-e-debrief`, with no PR. This work did not build on it or touch it, so it is pushed as `feat/stage-e-debrief-engine`, and the PR comes from that branch. Default: review this PR and delete the older branch.
 
 ## Morning summary (Stage D, 2026-10-27)
 
@@ -267,7 +268,7 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage E (debrief engine) is done on `feat/stage-e-debrief`, green, with a PR open. Andre's gate: read `docs/debrief-samples.md` and answer the Stage E questions above, then merge. Next: Stage F (single-device UI with the debrief), attended, plan mode.
+Stage E (debrief engine) is done on `feat/stage-e-debrief-engine`, green, with a PR open. Andre's gate: read `docs/debrief-samples.md` and answer the Stage E questions above, then merge. Next: Stage F (single-device UI with the debrief), attended, plan mode.
 
 ## Deferred from the scaffold
 
