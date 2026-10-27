@@ -48,3 +48,4 @@ Andre replaced "escape reachable within 15 rounds" with **at least 15% of standa
 | Round | Lever | Kept | End | Bkr | Prof | H2H | Spread | Med | Esc | Kids |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 12 | Small rentals and businesses (not test-named): cash flow up 50% (ordinary deals now 9% to 14% a month, gems 18% to 21%) | yes | 99.6% | 1.0% | 22.8% Software Developer to 42.0% Real Estate Agent | 88.8% | 51.4 (Balanced 57.7, BS 6.4) | 15 | 31 (3.1%), median round 14 | 0 stuck, 10 |
+| 13 | Big rentals and businesses (not test-named): cash flow up 50% (9% to 14% a month) | yes | 99.6% | 1.0% | 28.3% Engineer to 41.5% Pharmacist | 88.6% | 50.2 (Balanced 56.4, BS 6.2) | 15 | 55 (5.5%), median round 13 | 0 stuck, 10 |
