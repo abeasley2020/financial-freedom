@@ -1,6 +1,6 @@
 --- a/packages/engine/src/test/golden.test.ts
 +++ b/packages/engine/src/test/golden.test.ts
-@@ -5,12 +5,12 @@
+@@ -5,12 +5,13 @@
  // pass: a difference means a rule changed, and the commit that changes the
  // rule must say so and get Andre's approval first.
  //
@@ -13,13 +13,14 @@
 +// Re-recorded 2026-10-27 at the end of Stage D (balance tuning changed card
 +// numbers, the board mix, and Setback costs) by playing the sim bots through
 +// the engine, with Andre's approval; the recorder was deliberately not
-+// committed. The four Stage C setups were replayed with the same seeds,
-+// players, and strategies and kept their endings. A fifth recording ends by
-+// escape: Stage D made an escape within 15 rounds reachable.
++// committed. The four Stage C setups were replayed with the same players and
++// strategies and kept their endings; limit-four-players moved from seed 0 to
++// seed 1 because seed 0 now ends in an escape. A fifth recording ends by
++// escape, which Stage D made common (about one game in five).
  
  import { ActionSchema, GameStateSchema, type Action, type GameState } from '@ff/shared';
  import { z } from 'zod';
-@@ -20,6 +20,7 @@
+@@ -20,6 +21,7 @@
  import { assertInvariants } from '../invariants';
  import { replay } from '../replay';
  import { roundLimit, roundNumber } from '../selectors';
@@ -27,7 +28,7 @@
  import kids from './golden/kids-three-players.json';
  import lastStanding from './golden/last-standing-two-players.json';
  import fourPlayers from './golden/limit-four-players.json';
-@@ -54,6 +55,7 @@
+@@ -54,6 +56,7 @@
    ['limit-four-players', fourPlayers],
    ['kids-three-players', kids],
    ['last-standing-two-players', lastStanding],
@@ -35,7 +36,7 @@
  ];
  const load = (data: unknown): Golden => GoldenSchema.parse(data);
  
-@@ -109,13 +111,14 @@
+@@ -109,13 +112,14 @@
  });
  
  describe('golden games as a set', () => {

@@ -82,13 +82,16 @@ Reports: `docs/sim/stage-c-content.md` (standard) and `docs/sim/stage-c-content-
 
 Every number change is in `docs/sim/tuning-log.md`, one lever per round, and the final simulator report is `docs/sim/tuned.md`. The cards that engine tests name by id (small-001 to small-008, big-001 to big-004, market-001 to market-006, life-001 to life-005, setback-001 to setback-003) kept their numbers, so no engine test had to be re-pinned.
 
-**Why the returns went up.** A game is 15 months. On the Stage C numbers the best bot finished with about 5% Freedom, so escape was out of reach by a factor of twenty. A rough rule from the simulator: with about eight deal draws per player, escape becomes reachable only when good deals return close to 10% of the down payment every month. Stage D sets:
+**Why the returns went up.** A game is 15 months. On the Stage C numbers the best bot finished with about 5% Freedom. Andre's target that at least 15% of games end by escape needs much more. Stage D sets:
 
-- Small rentals and businesses at 6% to 9.5% of the down payment a month, kept below the bank's 10% so borrowing for an ordinary deal costs more than it earns.
-- Nine small "gems" at 12% to 15% a month (Basement Apartment, Pressure Washing, Gumball Machines, Online Tutoring, Dog Walking, Garage Apartment, Cabin Share, Used Book Shop, Car Detailing). These are the deals worth a bank loan, which is the good-debt lesson (P5).
-- Big rentals and businesses at 6% to 9.5% a month (up 80%). Land still loses money until a buyer appears.
+- Small rentals and businesses at 12% to 19% of the down payment a month.
+- Nine small "gems" at 23% to 29% a month (Basement Apartment, Pressure Washing, Gumball Machines, Online Tutoring, Dog Walking, Garage Apartment, Cabin Share, Used Book Shop, Car Detailing).
+- Big rentals and businesses at 11% to 19% a month. Land still loses money until a buyer appears.
 - Growth assets: savings 2% growth and 1% payout, CDs 3% and 2%, index funds 4% to 6% and 2%.
+- The four small deals and three big deals that engine tests name kept their Stage C numbers (3% to 5.5% a month), so they now read as the weak deals in their decks.
 
-**Realism:** these are game returns, not real ones. A small rental now returns 70% to 115% a year on the cash put in, and a gem 140% to 180%. The two numbers each decision shows stay honest relative to each other: the better deal still shows the bigger monthly number. If you want slower, more realistic returns, the game needs more months (a higher round limit) rather than smaller cards; that is a rule change, listed as a question in STATUS.md.
+Every income deal now beats the bank's 10% a month, so borrowing for an asset always pays for itself (P5). Borrowing for a want still only costs. In the simulator, 196 of 200 escapes borrowed for a deal.
+
+**Realism:** these are game returns, not real ones. A small rental returns 140% to 230% a year on the cash put in. The two numbers each decision shows stay honest relative to each other: the better deal still shows the bigger monthly number. The other way to make escape common is more months (a higher round limit), which is a rule change and is listed as a question in STATUS.md.
 
 **Other changes:** three windfalls are bigger (Work Bonus 4,000, Garage Sale 1,000, Overtime 2,500), seven Setbacks are cheaper (500 to 1,500), and two Market buyers pay more (rentals 200%, businesses 250%). A fixed sum means more to a low salary, so these help the Restaurant Server and Teacher most. The board now has 13 Opportunity spaces (spec, Board).

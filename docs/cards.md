@@ -194,119 +194,119 @@ stock, 150 shares at $110 to $150, dividend $1/share/mo. P8 P9. kids: no.
 
 ### small-024 Mobile Home on a Rented Lot
 
-rental, price $38,000, down $3,800, mortgage $34,200, cash flow +$260/mo, return on cash 82%/yr. P2 P3 P5. kids: yes.
+rental, price $38,000, down $3,800, mortgage $34,200, cash flow +$510/mo, return on cash 161%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A clean single-wide in a family park. You own the home, rent the lot, and a retired couple pays you rent.
 - Kids: A small mobile home you rent out. Rent comes in each month.
 
 ### small-025 Two-Bedroom Ranch House
 
-rental, price $95,000, down $5,000, mortgage $90,000, cash flow +$300/mo, return on cash 72%/yr. P2 P3 P5. kids: yes.
+rental, price $95,000, down $5,000, mortgage $90,000, cash flow +$580/mo, return on cash 139%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A brick ranch with a fenced yard in a small town. Low-down loan for investors; a family is ready to sign a lease.
 - Kids: A small house you rent to a family. The bank lends most of the money.
 
 ### small-026 Condo by the Community College
 
-rental, price $72,000, down $4,000, mortgage $68,000, cash flow +$280/mo, return on cash 84%/yr. P2 P3 P5. kids: yes.
+rental, price $72,000, down $4,000, mortgage $68,000, cash flow +$550/mo, return on cash 165%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A two-bedroom condo across from the community college. Leases turn over each August, but it never sits empty long.
 - Kids: A small home near a college. Students rent it every year.
 
 ### small-027 Basement Apartment
 
-rental, price $5,000, down $5,000, mortgage $0, cash flow +$700/mo, return on cash 168%/yr. P2 P3. kids: yes.
+rental, price $5,000, down $5,000, mortgage $0, cash flow +$1,360/mo, return on cash 326%/yr. P2 P3. kids: yes.
 
 - Adult: Finish your walkout basement with a kitchenette and its own door. A traveling nurse wants it as soon as it is done.
 - Kids: Fix up your basement and rent it out. A renter pays you each month.
 
 ### small-028 Foreclosed Bungalow
 
-rental, price $60,000, down $5,000, mortgage $55,000, cash flow +$400/mo, return on cash 96%/yr. P2 P5 P9. kids: yes.
+rental, price $60,000, down $5,000, mortgage $55,000, cash flow +$780/mo, return on cash 187%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A bank-owned bungalow with old carpet and a solid roof. Cheap for a reason, and a good rent once it is cleaned up.
 - Kids: An old house the bank is selling cheap. It needs work but can pay you.
 
 ### small-029 Garage Apartment
 
-rental, price $30,000, down $2,000, mortgage $28,000, cash flow +$240/mo, return on cash 144%/yr. P2 P3 P5. kids: yes.
+rental, price $30,000, down $2,000, mortgage $28,000, cash flow +$470/mo, return on cash 282%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A studio above a detached garage behind a rental house. Small, quiet, and easy to keep rented.
 - Kids: A little home on top of a garage. Someone rents it from you.
 
 ### small-030 Duplex Needing Paint
 
-rental, price $110,000, down $5,000, mortgage $105,000, cash flow +$360/mo, return on cash 86%/yr. P2 P3 P5. kids: yes.
+rental, price $110,000, down $5,000, mortgage $105,000, cash flow +$700/mo, return on cash 168%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Side-by-side duplex, both units occupied, both overdue for paint. Rents are below market, so there is room to grow.
 - Kids: Two homes side by side. Paint them and rent both out.
 
 ### small-031 Cabin Share by the Lake
 
-rental, price $25,000, down $1,500, mortgage $23,500, cash flow +$180/mo, return on cash 144%/yr. P2 P9. kids: yes.
+rental, price $25,000, down $1,500, mortgage $23,500, cash flow +$350/mo, return on cash 280%/yr. P2 P9. kids: yes.
 
 - Adult: A one-quarter share of a lakeside cabin rented to vacationers. Great summers, quiet winters, so the cash flow swings.
 - Kids: Own part of a lake cabin. Visitors rent it in the summer.
 
 ### small-032 Pressure Washing Side Hustle
 
-business, price $2,500, down $2,500, mortgage $0, cash flow +$350/mo, return on cash 168%/yr. P2 P3. kids: yes.
+business, price $2,500, down $2,500, mortgage $0, cash flow +$680/mo, return on cash 326%/yr. P2 P3. kids: yes.
 
 - Adult: A commercial pressure washer and a trailer. Driveways, decks, and storefronts, with a neighbor's son doing the work.
 - Kids: A power washer cleans driveways and decks. A helper does the jobs.
 
 ### small-033 Online Used Book Shop
 
-business, price $1,500, down $1,500, mortgage $0, cash flow +$200/mo, return on cash 160%/yr. P2 P3. kids: yes.
+business, price $1,500, down $1,500, mortgage $0, cash flow +$390/mo, return on cash 312%/yr. P2 P3. kids: yes.
 
 - Adult: Library sale books bought by the box and resold online. A few hours a week of listing and shipping.
 - Kids: Buy old books cheap and sell them online for more.
 
 ### small-034 Gumball and Toy Machines
 
-business, price $1,200, down $1,200, mortgage $0, cash flow +$170/mo, return on cash 170%/yr. P2 P3. kids: yes.
+business, price $1,200, down $1,200, mortgage $0, cash flow +$340/mo, return on cash 340%/yr. P2 P3. kids: yes.
 
 - Adult: Ten gumball and capsule toy machines in restaurants and laundromats. Refill once a month and split coins with the owners.
 - Kids: Gumball machines in stores. Kids put in coins, and you get the money.
 
 ### small-035 Bounce House Rentals
 
-business, price $3,500, down $3,500, mortgage $0, cash flow +$330/mo, return on cash 113%/yr. P2 P3 P9. kids: yes.
+business, price $3,500, down $3,500, mortgage $0, cash flow +$650/mo, return on cash 223%/yr. P2 P3 P9. kids: yes.
 
 - Adult: Two inflatable bounce houses rented for parties. Busy every summer weekend, slow in winter.
 - Kids: Rent out bounce houses for birthday parties.
 
 ### small-036 Air Pumps at Gas Stations
 
-business, price $4,000, down $4,000, mortgage $0, cash flow +$320/mo, return on cash 96%/yr. P2 P3. kids: yes.
+business, price $4,000, down $4,000, mortgage $0, cash flow +$620/mo, return on cash 186%/yr. P2 P3. kids: yes.
 
 - Adult: Coin-operated tire inflators at four gas stations. They run themselves; you collect and service them monthly.
 - Kids: Air machines for car tires. People pay a little to fill their tires.
 
 ### small-037 Food Truck Partnership
 
-business, price $20,000, down $5,000, mortgage $15,000, cash flow +$400/mo, return on cash 96%/yr. P2 P5 P9. kids: yes.
+business, price $20,000, down $5,000, mortgage $15,000, cash flow +$780/mo, return on cash 187%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A half share of a taco truck with a good chef. The loan covers the truck. Busy lunches pay well; a breakdown does not.
 - Kids: Own part of a food truck. When it sells tacos, you get some money.
 
 ### small-038 Online Tutoring Business
 
-business, price $800, down $800, mortgage $0, cash flow +$120/mo, return on cash 180%/yr. P2 P3. kids: yes.
+business, price $800, down $800, mortgage $0, cash flow +$230/mo, return on cash 345%/yr. P2 P3. kids: yes.
 
 - Adult: A website, a scheduling app, and two college students who tutor math and reading online. You keep a cut of every session.
 - Kids: Help kids with homework online. Parents pay you each month.
 
 ### small-039 Mobile Car Detailing
 
-business, price $2,000, down $2,000, mortgage $0, cash flow +$280/mo, return on cash 168%/yr. P2 P3. kids: yes.
+business, price $2,000, down $2,000, mortgage $0, cash flow +$550/mo, return on cash 330%/yr. P2 P3. kids: yes.
 
 - Adult: A vacuum, a buffer, and a water tank in a used van. A part-timer details cars in office parking lots.
 - Kids: Wash and clean cars at people's homes. A helper does the work.
 
 ### small-040 Dog Walking Route
 
-business, price $1,000, down $1,000, mortgage $0, cash flow +$140/mo, return on cash 168%/yr. P2 P3. kids: yes.
+business, price $1,000, down $1,000, mortgage $0, cash flow +$270/mo, return on cash 324%/yr. P2 P3. kids: yes.
 
 - Adult: Twelve regular clients, an app for booking, and a reliable high-schooler. You handle scheduling and payments.
 - Kids: Walk dogs for busy neighbors. A helper walks them after school.
@@ -343,126 +343,126 @@ business, price $200,000, down $50,000, mortgage $150,000, cash flow +$1,900/mo,
 
 ### big-005 Fourplex Near the Hospital
 
-rental, price $240,000, down $24,000, mortgage $216,000, cash flow +$1,620/mo, return on cash 81%/yr. P2 P3 P5. kids: yes.
+rental, price $240,000, down $24,000, mortgage $216,000, cash flow +$3,160/mo, return on cash 158%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Four two-bedroom units a block from the regional hospital. Medical staff keep it full year-round.
 - Kids: Four homes in one building. Nurses and doctors rent them.
 
 ### big-006 Six-Unit Brick Walkup
 
-rental, price $360,000, down $36,000, mortgage $324,000, cash flow +$2,340/mo, return on cash 78%/yr. P2 P3 P5. kids: yes.
+rental, price $360,000, down $36,000, mortgage $324,000, cash flow +$4,560/mo, return on cash 152%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Three floors, six units, original hardwood. Rents are a little low, and the building is in good shape.
 - Kids: Six apartments in an old brick building. The rent pays the loan.
 
 ### big-007 Twelve-Unit Apartment Complex
 
-rental, price $600,000, down $50,000, mortgage $550,000, cash flow +$4,680/mo, return on cash 112%/yr. P2 P3 P5. kids: yes.
+rental, price $600,000, down $50,000, mortgage $550,000, cash flow +$9,130/mo, return on cash 219%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Two buildings, twelve units, a manager on site, and a parking lot. A real business with real paperwork.
 - Kids: Twelve apartments with a manager. Lots of rent every month.
 
 ### big-008 Mobile Home Park
 
-rental, price $400,000, down $45,000, mortgage $355,000, cash flow +$4,140/mo, return on cash 110%/yr. P2 P3 P5. kids: yes.
+rental, price $400,000, down $45,000, mortgage $355,000, cash flow +$8,070/mo, return on cash 215%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Forty lots with water and power hookups. Residents own their homes and rent the land, so repairs are rare.
 - Kids: Forty spots where people park their homes. They pay you rent for the land.
 
 ### big-009 Three Rental Houses
 
-rental, price $270,000, down $27,000, mortgage $243,000, cash flow +$1,800/mo, return on cash 80%/yr. P2 P3 P9. kids: yes.
+rental, price $270,000, down $27,000, mortgage $243,000, cash flow +$3,510/mo, return on cash 156%/yr. P2 P3 P9. kids: yes.
 
 - Adult: A retiring landlord sells three single-family rentals as a package. Three tenants means one vacancy never sinks you.
 - Kids: Three houses in different parts of town, all rented out.
 
 ### big-010 Lake Cabin Rental
 
-rental, price $220,000, down $22,000, mortgage $198,000, cash flow +$1,260/mo, return on cash 69%/yr. P2 P3 P9. kids: yes.
+rental, price $220,000, down $22,000, mortgage $198,000, cash flow +$2,460/mo, return on cash 134%/yr. P2 P3 P9. kids: yes.
 
 - Adult: Three bedrooms on the water, booked online by the week. Summer pays for the year; a cleaning crew handles turnovers.
 - Kids: A cabin by the lake. Families rent it for vacations.
 
 ### big-011 Small Office Building
 
-rental, price $300,000, down $30,000, mortgage $270,000, cash flow +$1,980/mo, return on cash 79%/yr. P2 P3 P9. kids: yes.
+rental, price $300,000, down $30,000, mortgage $270,000, cash flow +$3,860/mo, return on cash 154%/yr. P2 P3 P9. kids: yes.
 
 - Adult: Two stories, five tenants: an insurance agent, a dentist, and three small firms. Longer leases than apartments.
 - Kids: A building with offices. Businesses pay you rent.
 
 ### big-012 Strip Mall with Four Shops
 
-rental, price $500,000, down $50,000, mortgage $450,000, cash flow +$4,320/mo, return on cash 104%/yr. P2 P5 P9. kids: yes.
+rental, price $500,000, down $50,000, mortgage $450,000, cash flow +$8,420/mo, return on cash 202%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A pizza place, a nail salon, a tax office, and a phone store. If one leaves, the other three carry the loan.
 - Kids: Four stores in a row. Each store pays you rent.
 
 ### big-013 Medical Office Condo
 
-rental, price $180,000, down $18,000, mortgage $162,000, cash flow +$1,080/mo, return on cash 72%/yr. P2 P3 P5. kids: yes.
+rental, price $180,000, down $18,000, mortgage $162,000, cash flow +$2,110/mo, return on cash 141%/yr. P2 P3 P5. kids: yes.
 
 - Adult: One suite in a medical office park, leased to a family practice for ten years. Boring and reliable.
 - Kids: An office a doctor rents from you. Doctors stay a long time.
 
 ### big-014 Sandwich Shop Franchise
 
-business, price $250,000, down $50,000, mortgage $200,000, cash flow +$3,420/mo, return on cash 82%/yr. P2 P3 P5. kids: yes.
+business, price $250,000, down $50,000, mortgage $200,000, cash flow +$6,670/mo, return on cash 160%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A franchise location with a proven menu and a manager in place. Royalties eat some profit; the brand brings the crowd.
 - Kids: A sandwich shop with a famous name. A manager runs it.
 
 ### big-015 Self-Storage Units
 
-business, price $350,000, down $40,000, mortgage $310,000, cash flow +$3,600/mo, return on cash 108%/yr. P2 P3 P5. kids: yes.
+business, price $350,000, down $40,000, mortgage $310,000, cash flow +$7,020/mo, return on cash 211%/yr. P2 P3 P5. kids: yes.
 
 - Adult: One hundred twenty climate-controlled units behind a gate. Few repairs, no tenants calling at midnight.
 - Kids: Rooms people rent to store their stuff. Lots of small rents add up.
 
 ### big-016 Child Care Center
 
-business, price $180,000, down $30,000, mortgage $150,000, cash flow +$2,160/mo, return on cash 86%/yr. P2 P3 P9. kids: yes.
+business, price $180,000, down $30,000, mortgage $150,000, cash flow +$4,210/mo, return on cash 168%/yr. P2 P3 P9. kids: yes.
 
 - Adult: A licensed center for sixty children with a waiting list. Staffing is the hard part; demand is not.
 - Kids: A place where little kids play and learn while parents work.
 
 ### big-017 Auto Repair Shop
 
-business, price $150,000, down $25,000, mortgage $125,000, cash flow +$1,980/mo, return on cash 95%/yr. P2 P3 P5. kids: yes.
+business, price $150,000, down $25,000, mortgage $125,000, cash flow +$3,860/mo, return on cash 185%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Four bays, three mechanics, and a loyal customer list. The owner is retiring and will train you for a month.
 - Kids: A garage that fixes cars. Mechanics do the work, and you own it.
 
 ### big-018 Coffee Shop
 
-business, price $90,000, down $15,000, mortgage $75,000, cash flow +$900/mo, return on cash 72%/yr. P2 P9. kids: yes.
+business, price $90,000, down $15,000, mortgage $75,000, cash flow +$1,760/mo, return on cash 141%/yr. P2 P9. kids: yes.
 
 - Adult: A busy corner cafe with a good lease. Margins are thin, and a new chain across the street could hurt.
 - Kids: A coffee shop on Main Street. Some months are great, some are slow.
 
 ### big-019 Landscaping Company
 
-business, price $70,000, down $10,000, mortgage $60,000, cash flow +$950/mo, return on cash 114%/yr. P2 P3. kids: yes.
+business, price $70,000, down $10,000, mortgage $60,000, cash flow +$1,850/mo, return on cash 222%/yr. P2 P3. kids: yes.
 
 - Adult: Two trucks, two crews, and a hundred contracts with homes and businesses. Plows snow in the winter.
 - Kids: Trucks and crews that mow and plant for many customers.
 
 ### big-020 Fitness Studio Franchise
 
-business, price $160,000, down $30,000, mortgage $130,000, cash flow +$1,800/mo, return on cash 72%/yr. P2 P5 P9. kids: yes.
+business, price $160,000, down $30,000, mortgage $130,000, cash flow +$3,510/mo, return on cash 140%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A boutique studio with four hundred members. Monthly dues are steady until a cheaper gym opens nearby.
 - Kids: A gym with classes. Members pay every month.
 
 ### big-021 ATM Route
 
-business, price $40,000, down $8,000, mortgage $32,000, cash flow +$760/mo, return on cash 114%/yr. P2 P3. kids: yes.
+business, price $40,000, down $8,000, mortgage $32,000, cash flow +$1,480/mo, return on cash 222%/yr. P2 P3. kids: yes.
 
 - Adult: Fifteen cash machines in convenience stores and bars. You keep part of every fee and refill them weekly.
 - Kids: Cash machines in stores. Each time someone uses one, you earn a fee.
 
 ### big-022 RV and Boat Storage Lot
 
-business, price $120,000, down $20,000, mortgage $100,000, cash flow +$1,620/mo, return on cash 97%/yr. P2 P3 P5. kids: yes.
+business, price $120,000, down $20,000, mortgage $100,000, cash flow +$3,160/mo, return on cash 190%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Four acres of gravel, a fence, and cameras near the lake. Owners pay monthly to park campers and boats.
 - Kids: A big fenced lot where people park campers and boats.

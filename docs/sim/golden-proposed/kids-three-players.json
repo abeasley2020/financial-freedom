@@ -539,7 +539,7 @@
                 "P2",
                 "P9"
               ],
-              "monthlyCashFlow": 180,
+              "monthlyCashFlow": 350,
               "downPayment": 1500,
               "affordable": true
             }
@@ -1065,7 +1065,7 @@
                 "P3",
                 "P5"
               ],
-              "monthlyCashFlow": 300,
+              "monthlyCashFlow": 580,
               "downPayment": 5000,
               "affordable": false
             }
@@ -1891,7 +1891,7 @@
                 "P2",
                 "P3"
               ],
-              "monthlyCashFlow": 700,
+              "monthlyCashFlow": 1360,
               "downPayment": 5000,
               "affordable": true
             }
@@ -2304,14 +2304,14 @@
             },
             {
               "kind": "payday",
-              "amount": 1573
+              "amount": 1803
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p3",
-              "passiveIncome": 473,
+              "passiveIncome": 703,
               "totalExpenses": 5900,
-              "cash": 5914,
+              "cash": 6144,
               "roundNumber": 9
             },
             {
@@ -2334,12 +2334,12 @@
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -591,
+              "delta": -614,
               "reason": "give"
             },
             {
               "kind": "gave",
-              "amount": 591,
+              "amount": 614,
               "favorTokens": 2,
               "principles": [
                 "P10"
@@ -2546,14 +2546,14 @@
             },
             {
               "kind": "payday",
-              "amount": 1574
+              "amount": 1804
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p3",
-              "passiveIncome": 474,
+              "passiveIncome": 704,
               "totalExpenses": 5900,
-              "cash": 6897,
+              "cash": 7334,
               "roundNumber": 10
             },
             {
@@ -2728,7 +2728,7 @@
         "name": "Sam",
         "professionId": "farmer",
         "position": 6,
-        "cash": 1897,
+        "cash": 2334,
         "salary": 7000,
         "assets": [
           {
@@ -2755,7 +2755,7 @@
             "type": "rental",
             "purchasePrice": 30000,
             "downPaid": 2000,
-            "monthlyCashFlow": 240
+            "monthlyCashFlow": 470
           }
         ],
         "liabilities": [
