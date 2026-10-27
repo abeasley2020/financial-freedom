@@ -12,8 +12,9 @@
 // 20% of seats go bankrupt; every profession's win rate between 20% and 45%;
 // Wealth Builder beats Big Spender in at least 70% of head-to-head games; the
 // best strategy beats the worst by at least 15 points; median game between 10
-// and 15 rounds; kids mode never stuck, median at or under 10 rounds; and an
-// escape within 15 rounds is reachable. --summary prints only the target table.
+// and 15 rounds; kids mode never stuck, median at or under 10 rounds; and at
+// least 15% of standard games end by escape (Andre, 2026-10-27, replacing
+// "escape reachable within 15 rounds"). --summary prints only the target table.
 
 import { writeFileSync } from 'node:fs';
 
@@ -123,11 +124,11 @@ function targets(reports: ReadonlyMap<Suite, SimReport>): readonly Target[] {
     }
     const rounds = medianRounds(mixed);
     list.push({ name: 'Median game between 10 and 15 rounds', value: String(rounds), met: rounds >= 10 && rounds <= 15 });
-    const first = mixed.escapeRounds[0];
+    const escapes = mixed.endings.escape;
     list.push({
-      name: 'Escape reachable within 15 rounds',
-      value: first === undefined ? 'no escapes' : `${String(mixed.endings.escape)} escapes (${pctOf(mixed.endings.escape, n)}), earliest round ${String(first)}, median round ${String(median(mixed.escapeRounds))}`,
-      met: first !== undefined && first <= 15,
+      name: 'Standard games ending by escape (at least 15%)',
+      value: escapes === 0 ? '0 (0.0%)' : `${String(escapes)} (${pctOf(escapes, n)}), median escape round ${String(median(mixed.escapeRounds))}, earliest ${String(mixed.escapeRounds[0])}`,
+      met: share(escapes, n) >= 15,
     });
   }
   const h2h = reports.get('h2h');

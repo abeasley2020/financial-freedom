@@ -40,3 +40,11 @@ Wealth Builder fund sensitivity (bot setting, not a lever; the committed bot kee
 | 3 months (committed) | 27.9% | 78.2% | 7.9% vs 23.6% | 23.6% to 41.5% | yes |
 | 2 months | 36.0% | 86.4% | 12.2% vs 22.7% | 22.5% to 41.0% | yes |
 | 1 month | 45.5% | 91.2% | 26.7% vs 19.4% | 25.1% to 40.1% | yes |
+
+## Rounds 12 on: new escape target
+
+Andre replaced "escape reachable within 15 rounds" with **at least 15% of standard games end by escape** (2026-10-27, relayed by the parent session). From here the Esc column is that target: escapes in 1,000 mixed games, share, and median escape round. Rounds 1 to 11 measured it too (best: 13 escapes, 1.3%, round 11), so tuning resumes.
+
+| Round | Lever | Kept | End | Bkr | Prof | H2H | Spread | Med | Esc | Kids |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 12 | Small rentals and businesses (not test-named): cash flow up 50% (ordinary deals now 9% to 14% a month, gems 18% to 21%) | yes | 99.6% | 1.0% | 22.8% Software Developer to 42.0% Real Estate Agent | 88.8% | 51.4 (Balanced 57.7, BS 6.4) | 15 | 31 (3.1%), median round 14 | 0 stuck, 10 |
