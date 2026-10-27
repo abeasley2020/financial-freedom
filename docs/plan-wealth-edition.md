@@ -159,7 +159,7 @@ Tune to these targets, measured by pnpm sim over 1,000 games at 2 to 4 players:
 - Wealth Builder beats Big Spender in at least 70% of head-to-head games, and the best strategy beats the worst by at least 15 points overall.
 - Median game between 10 and 15 rounds.
 - Kids mode: 1,000 games, none stuck, median at or under 10 rounds.
-- Escape must be reachable within 15 rounds; show it in pnpm sim.
+- At least 15% of standard games end by escape. pnpm sim reports the escape rate and the median escape round.
 
 Levers you may change: card numbers and the mix within spec deck counts, the board space mix (still 24 spaces), Setback costs, growthPercent and payoutPercent within the spec's ranges. Do not change the 10% bank rate, liability payment percents, professions, or any rule without writing it in STATUS.md as a question.
 
