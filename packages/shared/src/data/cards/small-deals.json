@@ -168,8 +168,8 @@
     "downPayment": 200,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 1,
-    "payoutPercent": 0
+    "growthPercent": 2,
+    "payoutPercent": 1
   },
   {
     "id": "small-010",
@@ -187,8 +187,8 @@
     "downPayment": 500,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 1,
-    "payoutPercent": 0
+    "growthPercent": 2,
+    "payoutPercent": 1
   },
   {
     "id": "small-011",
@@ -206,8 +206,8 @@
     "downPayment": 500,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 2,
-    "payoutPercent": 1
+    "growthPercent": 3,
+    "payoutPercent": 2
   },
   {
     "id": "small-012",
@@ -225,8 +225,8 @@
     "downPayment": 1000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 2,
-    "payoutPercent": 1
+    "growthPercent": 3,
+    "payoutPercent": 2
   },
   {
     "id": "small-013",
@@ -244,8 +244,8 @@
     "downPayment": 1500,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 2,
-    "payoutPercent": 1
+    "growthPercent": 3,
+    "payoutPercent": 2
   },
   {
     "id": "small-014",
@@ -263,8 +263,8 @@
     "downPayment": 1000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 4,
-    "payoutPercent": 1
+    "growthPercent": 5,
+    "payoutPercent": 2
   },
   {
     "id": "small-015",
@@ -282,8 +282,8 @@
     "downPayment": 1000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 3,
-    "payoutPercent": 1
+    "growthPercent": 4,
+    "payoutPercent": 2
   },
   {
     "id": "small-016",
@@ -301,8 +301,8 @@
     "downPayment": 500,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 3,
-    "payoutPercent": 1
+    "growthPercent": 4,
+    "payoutPercent": 2
   },
   {
     "id": "small-017",
@@ -320,8 +320,8 @@
     "downPayment": 1000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 3,
-    "payoutPercent": 1
+    "growthPercent": 4,
+    "payoutPercent": 2
   },
   {
     "id": "small-018",
@@ -339,8 +339,8 @@
     "downPayment": 2000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 5,
-    "payoutPercent": 1
+    "growthPercent": 6,
+    "payoutPercent": 2
   },
   {
     "id": "small-019",
@@ -469,7 +469,7 @@
     "price": 38000,
     "downPayment": 3800,
     "mortgage": 34200,
-    "monthlyCashFlow": 130
+    "monthlyCashFlow": 260
   },
   {
     "id": "small-025",
@@ -487,7 +487,7 @@
     "price": 95000,
     "downPayment": 5000,
     "mortgage": 90000,
-    "monthlyCashFlow": 150
+    "monthlyCashFlow": 300
   },
   {
     "id": "small-026",
@@ -505,7 +505,7 @@
     "price": 72000,
     "downPayment": 4000,
     "mortgage": 68000,
-    "monthlyCashFlow": 140
+    "monthlyCashFlow": 280
   },
   {
     "id": "small-027",
@@ -522,7 +522,7 @@
     "price": 5000,
     "downPayment": 5000,
     "mortgage": 0,
-    "monthlyCashFlow": 250
+    "monthlyCashFlow": 700
   },
   {
     "id": "small-028",
@@ -540,7 +540,7 @@
     "price": 60000,
     "downPayment": 5000,
     "mortgage": 55000,
-    "monthlyCashFlow": 200
+    "monthlyCashFlow": 400
   },
   {
     "id": "small-029",
@@ -558,7 +558,7 @@
     "price": 30000,
     "downPayment": 3000,
     "mortgage": 27000,
-    "monthlyCashFlow": 120
+    "monthlyCashFlow": 240
   },
   {
     "id": "small-030",
@@ -576,7 +576,7 @@
     "price": 110000,
     "downPayment": 5000,
     "mortgage": 105000,
-    "monthlyCashFlow": 180
+    "monthlyCashFlow": 360
   },
   {
     "id": "small-031",
@@ -593,7 +593,7 @@
     "price": 25000,
     "downPayment": 2500,
     "mortgage": 22500,
-    "monthlyCashFlow": 90
+    "monthlyCashFlow": 180
   },
   {
     "id": "small-032",
@@ -610,7 +610,7 @@
     "price": 2500,
     "downPayment": 2500,
     "mortgage": 0,
-    "monthlyCashFlow": 150
+    "monthlyCashFlow": 350
   },
   {
     "id": "small-033",
@@ -627,7 +627,7 @@
     "price": 1500,
     "downPayment": 1500,
     "mortgage": 0,
-    "monthlyCashFlow": 80
+    "monthlyCashFlow": 140
   },
   {
     "id": "small-034",
@@ -644,7 +644,7 @@
     "price": 1200,
     "downPayment": 1200,
     "mortgage": 0,
-    "monthlyCashFlow": 60
+    "monthlyCashFlow": 170
   },
   {
     "id": "small-035",
@@ -662,7 +662,7 @@
     "price": 3500,
     "downPayment": 3500,
     "mortgage": 0,
-    "monthlyCashFlow": 170
+    "monthlyCashFlow": 330
   },
   {
     "id": "small-036",
@@ -679,7 +679,7 @@
     "price": 4000,
     "downPayment": 4000,
     "mortgage": 0,
-    "monthlyCashFlow": 160
+    "monthlyCashFlow": 320
   },
   {
     "id": "small-037",
@@ -697,7 +697,7 @@
     "price": 20000,
     "downPayment": 5000,
     "mortgage": 15000,
-    "monthlyCashFlow": 200
+    "monthlyCashFlow": 400
   },
   {
     "id": "small-038",
@@ -714,7 +714,7 @@
     "price": 800,
     "downPayment": 800,
     "mortgage": 0,
-    "monthlyCashFlow": 60
+    "monthlyCashFlow": 120
   },
   {
     "id": "small-039",
@@ -731,7 +731,7 @@
     "price": 3000,
     "downPayment": 3000,
     "mortgage": 0,
-    "monthlyCashFlow": 140
+    "monthlyCashFlow": 280
   },
   {
     "id": "small-040",
@@ -748,6 +748,6 @@
     "price": 1000,
     "downPayment": 1000,
     "mortgage": 0,
-    "monthlyCashFlow": 70
+    "monthlyCashFlow": 140
   }
 ]

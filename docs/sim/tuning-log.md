@@ -1,0 +1,17 @@
+# Stage D tuning log
+
+One lever per round, measured by `pnpm sim` (1,000 mixed standard games at 2 to 4 seats, 1,000 Wealth Builder vs Big Spender head-to-head games, 1,000 kids games; seeds from 20261023). Each row records every target number; "Kept" says whether the change stayed.
+
+Targets: escape or round limit at least 70%; bankrupt seats at most 20%; every profession 20% to 45%; WB beats BS head to head at least 70%; best strategy minus worst at least 15 points; median game 10 to 15 rounds; kids never stuck, median at or under 10 rounds; escape reachable within 15 rounds.
+
+Column key: **End** escape plus round-limit share; **Bkr** bankrupt seats; **Prof** lowest to highest profession win rate; **H2H** WB wins over BS; **Spread** best minus worst strategy (names); **Med** median rounds; **Esc** escapes in 1,000 mixed games (earliest round); **Kids** stuck games and median rounds.
+
+| Round | Lever | Kept | End | Bkr | Prof | H2H | Spread | Med | Esc | Kids |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | Baseline: Stage C content, five bots (Wealth Builder and Big Spender added) | n/a | 99.3% | 1.7% | 7.7% Server to 58.8% Doctor | 59.3% | 34.1 (Balanced 50.6, WB 16.5) | 15 | 0 | 0 stuck, 10 |
+| 1 | Small rentals and businesses (17 cards, not the 4 that engine tests name): cash flow doubled, capped at 9.5% of the down payment a month, so a bank loan at 10% never pays for itself | yes | 99.3% | 1.7% | 12.6% Server to 44.1% Pharmacist | 56.7% | 44.4 (Balanced 58.0, WB 13.7) | 15 | 1 (round 15) | 0 stuck, 10 |
+| 2 | Growth assets (not the two cards engine tests name): savings 2%/1%, CDs 3%/2%, index funds growth +1 point (4 to 6) and payout 2% | yes | 99.3% | 1.7% | 11.0% Server to 44.6% Firefighter | 62.8% | 46.5 (Balanced 59.0, BS 12.5) | 15 | 1 (round 15) | 0 stuck, 10 |
+| 2b | Bot fix, not a lever: Wealth Builder's loan test counted the fund's growth twice, so it would borrow only for deals paying over 14% a month. Now it borrows the part its free cash does not cover when the deal pays more than the loan. New baseline | yes | 99.3% | 1.7% | 9.9% Server to 45.0% Firefighter | 64.3% | 46.2 (Balanced 58.5, BS 12.4) | 15 | 1 (round 15) | 0 stuck, 10 |
+| 3 | Five small deals become "gems" paying 13% to 15% a month on the down payment (Basement Apartment 700, Pressure Washing 350, Gumball Machines 170, Online Tutoring 120, Dog Walking 140), so a bank loan for them pays for itself (P5, good debt) | yes | 99.3% | 1.7% | 12.1% Server to 44.6% Firefighter | 72.7% | 44.9 (Balanced 55.3, BS 10.4) | 15 | 1 (round 15) | 0 stuck, 10 |
+| 4 | Bigger windfalls (Work Bonus 3,000 to 4,000, Garage Sale 400 to 1,000, Overtime 1,500 to 2,500): a fixed sum means more to a low salary | yes (neutral, kept as a mild help for low earners) | 99.3% | 1.6% | 12.1% Server to 45.0% Firefighter | 72.7% | 44.8 (Balanced 55.1, BS 10.4) | 15 | 1 (round 15) | 0 stuck, 10 |
+| 5 | Four small deals made cheaper (half the down payment and about half the cash flow: Mobile Home, Garage Apartment, Cabin Share, Car Detailing) so a low salary can start sooner | no (Server unchanged at 12.1%, the one escape lost) | 99.3% | 1.6% | 12.1% Server to 44.1% Firefighter | 71.5% | 46.2 (Balanced 55.6, BS 9.4) | 15 | 0 | 0 stuck, 10 |

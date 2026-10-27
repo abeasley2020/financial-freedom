@@ -442,7 +442,7 @@
     "downPayment": 10000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 2,
-    "payoutPercent": 1
+    "growthPercent": 3,
+    "payoutPercent": 2
   }
 ]

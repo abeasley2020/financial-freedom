@@ -1545,11 +1545,11 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 3000
+            "amount": 4000
           },
           {
             "kind": "payCash",
-            "amount": 3000
+            "amount": 4000
           }
         ]
       },
@@ -1566,12 +1566,12 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 3000
+            "amount": 4000
           },
           {
             "kind": "investGrowth",
             "assetType": "index",
-            "amount": 3000,
+            "amount": 4000,
             "growthPercent": 4,
             "payoutPercent": 1
           }
@@ -1589,11 +1589,11 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 3000
+            "amount": 4000
           },
           {
             "kind": "repayLargestLoan",
-            "amount": 3000
+            "amount": 4000
           }
         ]
       }
@@ -1711,12 +1711,12 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 400
+            "amount": 1000
           },
           {
             "kind": "investGrowth",
             "assetType": "savings",
-            "amount": 400,
+            "amount": 1000,
             "growthPercent": 1,
             "payoutPercent": 0
           }
@@ -1734,11 +1734,11 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 400
+            "amount": 1000
           },
           {
             "kind": "payCash",
-            "amount": 400
+            "amount": 1000
           }
         ]
       },
@@ -1754,7 +1754,7 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 400
+            "amount": 1000
           }
         ]
       }
@@ -1787,12 +1787,12 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 1500
+            "amount": 2500
           },
           {
             "kind": "investGrowth",
             "assetType": "savings",
-            "amount": 1500,
+            "amount": 2500,
             "growthPercent": 1,
             "payoutPercent": 0
           }
@@ -1811,11 +1811,11 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 1500
+            "amount": 2500
           },
           {
             "kind": "payCash",
-            "amount": 1500
+            "amount": 2500
           }
         ]
       },
@@ -1831,11 +1831,11 @@
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 1500
+            "amount": 2500
           },
           {
             "kind": "repayLargestLoan",
-            "amount": 1500
+            "amount": 2500
           }
         ]
       }
