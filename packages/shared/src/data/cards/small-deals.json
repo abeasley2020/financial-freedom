@@ -556,8 +556,8 @@
     "kidsOk": true,
     "type": "rental",
     "price": 30000,
-    "downPayment": 3000,
-    "mortgage": 27000,
+    "downPayment": 2000,
+    "mortgage": 28000,
     "monthlyCashFlow": 240
   },
   {
@@ -591,8 +591,8 @@
     "kidsOk": true,
     "type": "rental",
     "price": 25000,
-    "downPayment": 2500,
-    "mortgage": 22500,
+    "downPayment": 1500,
+    "mortgage": 23500,
     "monthlyCashFlow": 180
   },
   {
@@ -627,7 +627,7 @@
     "price": 1500,
     "downPayment": 1500,
     "mortgage": 0,
-    "monthlyCashFlow": 140
+    "monthlyCashFlow": 200
   },
   {
     "id": "small-034",
@@ -728,8 +728,8 @@
     "adultText": "A vacuum, a buffer, and a water tank in a used van. A part-timer details cars in office parking lots.",
     "kidsOk": true,
     "type": "business",
-    "price": 3000,
-    "downPayment": 3000,
+    "price": 2000,
+    "downPayment": 2000,
     "mortgage": 0,
     "monthlyCashFlow": 280
   },
