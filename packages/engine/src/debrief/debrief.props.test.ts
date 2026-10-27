@@ -112,7 +112,7 @@ function expectSound(state: GameState, playerId: string, level: ReadingLevel): D
   DebriefSchema.parse(d);
   for (const n of numbersIn(d)) expect(Number.isInteger(n) && !Object.is(n, -0), `${String(n)} is not a whole number`).toBe(true);
 
-  const owned = new Set(ownedEvents(state.game.log, playerId).map((o) => key(o.ref)));
+  const owned = new Set(ownedEvents(state, playerId).map((o) => key(o.ref)));
   const decisions = [...d.drivers, ...d.helped, ...d.hurt, ...d.suggestions.map((s) => s.decision)];
   for (const x of decisions) {
     const event = state.game.log[x.ref.entry]?.events[x.ref.event];
@@ -128,6 +128,8 @@ function expectSound(state: GameState, playerId: string, level: ReadingLevel): D
     }
     else expectArithmetic(x);
   }
+  // One Payday a round for every seat still in: the money story runs 1, 2, 3, ... with no gap or repeat.
+  expect(d.moneyStory.points.map((p) => p.round)).toEqual(d.moneyStory.points.map((_, i) => i + 1));
   for (const p of d.moneyStory.points) {
     const event = state.game.log[p.ref.entry]?.events[p.ref.event];
     expect(event?.kind).toBe('paydaySnapshot');

@@ -70,7 +70,9 @@ describe('DEBRIEF section 1: result', () => {
   it('DEBRIEF: a player who went out sees the round they ran out of money, and no place', () => {
     const state = withPlayer(base, 'p1', { isOut: true, cash: 0, liabilities: [] });
     const d = run(state, [
+      paydayEntry('p1', 1),
       roundEnd(1),
+      paydayEntry('p1', 2),
       roundEnd(2),
       rollEntry('p1', ...paydayEvents('p1', 3), { kind: 'wentOut', shortfall: 500 }),
       gameEnd('lastStanding', 'p2'),
@@ -88,6 +90,22 @@ describe('DEBRIEF section 1: result', () => {
       rounds: 3,
       wentOutRound: 3,
     });
+  });
+
+  it('DEBRIEF: a player who goes out at a skipped Payday ran out of money in the round that Payday opened', () => {
+    const state = withPlayer(base, 'p1', { isOut: true, cash: 0, liabilities: [] });
+    const d = run(state, [
+      paydayEntry('p1', 1),
+      endTurnEntry(
+        'p2',
+        { kind: 'turnSkipped', playerId: 'p1' },
+        ...paydayEvents('p1', 1),
+        { kind: 'wentOut', shortfall: 300 },
+        { kind: 'roundCompleted', round: 1 },
+      ),
+      gameEnd('lastStanding', 'p2'),
+    ]);
+    expect(d.result.wentOutRound).toBe(2);
   });
 
   it('DEBRIEF: an escape is a win', () => {
@@ -129,8 +147,8 @@ describe('DEBRIEF sections 2 to 4: why you won or lost, helped, hurt', () => {
     expect(d.drivers.map((x) => x.ref.entry)).toEqual([0, 1, 2]);
   });
 
-  it('DEBRIEF: each decision carries the round it was made in', () => {
-    const d = run(base, [roundEnd(1), roundEnd(2), gift(200)]);
+  it("DEBRIEF: each decision carries the round it was made in, counted by the player's own Paydays", () => {
+    const d = run(base, [paydayEntry('p1', 1), roundEnd(1), paydayEntry('p1', 2), roundEnd(2), paydayEntry('p1', 3), gift(200)]);
     expect(d.helped).toEqual([expect.objectContaining({ kind: 'gave', round: 3 })]);
   });
 
@@ -248,18 +266,65 @@ describe('DEBRIEF section 6: money story', () => {
     const d = run(state, [
       paydayEntry('p1', 1),
       paydayEntry('p2', 1, [], { totalExpenses: 16_000 }),
+      roundEnd(1),
       paydayEntry('p1', 2, [], { passiveIncome: 700 }),
+      roundEnd(2),
       paydayEntry('p1', 3, [], { passiveIncome: 5_000 }),
     ]);
     expect(d.moneyStory).toEqual({
       points: [
         { ref: { entry: 0, event: 1 }, round: 1, passiveIncome: 0, totalExpenses: 4_560 },
-        { ref: { entry: 2, event: 1 }, round: 2, passiveIncome: 700, totalExpenses: 4_560 },
-        { ref: { entry: 3, event: 1 }, round: 3, passiveIncome: 5_000, totalExpenses: 4_560 },
+        { ref: { entry: 3, event: 1 }, round: 2, passiveIncome: 700, totalExpenses: 4_560 },
+        { ref: { entry: 5, event: 1 }, round: 3, passiveIncome: 5_000, totalExpenses: 4_560 },
       ],
       final: { passiveIncome: 700, totalExpenses: 4_560 },
       freedomRound: 3,
     });
+  });
+
+  it("DEBRIEF: a skipped seat's Payday paid by an END_TURN that completes the round belongs to the new round", () => {
+    // END_TURN pays a skipped seat before it logs roundCompleted, so that snapshot's own roundNumber is the round just ended.
+    const d = run(base, [
+      paydayEntry('p1', 1),
+      endTurnEntry('p2', { kind: 'turnSkipped', playerId: 'p1' }, ...paydayEvents('p1', 1), { kind: 'roundCompleted', round: 1 }),
+      roundEnd(2),
+      paydayEntry('p1', 3),
+    ]);
+    expect(d.moneyStory.points.map((p) => p.round)).toEqual([1, 2, 3]);
+  });
+
+  it('DEBRIEF: a skipped seat paid by the END_TURN that ends the game at the round limit gets the round after the last one', () => {
+    const d = run(base, [
+      paydayEntry('p1', 1),
+      endTurnEntry('p2', { kind: 'turnSkipped', playerId: 'p1' }, ...paydayEvents('p1', 1), { kind: 'gameEnded', reason: 'roundLimit', winnerId: 'p2' }),
+    ]);
+    expect(d.moneyStory.points.map((p) => p.round)).toEqual([1, 2]);
+  });
+
+  it('DEBRIEF: when one END_TURN skips every seat, including its own, each player still gets one round per Payday', () => {
+    // The engine logs no roundCompleted here (STATUS.md, Stage E, question 10), so round markers alone would repeat a round.
+    const log = [
+      paydayEntry('p1', 1),
+      paydayEntry('p2', 1),
+      roundEnd(1),
+      paydayEntry('p1', 2),
+      endTurnEntry('p1', { kind: 'turnSkipped', playerId: 'p2' }, ...paydayEvents('p2', 2), { kind: 'turnSkipped', playerId: 'p1' }, ...paydayEvents('p1', 2)),
+      paydayEntry('p2', 2),
+      endTurnEntry('p2', { kind: 'roundCompleted', round: 2 }),
+      paydayEntry('p1', 3),
+    ];
+    expect(run(base, log).moneyStory.points.map((p) => p.round)).toEqual([1, 2, 3, 4]);
+    expect(run(base, log, 'p2').moneyStory.points.map((p) => p.round)).toEqual([1, 2, 3]);
+  });
+
+  it('DEBRIEF: a skipped seat after the seat ending its turn is still in the current round', () => {
+    // Seat 1 ends its turn and seat 2 is skipped: that is seat 2's turn in this round, even if the same END_TURN then completes it.
+    const d = run(
+      base,
+      [paydayEntry('p2', 1), roundEnd(1), endTurnEntry('p1', { kind: 'turnSkipped', playerId: 'p2' }, ...paydayEvents('p2', 2), { kind: 'roundCompleted', round: 2 })],
+      'p2',
+    );
+    expect(d.moneyStory.points.map((p) => p.round)).toEqual([1, 2]);
   });
 
   it('DEBRIEF: when the lines cross only after the last Payday (an escape), freedom is the round the game ended in', () => {

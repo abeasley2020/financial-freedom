@@ -129,6 +129,7 @@ The scaffold step creates these root scripts. The names are fixed; don't rename 
 | `pnpm test:watch` | Vitest watch mode |
 | `pnpm e2e` | Playwright happy path + axe check |
 | `pnpm sim` | Balance simulation, 1,000 bot games, prints length / win rate by profession / bankruptcy rate |
+| `pnpm debrief:samples` | Plays three sim games and writes `docs/debrief-samples.md`: winner and loser debriefs at both reading levels |
 | `pnpm check` | typecheck + lint + test + test:props. Run before every commit and before saying "done" |
 
 Common one-offs:

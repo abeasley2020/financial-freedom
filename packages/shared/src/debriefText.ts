@@ -45,7 +45,8 @@ interface DecisionTemplates {
 }
 
 export interface LevelTemplates {
-  readonly headings: Readonly<Record<Exclude<SectionId, 'drivers'>, string>> & { readonly driversWon: string; readonly driversLost: string };
+  /** Section 2 lists the largest dollar impacts, helped or hurt, so its heading does not say won or lost: a winner's biggest decision can be a mistake. */
+  readonly headings: Readonly<Record<SectionId, string>>;
   readonly result: {
     readonly freedom: string;
     readonly escaped: string;
@@ -66,8 +67,7 @@ export interface LevelTemplates {
 const ADULT: LevelTemplates = {
   headings: {
     result: 'Result',
-    driversWon: 'Why you won',
-    driversLost: 'Why you lost',
+    drivers: 'What made the biggest difference',
     helped: 'Decisions that helped',
     hurt: 'Decisions that hurt',
     nextTime: 'Next time, try',
@@ -82,14 +82,14 @@ const ADULT: LevelTemplates = {
     out: 'You ran out of money in round {round}.',
   },
   decision: {
-    line: '{signed}. {text} ({principles})',
+    line: '{signed}: {text} ({principles})',
     signedHelped: '+{dollars}',
     signedHurt: '-{dollars}',
     months: '{count} months',
     oneMonth: 'one month',
     lifeChoice: {
-      helped: 'You chose "{option}" over "{other}" on {card}: {difference}.',
-      hurt: 'You chose "{option}" over "{other}" on {card}: {difference}.',
+      helped: 'You chose "{option}" over "{other}" on {card}, which meant {difference}.',
+      hurt: 'You chose "{option}" over "{other}" on {card}, which meant {difference}.',
     },
     lifeDifference: {
       todayMore: '{amount} more spent today',
@@ -168,8 +168,7 @@ const ADULT: LevelTemplates = {
 const KIDS: LevelTemplates = {
   headings: {
     result: 'How you did',
-    driversWon: 'Why you won',
-    driversLost: 'Why you did not win',
+    drivers: 'Your biggest moves',
     helped: 'Good moves',
     hurt: 'Moves that cost you',
     nextTime: 'Next time, try',
@@ -305,8 +304,9 @@ function decisionValues(d: DebriefDecision, t: DecisionTemplates): Values {
       const parts: string[] = [];
       if (d.todayDifference < 0) parts.push(fillTemplate(t.lifeDifference.todayMore, { amount: formatMoney(-d.todayDifference) }));
       if (d.todayDifference > 0) parts.push(fillTemplate(t.lifeDifference.todayLess, { amount: formatMoney(d.todayDifference) }));
-      if (d.monthlyDifference < 0) parts.push(fillTemplate(t.lifeDifference.monthlyMore, { amount: formatMoney(-d.monthlyDifference), months }));
-      if (d.monthlyDifference > 0) parts.push(fillTemplate(t.lifeDifference.monthlyLess, { amount: formatMoney(d.monthlyDifference), months }));
+      // With no Payday after the choice, the monthly difference never happened.
+      if (d.months > 0 && d.monthlyDifference < 0) parts.push(fillTemplate(t.lifeDifference.monthlyMore, { amount: formatMoney(-d.monthlyDifference), months }));
+      if (d.months > 0 && d.monthlyDifference > 0) parts.push(fillTemplate(t.lifeDifference.monthlyLess, { amount: formatMoney(d.monthlyDifference), months }));
       return {
         ...common,
         card: cardTitle(d.cardId),
@@ -442,7 +442,7 @@ export function renderDebrief(debrief: Debrief): readonly DebriefSection[] {
     { id: 'result', heading: t.headings.result, lines: result },
     {
       id: 'drivers',
-      heading: r.won ? t.headings.driversWon : t.headings.driversLost,
+      heading: t.headings.drivers,
       lines: orEmpty(debrief.drivers.map((d) => decisionLine(d, level)), t.empty.drivers),
     },
     { id: 'helped', heading: t.headings.helped, lines: orEmpty(debrief.helped.map((d) => decisionLine(d, level)), t.empty.helped) },

@@ -146,27 +146,27 @@ describe('renderDebrief', () => {
       },
       {
         id: 'drivers',
-        heading: 'Why you lost',
+        heading: 'What made the biggest difference',
         lines: [
-          '-$5,700. You chose "Finance a new truck" over "Keep the old truck" on Your Truck Is Nine Years Old: $380 a month more for 15 months. (Good debt vs. bad debt, Things lose value)',
-          '+$2,100. You bought Duplex in Decatur. It paid you $2,100 over 3 months. (Assets vs. liabilities, Cash flow beats looking rich, Good debt vs. bad debt)',
-          '-$1,800. You passed on Lawn Care Trailer, which would have paid $450 a month for 4 months. (Assets vs. liabilities, Cash flow beats looking rich)',
+          '-$5,700: You chose "Finance a new truck" over "Keep the old truck" on Your Truck Is Nine Years Old, which meant $380 a month more for 15 months. (Good debt vs. bad debt, Things lose value)',
+          '+$2,100: You bought Duplex in Decatur. It paid you $2,100 over 3 months. (Assets vs. liabilities, Cash flow beats looking rich, Good debt vs. bad debt)',
+          '-$1,800: You passed on Lawn Care Trailer, which would have paid $450 a month for 4 months. (Assets vs. liabilities, Cash flow beats looking rich)',
         ],
       },
       {
         id: 'helped',
         heading: 'Decisions that helped',
         lines: [
-          '+$2,100. You bought Duplex in Decatur. It paid you $2,100 over 3 months. (Assets vs. liabilities, Cash flow beats looking rich, Good debt vs. bad debt)',
-          '+$300. You gave $300 on a Giving space. (Generosity)',
+          '+$2,100: You bought Duplex in Decatur. It paid you $2,100 over 3 months. (Assets vs. liabilities, Cash flow beats looking rich, Good debt vs. bad debt)',
+          '+$300: You gave $300 on a Giving space. (Generosity)',
         ],
       },
       {
         id: 'hurt',
         heading: 'Decisions that hurt',
         lines: [
-          '-$5,700. You chose "Finance a new truck" over "Keep the old truck" on Your Truck Is Nine Years Old: $380 a month more for 15 months. (Good debt vs. bad debt, Things lose value)',
-          '-$1,800. You passed on Lawn Care Trailer, which would have paid $450 a month for 4 months. (Assets vs. liabilities, Cash flow beats looking rich)',
+          '-$5,700: You chose "Finance a new truck" over "Keep the old truck" on Your Truck Is Nine Years Old, which meant $380 a month more for 15 months. (Good debt vs. bad debt, Things lose value)',
+          '-$1,800: You passed on Lawn Care Trailer, which would have paid $450 a month for 4 months. (Assets vs. liabilities, Cash flow beats looking rich)',
         ],
       },
       {
@@ -208,7 +208,7 @@ describe('renderDebrief', () => {
       },
       {
         id: 'drivers',
-        heading: 'Why you did not win',
+        heading: 'Your biggest moves',
         lines: [
           'You picked "Finance a new truck". "Keep the old truck" would have saved you $5,700.',
           'You bought Duplex in Decatur. It paid you $2,100!',
@@ -254,16 +254,34 @@ describe('renderDebrief', () => {
     ]);
   });
 
-  it('DEBRIEF text: a winner reads "Why you won", and a player who went out reads the round they ran out of money', () => {
+  it('DEBRIEF text: an escaper reads the round they escaped, and a player who went out reads the round they ran out of money', () => {
     const won = renderDebrief({ ...sample('adult'), result: { ...sample('adult').result, won: true, escaped: true, place: 1, ending: 'escape', rounds: 13 } });
     expect(won[0]?.lines[1]).toBe('You escaped in round 13 and won.');
-    expect(won[1]?.heading).toBe('Why you won');
+    expect(won[1]?.heading).toBe('What made the biggest difference');
     const { playerId, professionId, freedomPercent, passiveIncome, totalExpenses, players, rounds } = sample('adult').result;
     const out = renderDebrief({
       ...sample('adult'),
       result: { playerId, professionId, freedomPercent, passiveIncome, totalExpenses, won: false, escaped: false, players, rounds, wentOutRound: 9, ending: 'lastStanding' },
     });
     expect(out[0]?.lines[1]).toBe('You ran out of money in round 9.');
+  });
+
+  it('DEBRIEF text: a Life Choices line leaves out the monthly part when no Payday came after the choice', () => {
+    const lastTurn: DebriefDecision = {
+      ...truck,
+      outcome: 'helped',
+      impact: 5_000,
+      dollars: 5_000,
+      principles: ['P4'],
+      months: 0,
+      cardId: 'life-023',
+      optionId: 'stay',
+      otherOptionId: 'move',
+      todayDifference: 5_000,
+      monthlyDifference: 450,
+    };
+    const lines = renderDebrief({ ...sample('adult'), drivers: [lastTurn] })[1]?.lines;
+    expect(lines).toEqual(['+$5,000: You chose "Stay where you are" over "Move to the bigger house" on Bigger House, which meant $5,000 less spent today. (Delayed gratification)']);
   });
 
   it('DEBRIEF text: empty sections still say something', () => {

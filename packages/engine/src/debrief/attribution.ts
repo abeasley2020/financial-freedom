@@ -15,7 +15,6 @@ import {
   type GameState,
   type LifeChoicesCard,
   type LifeOption,
-  type LogEntry,
   type LogEvent,
   type LogRef,
   type OptionNumbers,
@@ -36,21 +35,25 @@ export interface OwnedEvent {
  * who acted, except that END_TURN pays a skipped seat: from a turnSkipped
  * event on, the events belong to the seat it names. Round markers and game
  * endings belong to no one.
+ *
+ * An event's round is the player's own count of Paydays so far (at least 1).
+ * Every turn a seat takes or skips starts with its Payday, so the k-th
+ * Payday opens the player's round k. The log's round markers are not used:
+ * END_TURN pays skipped seats before it logs roundCompleted, and it can
+ * pass every seat without logging one (STATUS.md, Stage E, question 10).
  */
-export function ownedEvents(log: readonly LogEntry[], playerId: string): OwnedEvent[] {
+export function ownedEvents(state: GameState, playerId: string): OwnedEvent[] {
   const owned: OwnedEvent[] = [];
-  let round = 1;
-  log.forEach((entry, entryIndex) => {
+  let paydays = 0;
+  state.game.log.forEach((entry, entryIndex) => {
     let owner = entry.action.playerId;
     entry.events.forEach((event, eventIndex) => {
-      if (event.kind === 'roundCompleted') {
-        round++;
-        return;
-      }
-      if (event.kind === 'gameEnded') return;
+      if (event.kind === 'roundCompleted' || event.kind === 'gameEnded') return;
       if (event.kind === 'turnSkipped') owner = event.playerId;
       const belongsTo = event.kind === 'paydaySnapshot' ? event.playerId : owner;
-      if (belongsTo === playerId) owned.push({ ref: { entry: entryIndex, event: eventIndex }, event, round });
+      if (belongsTo !== playerId) return;
+      if (event.kind === 'paydaySnapshot') paydays++;
+      owned.push({ ref: { entry: entryIndex, event: eventIndex }, event, round: Math.max(1, paydays) });
     });
   });
   return owned;
@@ -216,7 +219,7 @@ function investedPayout(option: LifeOption, amount: number): number {
  * - A Life Choices row counts spending, not saving (see `spending`).
  */
 export function attribute(state: GameState, playerId: string): Ledger {
-  const owned = ownedEvents(state.game.log, playerId);
+  const owned = ownedEvents(state, playerId);
 
   /** Builders in log order, run once the number of snapshots is known. */
   const builders: (() => Scored | undefined)[] = [];
@@ -255,8 +258,7 @@ export function attribute(state: GameState, playerId: string): Ledger {
           loan.paid += loan.payment;
           loan.months++;
         }
-        // The snapshot's own roundNumber is the fact the spec logs for the money story.
-        snapshots.push({ ref, round: event.roundNumber, passiveIncome: event.passiveIncome, totalExpenses: event.totalExpenses, trackedPassiveIncome: tracked });
+        snapshots.push({ ref, round, passiveIncome: event.passiveIncome, totalExpenses: event.totalExpenses, trackedPassiveIncome: tracked });
         break;
       }
 
