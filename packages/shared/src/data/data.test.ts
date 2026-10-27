@@ -308,23 +308,23 @@ describe('fixtures: board.json', () => {
     expect(result.success, issues(result)).toBe(true);
   });
 
-  it('has 24 spaces with the v2 space mix from the spec (no Payday spaces; Payday happens every turn)', () => {
+  it('has 24 spaces with the Stage D space mix from the spec (no Payday spaces; Payday happens every turn)', () => {
     expect(BOARD.length).toBe(24);
     const count = (kind: string) => BOARD.filter((s) => s === kind).length;
-    expect(count('opportunity')).toBe(10);
+    expect(count('opportunity')).toBe(13);
     expect(count('lifeChoices')).toBe(6);
-    expect(count('market')).toBe(4);
-    expect(count('giving')).toBe(2);
-    expect(count('setback')).toBe(2);
+    expect(count('market')).toBe(3);
+    expect(count('giving')).toBe(1);
+    expect(count('setback')).toBe(1);
     expect(BOARD).not.toContain('payday');
   });
 
-  it('places each kind at the positions the spec proposes (decided 2026-10-23, Q8)', () => {
+  it('places each kind at the positions the spec gives (Stage D tuning, 2026-10-27)', () => {
     const positions = (kind: string) => BOARD.flatMap((s, i) => (s === kind ? [i] : []));
-    expect(positions('opportunity')).toEqual([0, 3, 5, 8, 10, 13, 15, 18, 20, 23]);
+    expect(positions('opportunity')).toEqual([0, 3, 5, 8, 10, 12, 13, 15, 16, 18, 20, 21, 23]);
     expect(positions('lifeChoices')).toEqual([1, 7, 11, 14, 19, 22]);
-    expect(positions('market')).toEqual([2, 9, 16, 21]);
-    expect(positions('giving')).toEqual([4, 17]);
-    expect(positions('setback')).toEqual([6, 12]);
+    expect(positions('market')).toEqual([2, 9, 17]);
+    expect(positions('giving')).toEqual([4]);
+    expect(positions('setback')).toEqual([6]);
   });
 });

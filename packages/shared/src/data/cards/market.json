@@ -154,12 +154,12 @@
       "P9"
     ],
     "kidsText": "Someone wants to buy one of your businesses for one and a half times what you paid.",
-    "adultText": "A buyer offers 150 percent of what you paid for any one business you own. Take the cash, or keep the monthly income?",
+    "adultText": "A buyer offers 250 percent of what you paid for any one business you own. Take the cash, or keep the monthly income?",
     "kidsOk": true,
     "effects": [
       {
         "kind": "offerBuyout",
-        "percentOfPurchasePrice": 150
+        "percentOfPurchasePrice": 250
       }
     ],
     "appliesTo": [
@@ -349,12 +349,12 @@
       "P3"
     ],
     "kidsText": "A company wants one of your rentals. They offer one and a half times what you paid.",
-    "adultText": "A rental company is buying up homes. It offers 150 percent of what you paid for any one rental. Sell, or keep the rent?",
+    "adultText": "A rental company is buying up homes. It offers 200 percent of what you paid for any one rental. Sell, or keep the rent?",
     "kidsOk": true,
     "effects": [
       {
         "kind": "offerBuyout",
-        "percentOfPurchasePrice": 150
+        "percentOfPurchasePrice": 200
       }
     ],
     "appliesTo": [

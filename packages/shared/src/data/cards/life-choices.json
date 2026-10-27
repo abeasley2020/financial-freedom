@@ -1528,8 +1528,8 @@
       "P5",
       "P8"
     ],
-    "kidsText": "You got a $3,000 bonus at work! Spend it, invest it, or pay off debt?",
-    "adultText": "A 3,000 bonus for a great year. Spend it, invest it in an index fund, or pay down your most expensive loan?",
+    "kidsText": "You got a $4,000 bonus at work! Spend it, invest it, or pay off debt?",
+    "adultText": "A 4,000 bonus for a great year. Spend it, invest it in an index fund, or pay down your most expensive loan?",
     "kidsOk": true,
     "options": [
       {
@@ -1539,17 +1539,17 @@
           "P4",
           "P6"
         ],
-        "kidsText": "Buy fun stuff with all $3,000.",
-        "adultText": "A new TV and a weekend away. The 3,000 is gone.",
+        "kidsText": "Buy fun stuff with all $4,000.",
+        "adultText": "A new TV and a weekend away. The 4,000 is gone.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 3000
+            "amount": 4000
           },
           {
             "kind": "payCash",
-            "amount": 3000
+            "amount": 4000
           }
         ]
       },
@@ -1560,18 +1560,18 @@
           "P4",
           "P8"
         ],
-        "kidsText": "Put the $3,000 in an index fund. It grows every month.",
+        "kidsText": "Put the $4,000 in an index fund. It grows every month.",
         "adultText": "Index fund: grows 4 percent a month and pays out 1 percent of its value each Payday.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 3000
+            "amount": 4000
           },
           {
             "kind": "investGrowth",
             "assetType": "index",
-            "amount": 3000,
+            "amount": 4000,
             "growthPercent": 4,
             "payoutPercent": 1
           }
@@ -1583,17 +1583,17 @@
         "principles": [
           "P5"
         ],
-        "kidsText": "Pay $3,000 toward your loan with the biggest payment.",
-        "adultText": "Pays up to 3,000 toward the loan with the highest monthly payment. Mortgages are not loans here.",
+        "kidsText": "Pay $4,000 toward your loan with the biggest payment.",
+        "adultText": "Pays up to 4,000 toward the loan with the highest monthly payment. Mortgages are not loans here.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 3000
+            "amount": 4000
           },
           {
             "kind": "repayLargestLoan",
-            "amount": 3000
+            "amount": 4000
           }
         ]
       }
@@ -1694,8 +1694,8 @@
       "P4",
       "P8"
     ],
-    "kidsText": "Your garage sale made $400! Save it, spend it, or keep it as cash?",
-    "adultText": "You cleared the garage and made 400. Put it in savings, spend it on a night out, or keep it in your wallet?",
+    "kidsText": "Your garage sale made $1,000! Save it, spend it, or keep it as cash?",
+    "adultText": "You cleared the garage and made 1,000. Put it in savings, spend it on a night out, or keep it in your wallet?",
     "kidsOk": true,
     "options": [
       {
@@ -1705,18 +1705,18 @@
           "P1",
           "P8"
         ],
-        "kidsText": "Put $400 in savings. It grows a tiny bit every month.",
+        "kidsText": "Put $1,000 in savings. It grows a tiny bit every month.",
         "adultText": "Savings: grows 1 percent a month and stays there for emergencies.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 400
+            "amount": 1000
           },
           {
             "kind": "investGrowth",
             "assetType": "savings",
-            "amount": 400,
+            "amount": 1000,
             "growthPercent": 1,
             "payoutPercent": 0
           }
@@ -1728,17 +1728,17 @@
         "principles": [
           "P4"
         ],
-        "kidsText": "Spend all $400 on a fun night out.",
-        "adultText": "A nice dinner and a movie. The 400 is gone.",
+        "kidsText": "Spend all $1,000 on a fun night out.",
+        "adultText": "A nice dinner and a movie. The 1,000 is gone.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 400
+            "amount": 1000
           },
           {
             "kind": "payCash",
-            "amount": 400
+            "amount": 1000
           }
         ]
       },
@@ -1748,13 +1748,13 @@
         "principles": [
           "P1"
         ],
-        "kidsText": "Keep the $400 as cash for later.",
-        "adultText": "400 more cash on hand.",
+        "kidsText": "Keep the $1,000 as cash for later.",
+        "adultText": "1,000 more cash on hand.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 400
+            "amount": 1000
           }
         ]
       }
@@ -1770,8 +1770,8 @@
       "P4",
       "P5"
     ],
-    "kidsText": "You worked extra and earned $1,500 more! Save it, spend it, or pay debt?",
-    "adultText": "A month of overtime adds 1,500. Build your emergency fund, buy gadgets, or pay down your biggest loan?",
+    "kidsText": "You worked extra and earned $2,500 more! Save it, spend it, or pay debt?",
+    "adultText": "A month of overtime adds 2,500. Build your emergency fund, buy gadgets, or pay down your biggest loan?",
     "kidsOk": true,
     "options": [
       {
@@ -1781,18 +1781,18 @@
           "P1",
           "P8"
         ],
-        "kidsText": "Put $1,500 in savings for surprises.",
+        "kidsText": "Put $2,500 in savings for surprises.",
         "adultText": "Savings: grows 1 percent a month and is there when the furnace dies.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 1500
+            "amount": 2500
           },
           {
             "kind": "investGrowth",
             "assetType": "savings",
-            "amount": 1500,
+            "amount": 2500,
             "growthPercent": 1,
             "payoutPercent": 0
           }
@@ -1805,17 +1805,17 @@
           "P4",
           "P6"
         ],
-        "kidsText": "Spend all $1,500 on gadgets.",
-        "adultText": "New headphones, a tablet, and a smartwatch. The 1,500 is gone.",
+        "kidsText": "Spend all $2,500 on gadgets.",
+        "adultText": "New headphones, a tablet, and a smartwatch. The 2,500 is gone.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 1500
+            "amount": 2500
           },
           {
             "kind": "payCash",
-            "amount": 1500
+            "amount": 2500
           }
         ]
       },
@@ -1825,17 +1825,17 @@
         "principles": [
           "P5"
         ],
-        "kidsText": "Pay $1,500 toward your loan with the biggest payment.",
-        "adultText": "Pays up to 1,500 toward the loan with the highest monthly payment. Mortgages are not loans here.",
+        "kidsText": "Pay $2,500 toward your loan with the biggest payment.",
+        "adultText": "Pays up to 2,500 toward the loan with the highest monthly payment. Mortgages are not loans here.",
         "kidsOk": true,
         "effects": [
           {
             "kind": "gainCash",
-            "amount": 1500
+            "amount": 2500
           },
           {
             "kind": "repayLargestLoan",
-            "amount": 1500
+            "amount": 2500
           }
         ]
       }

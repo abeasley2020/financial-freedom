@@ -58,15 +58,15 @@ Every turn is one month. A round is one month for the whole family, so a 15-roun
 
 ### Board
 
-24 spaces. There are no Payday spaces; Payday happens every turn (decided 2026-10-23, Q1). **Proposed** mix and order (Stage D may change the mix, still 24 spaces):
+24 spaces. There are no Payday spaces; Payday happens every turn (decided 2026-10-23, Q1). Mix and order as tuned in Stage D (2026-10-27, `docs/sim/tuning-log.md` rounds 9 and 11; the v2 proposal had Opportunity 10, Market 4, Giving 2, Setback 2). Spaces 0 to 6 keep the proposed kinds; more Opportunity spaces give each player about eight deal draws in 15 rounds instead of six, which turns the game from cash-limited toward deal-limited and helps low salaries:
 
-| Space | Count | Positions (proposed) |
+| Space | Count | Positions |
 | --- | --- | --- |
-| Opportunity | 10 | 0, 3, 5, 8, 10, 13, 15, 18, 20, 23 |
+| Opportunity | 13 | 0, 3, 5, 8, 10, 12, 13, 15, 16, 18, 20, 21, 23 |
 | Life Choices | 6 | 1, 7, 11, 14, 19, 22 |
-| Market | 4 | 2, 9, 16, 21 |
-| Giving | 2 | 4, 17 |
-| Setback | 2 | 6, 12 |
+| Market | 3 | 2, 9, 17 |
+| Giving | 1 | 4 |
+| Setback | 1 | 6 |
 
 ### Professions
 
@@ -112,8 +112,8 @@ Five decks, all original content, stored as JSON and validated with Zod at load.
 
 | Deck | Count | What it teaches | Example |
 | --- | --- | --- | --- |
-| Small deals | 40 | Savings, CDs, index funds, stocks, dividend stocks, small rentals, side hustles, vending routes; down payment $5,000 or less | Duplex in Decatur: price 50,000, down 5,000, cash flow +160/mo |
-| Big deals | 25 | Apartment buildings, car wash, laundromat, franchise, land; $6,000 to $50,000 down | Laundromat: price 120,000, down 30,000, cash flow +1,400/mo |
+| Small deals | 40 | Savings, CDs, index funds, stocks, dividend stocks, small rentals, side hustles, vending routes; down payment $5,000 or less | Duplex in Decatur: price 50,000, down 5,000, cash flow +700/mo |
+| Big deals | 25 | Apartment buildings, car wash, laundromat, franchise, land; $6,000 to $50,000 down | Laundromat: price 120,000, down 30,000, cash flow +4,200/mo |
 | Market | 20 | Prices move, buyers appear, tenants leave, markets crash and recover | Buyer offers 2x purchase price for any small rental you own |
 | Life Choices | 30 | Vehicles, clothing, gadgets, subscriptions, big life spending, windfalls | Your car is 9 years old: keep it, buy used, or buy new |
 | Setback | 10 | Car repair, medical bill, job layoff, roof leak | Furnace dies: pay 3,500 |
@@ -136,7 +136,7 @@ Savings accounts, CDs, and index funds are growth assets. They teach compounding
 - The asset stores marketValue (starts at the amount invested), plus growthPercent and payoutPercent from the card.
 - At each Payday (every turn), marketValue grows by pct(marketValue, growthPercent). This happens before cash flow is credited.
 - The asset's monthly cash flow is derived, never stored: pct(marketValue, payoutPercent). As the value compounds, the payout grows with it.
-- **Proposed ranges:** savings growthPercent 1, payoutPercent 0; CD growthPercent 2, payoutPercent 1; index fund growthPercent 3 to 5, payoutPercent 1. Stage D tunes within growthPercent 1 to 6 and payoutPercent 0 to 2.
+- **Proposed ranges:** savings growthPercent 1, payoutPercent 0; CD growthPercent 2, payoutPercent 1; index fund growthPercent 3 to 5, payoutPercent 1. Stage D tunes within growthPercent 1 to 6 and payoutPercent 0 to 2. **Tuned in Stage D (2026-10-27):** savings 2 and 1, CDs 3 and 2, index funds 4 to 6 and 2 on the deal cards. Two cards that engine tests name keep the proposed values (High-Yield Savings 1 and 0, Total Market Index 4 and 1), and the windfall options still invest at the proposed values.
 - Market cards can move marketValue with changeMarketValue (a crash or a boom).
 - Selling uses marketValue. A growth asset is sold with SELL_ASSET at any time when pending is none and the player has rolled this turn (turn step 4, like REPAY and BORROW; before the roll it is rejected with MUST_ROLL_FIRST, decided 2026-10-26).
 

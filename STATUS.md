@@ -2,6 +2,40 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## Morning summary (Stage D, 2026-10-27)
+
+**Stage D is complete and `pnpm check` is green** (738 tests, 22 properties, zero lint warnings) on branch `feat/stage-d-tuning`. It is pushed, not merged, and has no PR. All ten balance targets are met, including the escape-rate target Andre added mid-session (at least 15% of standard games end by escape, replacing "escape reachable"). Tuning stopped at round 14 of 30. Andre then approved the three recommendations: the golden games, the one-month Wealth Builder fund, and raising the test-named deals.
+
+| Target | Stage C | Final |
+| --- | --- | --- |
+| Escape or round limit (at least 70%) | 99.4% | 99.7% |
+| Seats bankrupt (at most 20%) | 0.9% | 0.9% |
+| Profession win rates (20% to 45%) | 4.4% to 59.9% | 28.2% (Farmer) to 44.1% (Doctor) |
+| Wealth Builder beats Big Spender head to head (at least 70%) | n/a | 96.1% |
+| Best strategy minus worst (at least 15 points) | n/a | 44.9 (Aggressive 49.9%, Big Spender 5.0%) |
+| Median game (10 to 15 rounds) | 15 | 15 |
+| Games ending by escape (at least 15%) | 0% | 35.9%, median escape round 13, earliest 5 |
+| Kids: none stuck, median at or under 10 rounds | yes, 10 | yes, 10 |
+
+Two other seed ranges also met all ten. Full report: `docs/sim/tuned.md`. Log of every round: `docs/sim/tuning-log.md`.
+
+**What changed:**
+
+1. **Bots.** Added Wealth Builder (one-month emergency fund, approved 2026-10-27; the spec said three) and Big Spender. The three original bots are unchanged. `pnpm sim` runs mixed, head-to-head, and kids suites and prints a pass/fail target table; `--summary` prints only the table.
+2. **Deal returns.** Every rental and business pays 11% to 29% of its down payment a month, more than the 10% bank rate, so borrowing for an asset always pays (P5). These are game returns, not real ones (`docs/content-notes.md`, Stage D). The seven test-named deals were raised too, and five engine tests were re-pinned.
+3. **Growth assets:** savings 2%/1%, CDs 3%/2%, index funds 4% to 6% growth with 2% payout.
+4. **Board:** 13 Opportunity, 6 Life Choices, 3 Market, 1 Giving, 1 Setback (spec, Board).
+5. **Smaller levers:** cheaper Setbacks, bigger windfalls, and more generous Market buyers. The card texts that quote these numbers are fixed.
+6. **Golden games** re-recorded with Andre's approval: the four Stage C setups keep their endings (the four-player game moved to seed 1, because seed 0 now escapes), plus the first escape recording, `escape-three-players`.
+
+**Open questions for Andre (none block Stage E):**
+
+1. **Every deal now beats the bank,** so borrowing for any deal is always right: 355 of 359 escapers borrowed. Default: keep, and watch at the first playtest whether players learn "borrow for everything".
+2. **Escapes are now 36%,** above the 15% floor, after the test-named deals were raised. The Doctor sits at 44.1%, close to the 45% ceiling. Default: keep; trim if a playtest feels too easy.
+3. **Realism.** A small rental returns 140% to 230% a year. The honest alternative is more months (a higher round limit), which is a rule change. Default: keep for now.
+4. **Board positions** changed from space 7 onward when the mix changed (Q8). Default: keep.
+5. **Kids profession balance** is outside the targets; in kids games the Restaurant Server wins 13.7%. Default: revisit after playtests.
+
 ## Morning summary (Stage C, 2026-10-26)
 
 Stage C is complete on branch `ccr-af56ad4e-r2r1ks` (not merged to main). `pnpm check` is green: 31 test files, 733 tests plus 22 fast-check properties at 1,000 runs, zero lint warnings. No dependencies were added and no engine source changed; only data, tests, docs, and one Node script.
@@ -134,7 +168,7 @@ These are engine readings of the spec that the spec and tonight's decisions did 
 5. **GIVE with less than $10 cash is rejected** (`INSUFFICIENT_CASH`), so a Favor token is never free. Spec, Card decks, Giving.
 6. **Partial stock sales** shrink the lot's `purchasePrice` and `downPaid` in proportion, floored. Spec, Card decks, Stock rules.
 
-## Current state (2026-10-26, after Stage C)
+## Current state (2026-10-27, after Stage D)
 
 The repo is a pnpm workspace with three packages:
 
@@ -166,9 +200,9 @@ The repo is a pnpm workspace with three packages:
 | `selectors.ts` | `assetCashFlow`, `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `freedomPercent`, `assetValue`, `netWorth`, `roundLimit`, `roundNumber`, `rankPlayers`, `winner`, `optionCost`, `cheapestOption`, `priciestOption`, `largestLoan`, `paidDown`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn`. |
 | `invariants.ts` | Schema, non-negative cash for players in, out players hold nothing, mortgages finance a held asset, subscriptions have principal 0, card liabilities point at a Life Choices card, growth assets have marketValue ≥ 0 and a card that could produce them, deck conservation (stock lots and growth assets never take a card out), pending cards of the right deck, the round limit, log turn numbers. |
 | `invariants.props.test.ts` | 22 properties: invariants after every accepted action (standard and kids), coverage of every action and effect and a round-limit ending, growth monotonic except through Market cards, only the current player acts, END_TURN only with pending none, one log entry per action, replay rebuilds the state, byte-identical determinism, standard and kids games never stuck, the round limit holds, wrong-player actions are `NOT_YOUR_TURN`. |
-| `test/golden/*.json` + `test/golden.test.ts` | Three v2 recordings (see the Morning summary). Never regenerate without Andre's approval. |
+| `test/golden/*.json` + `test/golden.test.ts` | Five Stage D recordings (approved 2026-10-27): two- and four-player round-limit games, a kids game, a last-standing game, and the first escape game. Never regenerate without Andre's approval. |
 | `test/` | `deepFreeze`, `apply`/`reject`, `fixtures.ts` (`twoPlayerGame`, `withGame`, `withPlayer`, `withZeroCashFlow`, `aboutToRoll`, `rolledClean`, `onTopOfDeck`, `offered`, `drawn`), `walk.ts` (candidate actions for every pending state, including CHOOSE_LIFE_OPTION, BUY by amount, growth sales; idle-turn BORROW on one choice in five). |
-| `../sim/` | `bots.ts` (cautious, balanced, aggressive; v2 Life Choices and growth logic), `simulate.ts` (`roundLimit` ending, `winner` selector, rounds per game), `run.ts` (v2 targets in the header). |
+| `../sim/` | `bots.ts` (cautious, balanced, aggressive, Wealth Builder, Big Spender), `simulate.ts` (random or fixed lineups, final freedomPercent per seat, escape rounds), `run.ts` (three suites: mixed, head to head, kids; target table with pass/fail; `--summary`, `--only`). |
 
 `@ff/shared` (all in `packages/shared/src/`):
 
@@ -180,7 +214,7 @@ The repo is a pnpm workspace with three packages:
 | `board.ts` | `SPACE_KINDS` (opportunity, market, lifeChoices, giving, setback), `BOARD_SIZE = 24` |
 | `state.ts` | `AssetSchema` union (property, stock, growth) with `isGrowthAsset`; `LiabilitySchema` (sourceCardId rules, subscription principal 0); `PendingSchema` (`lifeChoice` replaces `payLifestyle`); `ROUND_LIMIT`; `LogEventSchema` with the v2 events below |
 | `actions.ts` | 13 actions; `CHOOSE_LIFE_OPTION { optionId }` replaces PAY_LIFESTYLE; `BUY { shares? , amount? }` |
-| `data/` | Stage C content: 125 cards (40 small deals, 25 big deals, 20 market, 30 Life Choices, 10 setback), `board.json` v2 mix, 16 professions. Catalog in `docs/cards.md`, sources in `docs/content-notes.md` |
+| `data/` | 125 cards (40 small deals, 25 big deals, 20 market, 30 Life Choices, 10 setback) with Stage D tuned numbers, `board.json` Stage D mix (13 Opportunity, 6 Life Choices, 3 Market, 1 Giving, 1 Setback), 16 professions. Catalog in `docs/cards.md`, sources and tuning notes in `docs/content-notes.md` |
 
 Log event kinds: `payday`, `paydaySnapshot`, `valueChanged`, `rolled`, `moved`, `drewCard`, `sharePriceRolled`, `passed`, `declinedMarket`, `borrowed`, `repaid`, `paidDown`, `loanAdded`, `subscriptionAdded`, `choseLifeOption`, `bought`, `sold`, `cashFlowChanged`, `sharesSplit`, `gave`, `skippedGive`, `setback`, `wentOut`, `turnSkipped`, `roundCompleted`, `gameEnded`, `cashChanged`.
 
@@ -188,7 +222,7 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage C is done (2026-10-26). Its three questions were decided 2026-10-26. Next: merge the Stage C branch to main, then Stage D (balance tuning; baseline in `docs/sim/stage-c-content.md`; escape within 15 rounds must become reachable, and Doctor salary and deal returns are open levers), then Stage E (debrief engine).
+Stage D is done (2026-10-27) on `feat/stage-d-tuning`, green. Next: merge to main, then Stage E (debrief engine).
 
 ## Deferred from the scaffold
 

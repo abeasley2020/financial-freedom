@@ -8,9 +8,9 @@ import { deepFreeze } from '../test/deepFreeze';
 import { offered, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
 // Fixtures used here:
-//   small-001 Duplex in Decatur: rental, price 50,000, down 5,000, mortgage 45,000, +160/mo
+//   small-001 Duplex in Decatur: rental, price 50,000, down 5,000, mortgage 45,000, +700/mo
 //   small-003 Lawn Care Trailer: business, price 3,000, down 3,000, mortgage 0, +150/mo
-//   big-001   Laundromat: business, price 120,000, down 30,000, mortgage 90,000, +1,400/mo
+//   big-001   Laundromat: business, price 120,000, down 30,000, mortgage 90,000, +4,200/mo
 //   small-005 Birchwood Robotics: stock, 500 shares, price range 5-40, no dividend
 //   small-007 Lakeshore Utilities: stock, 200 shares, price range 50-90, dividend 1/share
 //   small-004 Total Market Index Fund: index, minimum 500, grows 4%/mo, pays 1%/mo
@@ -35,12 +35,12 @@ describe('BUY: a financed deal', () => {
         type: 'rental',
         purchasePrice: 50_000,
         downPaid: 5_000,
-        monthlyCashFlow: 160,
+        monthlyCashFlow: 700,
       },
     ]);
     expect(next.pending).toEqual({ kind: 'none' });
-    expect(passiveIncome(p1(next))).toBe(160);
-    expect(monthlyCashFlow(p1(next))).toBe(740 + 160);
+    expect(passiveIncome(p1(next))).toBe(700);
+    expect(monthlyCashFlow(p1(next))).toBe(740 + 700);
   });
 
   it('BUY: adds one mortgage liability linked to the asset, with no monthly payment', () => {
@@ -65,7 +65,7 @@ describe('BUY: a financed deal', () => {
   it('BUY: works the same for a big deal', () => {
     const next = apply(offered(withCash(40_000), 'big-001'), BUY);
     expect(p1(next).cash).toBe(40_740 - 30_000);
-    expect(p1(next).assets[0]).toMatchObject({ cardId: 'big-001', type: 'business', purchasePrice: 120_000, monthlyCashFlow: 1_400 });
+    expect(p1(next).assets[0]).toMatchObject({ cardId: 'big-001', type: 'business', purchasePrice: 120_000, monthlyCashFlow: 4_200 });
     expect(p1(next).liabilities.at(-1)).toMatchObject({ kind: 'mortgage', principal: 90_000, monthlyPayment: 0 });
   });
 

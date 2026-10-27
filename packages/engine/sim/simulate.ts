@@ -6,8 +6,8 @@ import { PROFESSIONS, type GameMode, type GameState } from '@ff/shared';
 import { createGame } from '../src/createGame';
 import { reduce } from '../src/reduce';
 import { nextRandom } from '../src/rng';
-import { roundNumber, winner } from '../src/selectors';
-import { decide, STRATEGIES, type Strategy } from './bots';
+import { freedomPercent, roundNumber, winner } from '../src/selectors';
+import { decide, type Strategy } from './bots';
 
 export interface SimOptions {
   readonly games: number;
@@ -17,14 +17,29 @@ export interface SimOptions {
   readonly maxTurns: number;
   readonly minPlayers: number;
   readonly maxPlayers: number;
+  /** Strategies drawn at random per seat. */
+  readonly strategies: readonly Strategy[];
+  /**
+   * Head-to-head mode: every game seats exactly these strategies, in this
+   * order on even games and reversed on odd games, so neither goes first more often.
+   */
+  readonly lineup?: readonly Strategy[];
 }
 
 export interface GameRecord {
   readonly seed: number;
   readonly players: number;
-  readonly seats: readonly { readonly professionId: string; readonly strategy: Strategy; readonly out: boolean; readonly won: boolean }[];
+  readonly seats: readonly {
+    readonly professionId: string;
+    readonly strategy: Strategy;
+    readonly out: boolean;
+    readonly won: boolean;
+    readonly escaped: boolean;
+    /** freedomPercent when the game ended (0 for a seat that went out). */
+    readonly freedom: number;
+  }[];
   readonly turns: number;
-  /** Rounds completed or in progress when the game ended. */
+  /** The round in progress when the game ended (roundNumber): the final round at the limit, the escape round for an escape. */
   readonly rounds: number;
   readonly ending: 'escape' | 'roundLimit' | 'lastStanding' | 'capped';
   readonly actions: number;
@@ -34,6 +49,8 @@ export interface Tally {
   readonly seats: number;
   readonly wins: number;
   readonly outs: number;
+  /** Sum of final freedomPercent over the seats, for a mean. */
+  readonly freedom: number;
 }
 
 export interface SimReport {
@@ -47,6 +64,8 @@ export interface SimReport {
   readonly byPlayerCount: ReadonlyMap<number, { readonly games: number; readonly medianTurns: number }>;
   /** Share of seats that went bankrupt, and share of games with at least one bankruptcy. */
   readonly bankruptcy: { readonly seatRate: number; readonly gameRate: number };
+  /** The round each escape happened in, sorted. */
+  readonly escapeRounds: readonly number[];
 }
 
 /** Deterministic picks for seating, from the engine's own PRNG so a report is reproducible. */
@@ -56,19 +75,25 @@ function drawInt(state: number, max: number): { value: number; state: number } {
 }
 
 export function playGame(seed: number, options: SimOptions): GameRecord {
+  return playGameWithState(seed, options).record;
+}
+
+/** One bot game, with its final state for diagnostics. */
+export function playGameWithState(seed: number, options: SimOptions): { readonly record: GameRecord; readonly state: GameState } {
   let rng = seed ^ 0x5bd1e995;
+  const lineup = options.lineup === undefined ? undefined : seed % 2 === 0 ? options.lineup : [...options.lineup].reverse();
   const count = drawInt(rng, options.maxPlayers - options.minPlayers + 1);
   rng = count.state;
-  const players = options.minPlayers + count.value;
+  const players = lineup?.length ?? options.minPlayers + count.value;
 
   const seats: { professionId: string; strategy: Strategy }[] = [];
   for (let i = 0; i < players; i++) {
     const p = drawInt(rng, PROFESSIONS.length);
     rng = p.state;
-    const s = drawInt(rng, STRATEGIES.length);
+    const s = drawInt(rng, options.strategies.length);
     rng = s.state;
     const profession = PROFESSIONS[p.value];
-    const strategy = STRATEGIES[s.value];
+    const strategy = lineup?.[i] ?? options.strategies[s.value];
     if (profession === undefined || strategy === undefined) throw new Error('empty profession or strategy list');
     seats.push({ professionId: profession.id, strategy });
   }
@@ -114,18 +139,26 @@ export function playGame(seed: number, options: SimOptions): GameRecord {
           : 'roundLimit';
   const winnerId = winner(state)?.id;
 
-  return {
+  const record: GameRecord = {
     seed,
     players,
     seats: seats.map((seat, i) => {
       const player = state.players[i];
-      return { ...seat, out: player?.isOut ?? false, won: player?.id === winnerId };
+      const out = player?.isOut ?? false;
+      return {
+        ...seat,
+        out,
+        won: player?.id === winnerId,
+        escaped: player?.hasEscaped ?? false,
+        freedom: player === undefined || out ? 0 : freedomPercent(player),
+      };
     }),
     turns: state.game.turnNumber,
     rounds: roundNumber(state),
     ending,
     actions,
   };
+  return { record, state };
 }
 
 function quantile(sorted: readonly number[], q: number): number {
@@ -146,8 +179,8 @@ export function simulate(options: SimOptions, onGame?: (index: number) => void):
   }
 
   const endings = { escape: 0, roundLimit: 0, lastStanding: 0, capped: 0 };
-  const byProfession = new Map<string, { seats: number; wins: number; outs: number }>();
-  const byStrategy = new Map<Strategy, { seats: number; wins: number; outs: number }>();
+  const byProfession = new Map<string, { seats: number; wins: number; outs: number; freedom: number }>();
+  const byStrategy = new Map<Strategy, { seats: number; wins: number; outs: number; freedom: number }>();
   const byCount = new Map<number, number[]>();
   let seatsOut = 0;
   let seatsTotal = 0;
@@ -159,13 +192,15 @@ export function simulate(options: SimOptions, onGame?: (index: number) => void):
     let anyOut = false;
     for (const seat of game.seats) {
       seatsTotal++;
-      const p = byProfession.get(seat.professionId) ?? { seats: 0, wins: 0, outs: 0 };
+      const p = byProfession.get(seat.professionId) ?? { seats: 0, wins: 0, outs: 0, freedom: 0 };
       p.seats++;
+      p.freedom += seat.freedom;
       if (seat.won) p.wins++;
       if (seat.out) p.outs++;
       byProfession.set(seat.professionId, p);
-      const s = byStrategy.get(seat.strategy) ?? { seats: 0, wins: 0, outs: 0 };
+      const s = byStrategy.get(seat.strategy) ?? { seats: 0, wins: 0, outs: 0, freedom: 0 };
       s.seats++;
+      s.freedom += seat.freedom;
       if (seat.won) s.wins++;
       if (seat.out) s.outs++;
       byStrategy.set(seat.strategy, s);
@@ -191,6 +226,10 @@ export function simulate(options: SimOptions, onGame?: (index: number) => void):
     byPlayerCount: new Map(
       [...byCount.entries()].sort(([a], [b]) => a - b).map(([count, list]) => [count, { games: list.length, medianTurns: quantile([...list].sort((a, b) => a - b), 0.5) }]),
     ),
+    escapeRounds: games
+      .filter((g) => g.ending === 'escape')
+      .map((g) => g.rounds)
+      .sort((a, b) => a - b),
     bankruptcy: { seatRate: seatsTotal === 0 ? 0 : seatsOut / seatsTotal, gameRate: games.length === 0 ? 0 : gamesWithOut / games.length },
   };
 }

@@ -15,7 +15,7 @@
     "price": 120000,
     "downPayment": 30000,
     "mortgage": 90000,
-    "monthlyCashFlow": 1400
+    "monthlyCashFlow": 4200
   },
   {
     "id": "big-002",
@@ -33,7 +33,7 @@
     "price": 320000,
     "downPayment": 40000,
     "mortgage": 280000,
-    "monthlyCashFlow": 2200
+    "monthlyCashFlow": 6000
   },
   {
     "id": "big-003",
@@ -68,7 +68,7 @@
     "price": 200000,
     "downPayment": 50000,
     "mortgage": 150000,
-    "monthlyCashFlow": 1900
+    "monthlyCashFlow": 6500
   },
   {
     "id": "big-005",
@@ -86,7 +86,7 @@
     "price": 240000,
     "downPayment": 24000,
     "mortgage": 216000,
-    "monthlyCashFlow": 900
+    "monthlyCashFlow": 3160
   },
   {
     "id": "big-006",
@@ -104,7 +104,7 @@
     "price": 360000,
     "downPayment": 36000,
     "mortgage": 324000,
-    "monthlyCashFlow": 1300
+    "monthlyCashFlow": 4560
   },
   {
     "id": "big-007",
@@ -122,7 +122,7 @@
     "price": 600000,
     "downPayment": 50000,
     "mortgage": 550000,
-    "monthlyCashFlow": 2600
+    "monthlyCashFlow": 9130
   },
   {
     "id": "big-008",
@@ -140,7 +140,7 @@
     "price": 400000,
     "downPayment": 45000,
     "mortgage": 355000,
-    "monthlyCashFlow": 2300
+    "monthlyCashFlow": 8070
   },
   {
     "id": "big-009",
@@ -158,7 +158,7 @@
     "price": 270000,
     "downPayment": 27000,
     "mortgage": 243000,
-    "monthlyCashFlow": 1000
+    "monthlyCashFlow": 3510
   },
   {
     "id": "big-010",
@@ -176,7 +176,7 @@
     "price": 220000,
     "downPayment": 22000,
     "mortgage": 198000,
-    "monthlyCashFlow": 700
+    "monthlyCashFlow": 2460
   },
   {
     "id": "big-011",
@@ -194,7 +194,7 @@
     "price": 300000,
     "downPayment": 30000,
     "mortgage": 270000,
-    "monthlyCashFlow": 1100
+    "monthlyCashFlow": 3860
   },
   {
     "id": "big-012",
@@ -212,7 +212,7 @@
     "price": 500000,
     "downPayment": 50000,
     "mortgage": 450000,
-    "monthlyCashFlow": 2400
+    "monthlyCashFlow": 8420
   },
   {
     "id": "big-013",
@@ -230,7 +230,7 @@
     "price": 180000,
     "downPayment": 18000,
     "mortgage": 162000,
-    "monthlyCashFlow": 600
+    "monthlyCashFlow": 2110
   },
   {
     "id": "big-014",
@@ -248,7 +248,7 @@
     "price": 250000,
     "downPayment": 50000,
     "mortgage": 200000,
-    "monthlyCashFlow": 1900
+    "monthlyCashFlow": 6670
   },
   {
     "id": "big-015",
@@ -266,7 +266,7 @@
     "price": 350000,
     "downPayment": 40000,
     "mortgage": 310000,
-    "monthlyCashFlow": 2000
+    "monthlyCashFlow": 7020
   },
   {
     "id": "big-016",
@@ -284,7 +284,7 @@
     "price": 180000,
     "downPayment": 30000,
     "mortgage": 150000,
-    "monthlyCashFlow": 1200
+    "monthlyCashFlow": 4210
   },
   {
     "id": "big-017",
@@ -302,7 +302,7 @@
     "price": 150000,
     "downPayment": 25000,
     "mortgage": 125000,
-    "monthlyCashFlow": 1100
+    "monthlyCashFlow": 3860
   },
   {
     "id": "big-018",
@@ -319,7 +319,7 @@
     "price": 90000,
     "downPayment": 15000,
     "mortgage": 75000,
-    "monthlyCashFlow": 500
+    "monthlyCashFlow": 1760
   },
   {
     "id": "big-019",
@@ -336,7 +336,7 @@
     "price": 70000,
     "downPayment": 10000,
     "mortgage": 60000,
-    "monthlyCashFlow": 600
+    "monthlyCashFlow": 1850
   },
   {
     "id": "big-020",
@@ -354,7 +354,7 @@
     "price": 160000,
     "downPayment": 30000,
     "mortgage": 130000,
-    "monthlyCashFlow": 1000
+    "monthlyCashFlow": 3510
   },
   {
     "id": "big-021",
@@ -371,7 +371,7 @@
     "price": 40000,
     "downPayment": 8000,
     "mortgage": 32000,
-    "monthlyCashFlow": 450
+    "monthlyCashFlow": 1480
   },
   {
     "id": "big-022",
@@ -389,7 +389,7 @@
     "price": 120000,
     "downPayment": 20000,
     "mortgage": 100000,
-    "monthlyCashFlow": 900
+    "monthlyCashFlow": 3160
   },
   {
     "id": "big-023",
@@ -442,7 +442,7 @@
     "downPayment": 10000,
     "mortgage": 0,
     "monthlyCashFlow": 0,
-    "growthPercent": 2,
-    "payoutPercent": 1
+    "growthPercent": 3,
+    "payoutPercent": 2
   }
 ]

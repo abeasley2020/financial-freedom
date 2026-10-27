@@ -77,3 +77,21 @@ Reports: `docs/sim/stage-c-content.md` (standard) and `docs/sim/stage-c-content-
 - Standard games: 99.4% end at the round limit, 0% by escape, and 0.6% with one player left. 0.9% of seats go bankrupt. The median game is 43 turns (14.3 rounds per player).
 - Win rates spread from 4.4% for the Restaurant Server (also 12% bankrupt) to 59.9% for the Doctor. Pharmacist 51.8% and Software Developer 45.2% are also above the 45% target. The Restaurant Server is the only one below the 20% floor; the Welder (21.9%) sits just above it. Freedom percentage does not level the field on its own: higher pay leaves more cash to invest from turn one.
 - Kids mode: 100% end at the round limit, nobody is stuck, and nobody goes bankrupt.
+
+## Stage D tuning (2026-10-27)
+
+Every number change is in `docs/sim/tuning-log.md`, one lever per round, and the final simulator report is `docs/sim/tuned.md`. The cards that engine tests name by id (small-001 to small-008, big-001 to big-004, market-001 to market-006, life-001 to life-005, setback-001 to setback-003) kept their numbers during the tuning rounds. Afterwards, with Andre's approval, the seven test-named rentals and businesses were raised (below) and five engine tests re-pinned.
+
+**Why the returns went up.** A game is 15 months. On the Stage C numbers the best bot finished with about 5% Freedom. Andre's target that at least 15% of games end by escape needs much more. Stage D sets:
+
+- Small rentals and businesses at 12% to 19% of the down payment a month.
+- Nine small "gems" at 23% to 29% a month (Basement Apartment, Pressure Washing, Gumball Machines, Online Tutoring, Dog Walking, Garage Apartment, Cabin Share, Used Book Shop, Car Detailing).
+- Big rentals and businesses at 11% to 19% a month. Land still loses money until a buyer appears.
+- Growth assets: savings 2% growth and 1% payout, CDs 3% and 2%, index funds 4% to 6% and 2%.
+- The four small deals and three big deals that engine tests name were raised into the same range after Andre approved it: Duplex in Decatur 700, Starter Condo 520, Lawn Care Trailer 450, Vending Route 630, Laundromat 4,200, Eight-Unit Apartment Building 6,000, Car Wash 6,500.
+
+Every income deal now beats the bank's 10% a month, so borrowing for an asset always pays for itself (P5). Borrowing for a want still only costs. In the simulator, 355 of 359 escapes borrowed for a deal.
+
+**Realism:** these are game returns, not real ones. A small rental returns 140% to 230% a year on the cash put in. The two numbers each decision shows stay honest relative to each other: the better deal still shows the bigger monthly number. The other way to make escape common is more months (a higher round limit), which is a rule change and is listed as a question in STATUS.md.
+
+**Other changes:** three windfalls are bigger (Work Bonus 4,000, Garage Sale 1,000, Overtime 2,500), seven Setbacks are cheaper (500 to 1,500), and two Market buyers pay more (rentals 200%, businesses 250%). A fixed sum means more to a low salary, so these help the Restaurant Server and Teacher most. The board now has 13 Opportunity spaces (spec, Board).

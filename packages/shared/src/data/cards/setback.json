@@ -48,7 +48,7 @@
     "kidsText": "You got hurt and went to the hospital. The bill comes today.",
     "adultText": "A fall on the ice, an X-ray, and a few stitches. Your share of the bill after insurance is due now.",
     "kidsOk": true,
-    "cashCost": 1500,
+    "cashCost": 800,
     "skipTurn": false
   },
   {
@@ -61,7 +61,7 @@
     "kidsText": "Rain is coming through the roof. It has to be fixed now.",
     "adultText": "Water stains on the ceiling after a storm. The roofer can patch it this week if you pay up front.",
     "kidsOk": true,
-    "cashCost": 4000,
+    "cashCost": 1500,
     "skipTurn": false
   },
   {
@@ -74,7 +74,7 @@
     "kidsText": "Your tooth cracked and hurts. The dentist fixes it today.",
     "adultText": "A crown and a root canal. Dental insurance covers part of it, and the rest is due at the visit.",
     "kidsOk": true,
-    "cashCost": 1200,
+    "cashCost": 700,
     "skipTurn": false
   },
   {
@@ -87,7 +87,7 @@
     "kidsText": "The hot water tank broke and flooded the floor. You pay to fix it.",
     "adultText": "A puddle in the basement and no hot water. A new water heater plus installation, today.",
     "kidsOk": true,
-    "cashCost": 1600,
+    "cashCost": 900,
     "skipTurn": false
   },
   {
@@ -100,7 +100,7 @@
     "kidsText": "Your dog ate something bad. The animal doctor helps, and you pay.",
     "adultText": "The dog swallowed a sock. Surgery, an overnight stay, and a cone of shame. The clinic wants payment at pickup.",
     "kidsOk": true,
-    "cashCost": 1800,
+    "cashCost": 1000,
     "skipTurn": false
   },
   {
@@ -113,7 +113,7 @@
     "kidsText": "You broke your wrist and cannot work for a while. Skip your next turn.",
     "adultText": "A cast for six weeks and no work for one month. Short-term disability covers part, not all. Skip your next turn.",
     "kidsOk": true,
-    "cashCost": 1000,
+    "cashCost": 600,
     "skipTurn": true
   },
   {
@@ -127,7 +127,7 @@
     "kidsText": "Your brother cannot pay his rent this month. You help him.",
     "adultText": "Your brother's hours were cut and rent is due. Family comes first, and savings make it possible to help.",
     "kidsOk": true,
-    "cashCost": 1000,
+    "cashCost": 500,
     "skipTurn": false
   }
 ]
