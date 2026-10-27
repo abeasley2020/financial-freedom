@@ -89,70 +89,70 @@ savings, minimum $100, grows 1%/mo, pays 0% of value/mo. P1 P8. kids: yes.
 
 ### small-009 Credit Union Savings
 
-savings, minimum $200, grows 1%/mo, pays 0% of value/mo. P1 P8. kids: yes.
+savings, minimum $200, grows 2%/mo, pays 1% of value/mo. P1 P8. kids: yes.
 
 - Adult: A share account at your credit union. Insured, no fees, open any day. Small growth, but it is your cushion when something breaks.
 - Kids: Keep money safe at the credit union. It grows a tiny bit each month.
 
 ### small-010 Emergency Fund Account
 
-savings, minimum $500, grows 1%/mo, pays 0% of value/mo. P1 P4. kids: yes.
+savings, minimum $500, grows 2%/mo, pays 1% of value/mo. P1 P4. kids: yes.
 
 - Adult: A separate account you never touch for fun. Three months of bills in here turns a surprise into an errand.
 - Kids: Save money for surprises. Then a broken car is not a big problem.
 
 ### small-011 Six-Month CD
 
-cd, minimum $500, grows 2%/mo, pays 1% of value/mo. P1 P8. kids: yes.
+cd, minimum $500, grows 3%/mo, pays 2% of value/mo. P1 P8. kids: yes.
 
 - Adult: A certificate of deposit at a local bank. Locked up for a while, grows a little faster than savings, and pays a small amount monthly.
 - Kids: Let the bank keep your money for a while. It grows and pays you a little.
 
 ### small-012 Twelve-Month CD
 
-cd, minimum $1,000, grows 2%/mo, pays 1% of value/mo. P4 P8. kids: yes.
+cd, minimum $1,000, grows 3%/mo, pays 2% of value/mo. P4 P8. kids: yes.
 
 - Adult: A one-year certificate at a steady rate. You agree to wait, and the bank pays you for your patience.
 - Kids: Wait a whole year and the bank pays you more for waiting.
 
 ### small-013 Credit Union Certificate
 
-cd, minimum $1,500, grows 2%/mo, pays 1% of value/mo. P1 P8. kids: yes.
+cd, minimum $1,500, grows 3%/mo, pays 2% of value/mo. P1 P8. kids: yes.
 
 - Adult: Your credit union's term certificate. Insured, predictable, and a better rate than the savings account down the hall.
 - Kids: Save at the credit union for a set time. It grows every month.
 
 ### small-014 Large Company Index Fund
 
-index, minimum $1,000, grows 4%/mo, pays 1% of value/mo. P8 P9. kids: yes.
+index, minimum $1,000, grows 5%/mo, pays 2% of value/mo. P8 P9. kids: yes.
 
 - Adult: One fund holds the largest companies in the country. Low fees, no picking winners. It has gone up over every long stretch so far.
 - Kids: Own a tiny piece of the 500 biggest companies. It grows over time.
 
 ### small-015 Target Retirement Fund
 
-index, minimum $1,000, grows 3%/mo, pays 1% of value/mo. P8 P9. kids: yes.
+index, minimum $1,000, grows 4%/mo, pays 2% of value/mo. P8 P9. kids: yes.
 
 - Adult: Stocks and bonds in one fund that rebalances itself. Grows a bit slower than an all-stock fund and swings less.
 - Kids: One fund with lots of stocks and bonds mixed. Slow and steady.
 
 ### small-016 Total World Index Fund
 
-index, minimum $500, grows 3%/mo, pays 1% of value/mo. P8 P9. kids: yes.
+index, minimum $500, grows 4%/mo, pays 2% of value/mo. P8 P9. kids: yes.
 
 - Adult: Thousands of companies in dozens of countries in one fund. About as diversified as one purchase can be.
 - Kids: A tiny piece of companies all over the world. Many eggs, many baskets.
 
 ### small-017 Dividend Index Fund
 
-index, minimum $1,000, grows 3%/mo, pays 1% of value/mo. P8 P9. kids: yes.
+index, minimum $1,000, grows 4%/mo, pays 2% of value/mo. P8 P9. kids: yes.
 
 - Adult: A fund of companies with long records of paying dividends. Steady growth and a payout every month.
 - Kids: Many companies that share their profits. It grows and pays you.
 
 ### small-018 Growth Index Fund
 
-index, minimum $2,000, grows 5%/mo, pays 1% of value/mo. P8 P9. kids: yes.
+index, minimum $2,000, grows 6%/mo, pays 2% of value/mo. P8 P9. kids: yes.
 
 - Adult: Tech and other fast growers in one low-fee fund. Grows faster than the broad market in good years and falls harder in bad ones.
 - Kids: Fast-growing companies in one fund. It can grow quick, and drop too.
@@ -194,119 +194,119 @@ stock, 150 shares at $110 to $150, dividend $1/share/mo. P8 P9. kids: no.
 
 ### small-024 Mobile Home on a Rented Lot
 
-rental, price $38,000, down $3,800, mortgage $34,200, cash flow +$130/mo, return on cash 41%/yr. P2 P3 P5. kids: yes.
+rental, price $38,000, down $3,800, mortgage $34,200, cash flow +$260/mo, return on cash 82%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A clean single-wide in a family park. You own the home, rent the lot, and a retired couple pays you rent.
 - Kids: A small mobile home you rent out. Rent comes in each month.
 
 ### small-025 Two-Bedroom Ranch House
 
-rental, price $95,000, down $5,000, mortgage $90,000, cash flow +$150/mo, return on cash 36%/yr. P2 P3 P5. kids: yes.
+rental, price $95,000, down $5,000, mortgage $90,000, cash flow +$300/mo, return on cash 72%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A brick ranch with a fenced yard in a small town. Low-down loan for investors; a family is ready to sign a lease.
 - Kids: A small house you rent to a family. The bank lends most of the money.
 
 ### small-026 Condo by the Community College
 
-rental, price $72,000, down $4,000, mortgage $68,000, cash flow +$140/mo, return on cash 42%/yr. P2 P3 P5. kids: yes.
+rental, price $72,000, down $4,000, mortgage $68,000, cash flow +$280/mo, return on cash 84%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A two-bedroom condo across from the community college. Leases turn over each August, but it never sits empty long.
 - Kids: A small home near a college. Students rent it every year.
 
 ### small-027 Basement Apartment
 
-rental, price $5,000, down $5,000, mortgage $0, cash flow +$250/mo, return on cash 60%/yr. P2 P3. kids: yes.
+rental, price $5,000, down $5,000, mortgage $0, cash flow +$700/mo, return on cash 168%/yr. P2 P3. kids: yes.
 
 - Adult: Finish your walkout basement with a kitchenette and its own door. A traveling nurse wants it as soon as it is done.
 - Kids: Fix up your basement and rent it out. A renter pays you each month.
 
 ### small-028 Foreclosed Bungalow
 
-rental, price $60,000, down $5,000, mortgage $55,000, cash flow +$200/mo, return on cash 48%/yr. P2 P5 P9. kids: yes.
+rental, price $60,000, down $5,000, mortgage $55,000, cash flow +$400/mo, return on cash 96%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A bank-owned bungalow with old carpet and a solid roof. Cheap for a reason, and a good rent once it is cleaned up.
 - Kids: An old house the bank is selling cheap. It needs work but can pay you.
 
 ### small-029 Garage Apartment
 
-rental, price $30,000, down $3,000, mortgage $27,000, cash flow +$120/mo, return on cash 48%/yr. P2 P3 P5. kids: yes.
+rental, price $30,000, down $2,000, mortgage $28,000, cash flow +$240/mo, return on cash 144%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A studio above a detached garage behind a rental house. Small, quiet, and easy to keep rented.
 - Kids: A little home on top of a garage. Someone rents it from you.
 
 ### small-030 Duplex Needing Paint
 
-rental, price $110,000, down $5,000, mortgage $105,000, cash flow +$180/mo, return on cash 43%/yr. P2 P3 P5. kids: yes.
+rental, price $110,000, down $5,000, mortgage $105,000, cash flow +$360/mo, return on cash 86%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Side-by-side duplex, both units occupied, both overdue for paint. Rents are below market, so there is room to grow.
 - Kids: Two homes side by side. Paint them and rent both out.
 
 ### small-031 Cabin Share by the Lake
 
-rental, price $25,000, down $2,500, mortgage $22,500, cash flow +$90/mo, return on cash 43%/yr. P2 P9. kids: yes.
+rental, price $25,000, down $1,500, mortgage $23,500, cash flow +$180/mo, return on cash 144%/yr. P2 P9. kids: yes.
 
 - Adult: A one-quarter share of a lakeside cabin rented to vacationers. Great summers, quiet winters, so the cash flow swings.
 - Kids: Own part of a lake cabin. Visitors rent it in the summer.
 
 ### small-032 Pressure Washing Side Hustle
 
-business, price $2,500, down $2,500, mortgage $0, cash flow +$150/mo, return on cash 72%/yr. P2 P3. kids: yes.
+business, price $2,500, down $2,500, mortgage $0, cash flow +$350/mo, return on cash 168%/yr. P2 P3. kids: yes.
 
 - Adult: A commercial pressure washer and a trailer. Driveways, decks, and storefronts, with a neighbor's son doing the work.
 - Kids: A power washer cleans driveways and decks. A helper does the jobs.
 
 ### small-033 Online Used Book Shop
 
-business, price $1,500, down $1,500, mortgage $0, cash flow +$80/mo, return on cash 64%/yr. P2 P3. kids: yes.
+business, price $1,500, down $1,500, mortgage $0, cash flow +$200/mo, return on cash 160%/yr. P2 P3. kids: yes.
 
 - Adult: Library sale books bought by the box and resold online. A few hours a week of listing and shipping.
 - Kids: Buy old books cheap and sell them online for more.
 
 ### small-034 Gumball and Toy Machines
 
-business, price $1,200, down $1,200, mortgage $0, cash flow +$60/mo, return on cash 60%/yr. P2 P3. kids: yes.
+business, price $1,200, down $1,200, mortgage $0, cash flow +$170/mo, return on cash 170%/yr. P2 P3. kids: yes.
 
 - Adult: Ten gumball and capsule toy machines in restaurants and laundromats. Refill once a month and split coins with the owners.
 - Kids: Gumball machines in stores. Kids put in coins, and you get the money.
 
 ### small-035 Bounce House Rentals
 
-business, price $3,500, down $3,500, mortgage $0, cash flow +$170/mo, return on cash 58%/yr. P2 P3 P9. kids: yes.
+business, price $3,500, down $3,500, mortgage $0, cash flow +$330/mo, return on cash 113%/yr. P2 P3 P9. kids: yes.
 
 - Adult: Two inflatable bounce houses rented for parties. Busy every summer weekend, slow in winter.
 - Kids: Rent out bounce houses for birthday parties.
 
 ### small-036 Air Pumps at Gas Stations
 
-business, price $4,000, down $4,000, mortgage $0, cash flow +$160/mo, return on cash 48%/yr. P2 P3. kids: yes.
+business, price $4,000, down $4,000, mortgage $0, cash flow +$320/mo, return on cash 96%/yr. P2 P3. kids: yes.
 
 - Adult: Coin-operated tire inflators at four gas stations. They run themselves; you collect and service them monthly.
 - Kids: Air machines for car tires. People pay a little to fill their tires.
 
 ### small-037 Food Truck Partnership
 
-business, price $20,000, down $5,000, mortgage $15,000, cash flow +$200/mo, return on cash 48%/yr. P2 P5 P9. kids: yes.
+business, price $20,000, down $5,000, mortgage $15,000, cash flow +$400/mo, return on cash 96%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A half share of a taco truck with a good chef. The loan covers the truck. Busy lunches pay well; a breakdown does not.
 - Kids: Own part of a food truck. When it sells tacos, you get some money.
 
 ### small-038 Online Tutoring Business
 
-business, price $800, down $800, mortgage $0, cash flow +$60/mo, return on cash 90%/yr. P2 P3. kids: yes.
+business, price $800, down $800, mortgage $0, cash flow +$120/mo, return on cash 180%/yr. P2 P3. kids: yes.
 
 - Adult: A website, a scheduling app, and two college students who tutor math and reading online. You keep a cut of every session.
 - Kids: Help kids with homework online. Parents pay you each month.
 
 ### small-039 Mobile Car Detailing
 
-business, price $3,000, down $3,000, mortgage $0, cash flow +$140/mo, return on cash 56%/yr. P2 P3. kids: yes.
+business, price $2,000, down $2,000, mortgage $0, cash flow +$280/mo, return on cash 168%/yr. P2 P3. kids: yes.
 
 - Adult: A vacuum, a buffer, and a water tank in a used van. A part-timer details cars in office parking lots.
 - Kids: Wash and clean cars at people's homes. A helper does the work.
 
 ### small-040 Dog Walking Route
 
-business, price $1,000, down $1,000, mortgage $0, cash flow +$70/mo, return on cash 84%/yr. P2 P3. kids: yes.
+business, price $1,000, down $1,000, mortgage $0, cash flow +$140/mo, return on cash 168%/yr. P2 P3. kids: yes.
 
 - Adult: Twelve regular clients, an app for booking, and a reliable high-schooler. You handle scheduling and payments.
 - Kids: Walk dogs for busy neighbors. A helper walks them after school.
@@ -343,126 +343,126 @@ business, price $200,000, down $50,000, mortgage $150,000, cash flow +$1,900/mo,
 
 ### big-005 Fourplex Near the Hospital
 
-rental, price $240,000, down $24,000, mortgage $216,000, cash flow +$900/mo, return on cash 45%/yr. P2 P3 P5. kids: yes.
+rental, price $240,000, down $24,000, mortgage $216,000, cash flow +$1,620/mo, return on cash 81%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Four two-bedroom units a block from the regional hospital. Medical staff keep it full year-round.
 - Kids: Four homes in one building. Nurses and doctors rent them.
 
 ### big-006 Six-Unit Brick Walkup
 
-rental, price $360,000, down $36,000, mortgage $324,000, cash flow +$1,300/mo, return on cash 43%/yr. P2 P3 P5. kids: yes.
+rental, price $360,000, down $36,000, mortgage $324,000, cash flow +$2,340/mo, return on cash 78%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Three floors, six units, original hardwood. Rents are a little low, and the building is in good shape.
 - Kids: Six apartments in an old brick building. The rent pays the loan.
 
 ### big-007 Twelve-Unit Apartment Complex
 
-rental, price $600,000, down $50,000, mortgage $550,000, cash flow +$2,600/mo, return on cash 62%/yr. P2 P3 P5. kids: yes.
+rental, price $600,000, down $50,000, mortgage $550,000, cash flow +$4,680/mo, return on cash 112%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Two buildings, twelve units, a manager on site, and a parking lot. A real business with real paperwork.
 - Kids: Twelve apartments with a manager. Lots of rent every month.
 
 ### big-008 Mobile Home Park
 
-rental, price $400,000, down $45,000, mortgage $355,000, cash flow +$2,300/mo, return on cash 61%/yr. P2 P3 P5. kids: yes.
+rental, price $400,000, down $45,000, mortgage $355,000, cash flow +$4,140/mo, return on cash 110%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Forty lots with water and power hookups. Residents own their homes and rent the land, so repairs are rare.
 - Kids: Forty spots where people park their homes. They pay you rent for the land.
 
 ### big-009 Three Rental Houses
 
-rental, price $270,000, down $27,000, mortgage $243,000, cash flow +$1,000/mo, return on cash 44%/yr. P2 P3 P9. kids: yes.
+rental, price $270,000, down $27,000, mortgage $243,000, cash flow +$1,800/mo, return on cash 80%/yr. P2 P3 P9. kids: yes.
 
 - Adult: A retiring landlord sells three single-family rentals as a package. Three tenants means one vacancy never sinks you.
 - Kids: Three houses in different parts of town, all rented out.
 
 ### big-010 Lake Cabin Rental
 
-rental, price $220,000, down $22,000, mortgage $198,000, cash flow +$700/mo, return on cash 38%/yr. P2 P3 P9. kids: yes.
+rental, price $220,000, down $22,000, mortgage $198,000, cash flow +$1,260/mo, return on cash 69%/yr. P2 P3 P9. kids: yes.
 
 - Adult: Three bedrooms on the water, booked online by the week. Summer pays for the year; a cleaning crew handles turnovers.
 - Kids: A cabin by the lake. Families rent it for vacations.
 
 ### big-011 Small Office Building
 
-rental, price $300,000, down $30,000, mortgage $270,000, cash flow +$1,100/mo, return on cash 44%/yr. P2 P3 P9. kids: yes.
+rental, price $300,000, down $30,000, mortgage $270,000, cash flow +$1,980/mo, return on cash 79%/yr. P2 P3 P9. kids: yes.
 
 - Adult: Two stories, five tenants: an insurance agent, a dentist, and three small firms. Longer leases than apartments.
 - Kids: A building with offices. Businesses pay you rent.
 
 ### big-012 Strip Mall with Four Shops
 
-rental, price $500,000, down $50,000, mortgage $450,000, cash flow +$2,400/mo, return on cash 58%/yr. P2 P5 P9. kids: yes.
+rental, price $500,000, down $50,000, mortgage $450,000, cash flow +$4,320/mo, return on cash 104%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A pizza place, a nail salon, a tax office, and a phone store. If one leaves, the other three carry the loan.
 - Kids: Four stores in a row. Each store pays you rent.
 
 ### big-013 Medical Office Condo
 
-rental, price $180,000, down $18,000, mortgage $162,000, cash flow +$600/mo, return on cash 40%/yr. P2 P3 P5. kids: yes.
+rental, price $180,000, down $18,000, mortgage $162,000, cash flow +$1,080/mo, return on cash 72%/yr. P2 P3 P5. kids: yes.
 
 - Adult: One suite in a medical office park, leased to a family practice for ten years. Boring and reliable.
 - Kids: An office a doctor rents from you. Doctors stay a long time.
 
 ### big-014 Sandwich Shop Franchise
 
-business, price $250,000, down $50,000, mortgage $200,000, cash flow +$1,900/mo, return on cash 46%/yr. P2 P3 P5. kids: yes.
+business, price $250,000, down $50,000, mortgage $200,000, cash flow +$3,420/mo, return on cash 82%/yr. P2 P3 P5. kids: yes.
 
 - Adult: A franchise location with a proven menu and a manager in place. Royalties eat some profit; the brand brings the crowd.
 - Kids: A sandwich shop with a famous name. A manager runs it.
 
 ### big-015 Self-Storage Units
 
-business, price $350,000, down $40,000, mortgage $310,000, cash flow +$2,000/mo, return on cash 60%/yr. P2 P3 P5. kids: yes.
+business, price $350,000, down $40,000, mortgage $310,000, cash flow +$3,600/mo, return on cash 108%/yr. P2 P3 P5. kids: yes.
 
 - Adult: One hundred twenty climate-controlled units behind a gate. Few repairs, no tenants calling at midnight.
 - Kids: Rooms people rent to store their stuff. Lots of small rents add up.
 
 ### big-016 Child Care Center
 
-business, price $180,000, down $30,000, mortgage $150,000, cash flow +$1,200/mo, return on cash 48%/yr. P2 P3 P9. kids: yes.
+business, price $180,000, down $30,000, mortgage $150,000, cash flow +$2,160/mo, return on cash 86%/yr. P2 P3 P9. kids: yes.
 
 - Adult: A licensed center for sixty children with a waiting list. Staffing is the hard part; demand is not.
 - Kids: A place where little kids play and learn while parents work.
 
 ### big-017 Auto Repair Shop
 
-business, price $150,000, down $25,000, mortgage $125,000, cash flow +$1,100/mo, return on cash 53%/yr. P2 P3 P5. kids: yes.
+business, price $150,000, down $25,000, mortgage $125,000, cash flow +$1,980/mo, return on cash 95%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Four bays, three mechanics, and a loyal customer list. The owner is retiring and will train you for a month.
 - Kids: A garage that fixes cars. Mechanics do the work, and you own it.
 
 ### big-018 Coffee Shop
 
-business, price $90,000, down $15,000, mortgage $75,000, cash flow +$500/mo, return on cash 40%/yr. P2 P9. kids: yes.
+business, price $90,000, down $15,000, mortgage $75,000, cash flow +$900/mo, return on cash 72%/yr. P2 P9. kids: yes.
 
 - Adult: A busy corner cafe with a good lease. Margins are thin, and a new chain across the street could hurt.
 - Kids: A coffee shop on Main Street. Some months are great, some are slow.
 
 ### big-019 Landscaping Company
 
-business, price $70,000, down $10,000, mortgage $60,000, cash flow +$600/mo, return on cash 72%/yr. P2 P3. kids: yes.
+business, price $70,000, down $10,000, mortgage $60,000, cash flow +$950/mo, return on cash 114%/yr. P2 P3. kids: yes.
 
 - Adult: Two trucks, two crews, and a hundred contracts with homes and businesses. Plows snow in the winter.
 - Kids: Trucks and crews that mow and plant for many customers.
 
 ### big-020 Fitness Studio Franchise
 
-business, price $160,000, down $30,000, mortgage $130,000, cash flow +$1,000/mo, return on cash 40%/yr. P2 P5 P9. kids: yes.
+business, price $160,000, down $30,000, mortgage $130,000, cash flow +$1,800/mo, return on cash 72%/yr. P2 P5 P9. kids: yes.
 
 - Adult: A boutique studio with four hundred members. Monthly dues are steady until a cheaper gym opens nearby.
 - Kids: A gym with classes. Members pay every month.
 
 ### big-021 ATM Route
 
-business, price $40,000, down $8,000, mortgage $32,000, cash flow +$450/mo, return on cash 68%/yr. P2 P3. kids: yes.
+business, price $40,000, down $8,000, mortgage $32,000, cash flow +$760/mo, return on cash 114%/yr. P2 P3. kids: yes.
 
 - Adult: Fifteen cash machines in convenience stores and bars. You keep part of every fee and refill them weekly.
 - Kids: Cash machines in stores. Each time someone uses one, you earn a fee.
 
 ### big-022 RV and Boat Storage Lot
 
-business, price $120,000, down $20,000, mortgage $100,000, cash flow +$900/mo, return on cash 54%/yr. P2 P3 P5. kids: yes.
+business, price $120,000, down $20,000, mortgage $100,000, cash flow +$1,620/mo, return on cash 97%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Four acres of gravel, a fence, and cameras near the lake. Owners pay monthly to park campers and boats.
 - Kids: A big fenced lot where people park campers and boats.
@@ -483,7 +483,7 @@ land, price $80,000, down $16,000, mortgage $64,000, cash flow -$30/mo, return o
 
 ### big-025 Jumbo CD
 
-cd, minimum $10,000, grows 2%/mo, pays 1% of value/mo. P1 P8. kids: yes.
+cd, minimum $10,000, grows 3%/mo, pays 2% of value/mo. P1 P8. kids: yes.
 
 - Adult: A large-balance certificate with a better rate. Ten thousand minimum, insured, and it pays you every month.
 - Kids: Lock up a big pile of money at the bank. It grows every month.
@@ -541,9 +541,9 @@ cash flow +$50/mo each. Applies to: rental. P2 P3. kids: yes.
 
 ### market-008 Business Buyer
 
-buyer offers 150% of purchase price for one. Applies to: business. P2 P9. kids: yes.
+buyer offers 250% of purchase price for one. Applies to: business. P2 P9. kids: yes.
 
-- Adult: A buyer offers 150 percent of what you paid for any one business you own. Take the cash, or keep the monthly income?
+- Adult: A buyer offers 250 percent of what you paid for any one business you own. Take the cash, or keep the monthly income?
 - Kids: Someone wants to buy one of your businesses for one and a half times what you paid.
 
 ### market-009 Developer Wants Your Land
@@ -604,9 +604,9 @@ shares split 3 for 1. Applies to: stock. P9. kids: yes.
 
 ### market-017 Investor Buys Rentals
 
-buyer offers 150% of purchase price for one. Applies to: rental. P2 P3. kids: yes.
+buyer offers 200% of purchase price for one. Applies to: rental. P2 P3. kids: yes.
 
-- Adult: A rental company is buying up homes. It offers 150 percent of what you paid for any one rental. Sell, or keep the rent?
+- Adult: A rental company is buying up homes. It offers 200 percent of what you paid for any one rental. Sell, or keep the rent?
 - Kids: A company wants one of your rentals. They offer one and a half times what you paid.
 
 ### market-018 Flood Map Redrawn
@@ -1063,18 +1063,18 @@ bigLife. P10. kids: yes.
 
 windfall. P4 P5 P8. kids: yes.
 
-- Adult: A 3,000 bonus for a great year. Spend it, invest it in an index fund, or pay down your most expensive loan?
-- Kids: You got a $3,000 bonus at work! Spend it, invest it, or pay off debt?
+- Adult: A 4,000 bonus for a great year. Spend it, invest it in an index fund, or pay down your most expensive loan?
+- Kids: You got a $4,000 bonus at work! Spend it, invest it, or pay off debt?
 
-- **Spend it** (gain $3,000, pay $3,000; P4 P6; kids: yes)
-  - Adult: A new TV and a weekend away. The 3,000 is gone.
-  - Kids: Buy fun stuff with all $3,000.
-- **Invest it in an index fund** (gain $3,000, invest $3,000 in index (grows 4%/mo, pays 1%); P4 P8; kids: yes)
+- **Spend it** (gain $4,000, pay $4,000; P4 P6; kids: yes)
+  - Adult: A new TV and a weekend away. The 4,000 is gone.
+  - Kids: Buy fun stuff with all $4,000.
+- **Invest it in an index fund** (gain $4,000, invest $4,000 in index (grows 4%/mo, pays 1%); P4 P8; kids: yes)
   - Adult: Index fund: grows 4 percent a month and pays out 1 percent of its value each Payday.
-  - Kids: Put the $3,000 in an index fund. It grows every month.
-- **Pay down your biggest loan** (gain $3,000, pay down largest loan by up to $3,000; P5; kids: yes)
-  - Adult: Pays up to 3,000 toward the loan with the highest monthly payment. Mortgages are not loans here.
-  - Kids: Pay $3,000 toward your loan with the biggest payment.
+  - Kids: Put the $4,000 in an index fund. It grows every month.
+- **Pay down your biggest loan** (gain $4,000, pay down largest loan by up to $4,000; P5; kids: yes)
+  - Adult: Pays up to 4,000 toward the loan with the highest monthly payment. Mortgages are not loans here.
+  - Kids: Pay $4,000 toward your loan with the biggest payment.
 
 ### life-028 Inheritance
 
@@ -1097,35 +1097,35 @@ windfall. P4 P8 P10. kids: yes.
 
 windfall. P1 P4 P8. kids: yes.
 
-- Adult: You cleared the garage and made 400. Put it in savings, spend it on a night out, or keep it in your wallet?
-- Kids: Your garage sale made $400! Save it, spend it, or keep it as cash?
+- Adult: You cleared the garage and made 1,000. Put it in savings, spend it on a night out, or keep it in your wallet?
+- Kids: Your garage sale made $1,000! Save it, spend it, or keep it as cash?
 
-- **Put it in savings** (gain $400, invest $400 in savings (grows 1%/mo, pays 0%); P1 P8; kids: yes)
+- **Put it in savings** (gain $1,000, invest $1,000 in savings (grows 1%/mo, pays 0%); P1 P8; kids: yes)
   - Adult: Savings: grows 1 percent a month and stays there for emergencies.
-  - Kids: Put $400 in savings. It grows a tiny bit every month.
-- **Spend it** (gain $400, pay $400; P4; kids: yes)
-  - Adult: A nice dinner and a movie. The 400 is gone.
-  - Kids: Spend all $400 on a fun night out.
-- **Keep it as cash** (gain $400; P1; kids: yes)
-  - Adult: 400 more cash on hand.
-  - Kids: Keep the $400 as cash for later.
+  - Kids: Put $1,000 in savings. It grows a tiny bit every month.
+- **Spend it** (gain $1,000, pay $1,000; P4; kids: yes)
+  - Adult: A nice dinner and a movie. The 1,000 is gone.
+  - Kids: Spend all $1,000 on a fun night out.
+- **Keep it as cash** (gain $1,000; P1; kids: yes)
+  - Adult: 1,000 more cash on hand.
+  - Kids: Keep the $1,000 as cash for later.
 
 ### life-030 Overtime Paycheck
 
 windfall. P1 P4 P5. kids: yes.
 
-- Adult: A month of overtime adds 1,500. Build your emergency fund, buy gadgets, or pay down your biggest loan?
-- Kids: You worked extra and earned $1,500 more! Save it, spend it, or pay debt?
+- Adult: A month of overtime adds 2,500. Build your emergency fund, buy gadgets, or pay down your biggest loan?
+- Kids: You worked extra and earned $2,500 more! Save it, spend it, or pay debt?
 
-- **Build your emergency fund** (gain $1,500, invest $1,500 in savings (grows 1%/mo, pays 0%); P1 P8; kids: yes)
+- **Build your emergency fund** (gain $2,500, invest $2,500 in savings (grows 1%/mo, pays 0%); P1 P8; kids: yes)
   - Adult: Savings: grows 1 percent a month and is there when the furnace dies.
-  - Kids: Put $1,500 in savings for surprises.
-- **Buy gadgets** (gain $1,500, pay $1,500; P4 P6; kids: yes)
-  - Adult: New headphones, a tablet, and a smartwatch. The 1,500 is gone.
-  - Kids: Spend all $1,500 on gadgets.
-- **Pay down your biggest loan** (gain $1,500, pay down largest loan by up to $1,500; P5; kids: yes)
-  - Adult: Pays up to 1,500 toward the loan with the highest monthly payment. Mortgages are not loans here.
-  - Kids: Pay $1,500 toward your loan with the biggest payment.
+  - Kids: Put $2,500 in savings for surprises.
+- **Buy gadgets** (gain $2,500, pay $2,500; P4 P6; kids: yes)
+  - Adult: New headphones, a tablet, and a smartwatch. The 2,500 is gone.
+  - Kids: Spend all $2,500 on gadgets.
+- **Pay down your biggest loan** (gain $2,500, pay down largest loan by up to $2,500; P5; kids: yes)
+  - Adult: Pays up to 2,500 toward the loan with the highest monthly payment. Mortgages are not loans here.
+  - Kids: Pay $2,500 toward your loan with the biggest payment.
 
 ## Setback (10)
 
@@ -1152,49 +1152,49 @@ Pay $2,000, skip next turn. P1.
 
 ### setback-004 Emergency Room Visit
 
-Pay $1,500. P1.
+Pay $800. P1.
 
 - Adult: A fall on the ice, an X-ray, and a few stitches. Your share of the bill after insurance is due now.
 - Kids: You got hurt and went to the hospital. The bill comes today.
 
 ### setback-005 Roof Leak
 
-Pay $4,000. P1.
+Pay $1,500. P1.
 
 - Adult: Water stains on the ceiling after a storm. The roofer can patch it this week if you pay up front.
 - Kids: Rain is coming through the roof. It has to be fixed now.
 
 ### setback-006 Cracked Tooth
 
-Pay $1,200. P1.
+Pay $700. P1.
 
 - Adult: A crown and a root canal. Dental insurance covers part of it, and the rest is due at the visit.
 - Kids: Your tooth cracked and hurts. The dentist fixes it today.
 
 ### setback-007 Water Heater Bursts
 
-Pay $1,600. P1.
+Pay $900. P1.
 
 - Adult: A puddle in the basement and no hot water. A new water heater plus installation, today.
 - Kids: The hot water tank broke and flooded the floor. You pay to fix it.
 
 ### setback-008 Vet Emergency
 
-Pay $1,800. P1.
+Pay $1,000. P1.
 
 - Adult: The dog swallowed a sock. Surgery, an overnight stay, and a cone of shame. The clinic wants payment at pickup.
 - Kids: Your dog ate something bad. The animal doctor helps, and you pay.
 
 ### setback-009 Broken Wrist
 
-Pay $1,000, skip next turn. P1.
+Pay $600, skip next turn. P1.
 
 - Adult: A cast for six weeks and no work for one month. Short-term disability covers part, not all. Skip your next turn.
 - Kids: You broke your wrist and cannot work for a while. Skip your next turn.
 
 ### setback-010 Family Needs Help
 
-Pay $1,000. P1 P10.
+Pay $500. P1 P10.
 
 - Adult: Your brother's hours were cut and rent is due. Family comes first, and savings make it possible to help.
 - Kids: Your brother cannot pay his rent this month. You help him.

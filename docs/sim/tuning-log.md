@@ -20,3 +20,23 @@ Column key: **End** escape plus round-limit share; **Bkr** bankrupt seats; **Pro
 | 8 | Market buyers pay more: Investor Buys Rentals 150% to 200% of purchase price, Business Buyer 150% to 250%. A leveraged rental sold to a buyer funds a big deal, the main road to an early escape | yes | 99.5% | 1.2% | 16.5% Server to 48.0% Firefighter | 74.5% | 43.8 (Balanced 54.3, BS 10.5) | 15 | 2 (round 13) | 0 stuck, 10 |
 | 9 | Board mix: Opportunity 10 to 13, Market 4 to 3, Giving 2 to 1, Setback 2 to 1 (Life Choices stays 6; positions 4, 12, and 16 became Opportunity). More deal draws turn the game from cash-limited toward deal-limited, which helps low salaries | yes | 99.7% | 1.0% | 22.6% Doctor to 45.0% Firefighter (45.05, just over) | 77.1% | 47.1 (Balanced 56.4, BS 9.4) | 15 | 2 (round 13) | 0 stuck, 10 |
 | 10 | Big rentals and businesses (18 cards, not the 4 that engine tests name): cash flow up 80%, capped at 9.5% of the down payment a month. Land stays negative | yes. **All targets met; tuning stops here** | 99.7% | 0.9% | 22.0% Server to 43.6% Pharmacist | 77.0% | 48.7 (Balanced 57.7, BS 9.0) | 15 | 7 (round 8) | 0 stuck, 10 |
+| 11 | Same mix as round 9, new positions: spaces 0 to 6 keep their kinds (engine tests land on Giving at 4 and Setback at 6), and the rest spread out (Market at 2, 9, 17; Life Choices at 1, 7, 11, 14, 19, 22; Giving 4; Setback 6). Run to confirm the targets still hold | yes | 99.6% | 1.1% | 23.6% Server to 41.5% Pharmacist | 78.2% | 48.9 (Balanced 57.6, BS 8.7) | 15 | 13 (round 7) | 0 stuck, 10 |
+
+## Where it ended
+
+All nine targets were met at round 10; round 11 only moved spaces so engine tests keep their board positions, and confirmed the targets. Tuning stopped at round 11 of 30. Final report: `docs/sim/tuned.md`.
+
+Robustness (not tuning rounds, same content, other seeds):
+
+| Seeds from | End | Bkr | Prof | H2H | Spread | Med | Esc | Kids |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 99.2% | 0.8% | 26.7% Real Estate Agent to 39.8% Pharmacist | 77.3% | 48.3 (Balanced 57.2, BS 8.9) | 15 | 9 (round 10) | 0 stuck, 10 |
+| 50000000 | 98.9% | 1.0% | 26.8% Server to 41.5% Software Developer | 78.3% | 46.9 (Balanced 56.6, BS 9.7) | 15 | 14 (round 7) | 0 stuck, 10 |
+
+Wealth Builder fund sensitivity (bot setting, not a lever; the committed bot keeps three months as specified):
+
+| Fund | WB overall | H2H | Kids WB vs BS | Prof | All targets |
+| --- | --- | --- | --- | --- | --- |
+| 3 months (committed) | 27.9% | 78.2% | 7.9% vs 23.6% | 23.6% to 41.5% | yes |
+| 2 months | 36.0% | 86.4% | 12.2% vs 22.7% | 22.5% to 41.0% | yes |
+| 1 month | 45.5% | 91.2% | 26.7% vs 19.4% | 25.1% to 40.1% | yes |

@@ -77,3 +77,18 @@ Reports: `docs/sim/stage-c-content.md` (standard) and `docs/sim/stage-c-content-
 - Standard games: 99.4% end at the round limit, 0% by escape, and 0.6% with one player left. 0.9% of seats go bankrupt. The median game is 43 turns (14.3 rounds per player).
 - Win rates spread from 4.4% for the Restaurant Server (also 12% bankrupt) to 59.9% for the Doctor. Pharmacist 51.8% and Software Developer 45.2% are also above the 45% target. The Restaurant Server is the only one below the 20% floor; the Welder (21.9%) sits just above it. Freedom percentage does not level the field on its own: higher pay leaves more cash to invest from turn one.
 - Kids mode: 100% end at the round limit, nobody is stuck, and nobody goes bankrupt.
+
+## Stage D tuning (2026-10-27)
+
+Every number change is in `docs/sim/tuning-log.md`, one lever per round, and the final simulator report is `docs/sim/tuned.md`. The cards that engine tests name by id (small-001 to small-008, big-001 to big-004, market-001 to market-006, life-001 to life-005, setback-001 to setback-003) kept their numbers, so no engine test had to be re-pinned.
+
+**Why the returns went up.** A game is 15 months. On the Stage C numbers the best bot finished with about 5% Freedom, so escape was out of reach by a factor of twenty. A rough rule from the simulator: with about eight deal draws per player, escape becomes reachable only when good deals return close to 10% of the down payment every month. Stage D sets:
+
+- Small rentals and businesses at 6% to 9.5% of the down payment a month, kept below the bank's 10% so borrowing for an ordinary deal costs more than it earns.
+- Nine small "gems" at 12% to 15% a month (Basement Apartment, Pressure Washing, Gumball Machines, Online Tutoring, Dog Walking, Garage Apartment, Cabin Share, Used Book Shop, Car Detailing). These are the deals worth a bank loan, which is the good-debt lesson (P5).
+- Big rentals and businesses at 6% to 9.5% a month (up 80%). Land still loses money until a buyer appears.
+- Growth assets: savings 2% growth and 1% payout, CDs 3% and 2%, index funds 4% to 6% and 2%.
+
+**Realism:** these are game returns, not real ones. A small rental now returns 70% to 115% a year on the cash put in, and a gem 140% to 180%. The two numbers each decision shows stay honest relative to each other: the better deal still shows the bigger monthly number. If you want slower, more realistic returns, the game needs more months (a higher round limit) rather than smaller cards; that is a rule change, listed as a question in STATUS.md.
+
+**Other changes:** three windfalls are bigger (Work Bonus 4,000, Garage Sale 1,000, Overtime 2,500), seven Setbacks are cheaper (500 to 1,500), and two Market buyers pay more (rentals 200%, businesses 250%). A fixed sum means more to a low salary, so these help the Restaurant Server and Teacher most. The board now has 13 Opportunity spaces (spec, Board).
