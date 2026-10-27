@@ -8,14 +8,14 @@ import { deepFreeze } from './test/deepFreeze';
 import { aboutToRoll, rolledClean, twoPlayerGame, withGame, withPlayer } from './test/fixtures';
 
 // Spec, Core rules, Bankruptcy (decided 2026-10-23). Ada the Teacher (p1) has
-// 700/mo cash flow. A 1,500/mo lifestyle loan makes it -800, so each Payday
+// 740/mo cash flow. A 1,540/mo lifestyle loan makes it -800, so each Payday
 // takes 800 from cash. Payday opens every ROLL, before the die; a player who
 // goes out at Payday does not roll or move.
 
 const ROLL: Action = { type: 'ROLL', playerId: 'p1' };
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-const bigLoan: Liability = { id: 'l-boat', kind: 'lifestyle', principal: 30_000, monthlyPayment: 1_500, sourceCardId: 'life-001' };
+const bigLoan: Liability = { id: 'l-boat', kind: 'lifestyle', principal: 30_000, monthlyPayment: 1_540, sourceCardId: 'life-001' };
 const lawn: Asset = { id: 'lawn', cardId: 'small-003', type: 'business', purchasePrice: 3_000, downPaid: 3_000, monthlyCashFlow: 150 };
 /** A growth asset from a windfall: 2,000 at 1% payout = 20/mo, sold in bankruptcy at half its marketValue. growthPercent is pinned to 0 so the Payday that opens the turn does not move the numbers. */
 const fund: Asset = { id: 'fund', cardId: 'life-005', type: 'index', purchasePrice: 2_000, downPaid: 2_000, marketValue: 2_000, growthPercent: 0, payoutPercent: 1 };
@@ -94,7 +94,7 @@ describe('Bankruptcy: a Payday that would take cash below zero', () => {
   it('bankruptcy: keeps selling until the deficit is covered', () => {
     // passive 160 → flow -640; 0 cash → -640. Fund +1,000 covers it in one sale? No: -640 + 1,000 = 360. Use a deeper hole.
     const deeper: Liability = { ...bigLoan, id: 'l-2', monthlyPayment: 1_200 };
-    // flow = 700 + 170 - 1,500 - 1,200 = -1,830; 0 cash → -1,830; fund +1,000 → -830; lawn +1,500 → 670.
+    // flow = 740 + 170 - 1,540 - 1,200 = -1,830; 0 cash → -1,830; fund +1,000 → -830; lawn +1,500 → 670.
     const next = payday(0, [lawn, fund], [deeper]);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).cash).toBe(670);
@@ -158,7 +158,7 @@ describe('Bankruptcy: a Payday that would take cash below zero', () => {
   it('bankruptcy: a sale that keeps the player in lets them resolve the landed space', () => {
     const base = twoPlayerGame();
     const broke = withPlayer(base, 'p1', { cash: 0, assets: [vending], liabilities: [...p1(base).liabilities, bigLoan] });
-    // flow 700 + 180 - 1,500 = -620; vending 2,250 → 1,630. Then the roll lands on 13 Opportunity.
+    // flow 740 + 180 - 1,540 = -620; vending 2,250 → 1,630. Then the roll lands on 13 Opportunity.
     const next = apply(aboutToRoll(broke, 11, 2), ROLL);
     expect(p1(next).isOut).toBe(false);
     expect(p1(next).cash).toBe(1_630);
@@ -169,7 +169,7 @@ describe('Bankruptcy: a Payday that would take cash below zero', () => {
     const base = withPlayer(twoPlayerGame(), 'p1', { cash: 0, assets: [lawn] });
     const next = apply(aboutToRoll(base, 3, 1), ROLL);
     expect(p1(next).assets).toEqual([lawn]);
-    expect(p1(next).cash).toBe(850);
+    expect(p1(next).cash).toBe(890); // 740 + 150 lawn
   });
 
   it('bankruptcy: does not touch the other player', () => {
@@ -183,7 +183,7 @@ describe('Bankruptcy: log', () => {
     const next = payday(0, [robotics]);
     expect(next.game.log.at(-1)?.events).toEqual([
       { kind: 'payday', amount: -800 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_100, cash: -800, roundNumber: 1 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 6_100, cash: -800, roundNumber: 1 },
       { kind: 'sold', assetId: 'rob', cardId: 'small-005', proceeds: 100, principles: ['P8', 'P9'] },
       { kind: 'cashChanged', delta: 100, reason: 'bankruptcy' },
       { kind: 'wentOut', shortfall: 700 },
@@ -194,7 +194,7 @@ describe('Bankruptcy: log', () => {
     const next = payday(500, [lawn]);
     expect(next.game.log.at(-1)?.events).toEqual([
       { kind: 'payday', amount: -650 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 150, totalExpenses: 4_100, cash: -150, roundNumber: 1 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 150, totalExpenses: 6_100, cash: -150, roundNumber: 1 },
       { kind: 'sold', assetId: 'lawn', cardId: 'small-003', proceeds: 1_500, principles: ['P2', 'P3'] },
       { kind: 'cashChanged', delta: 1_500, reason: 'bankruptcy' },
       { kind: 'rolled', value: 1 },

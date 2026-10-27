@@ -35,16 +35,16 @@ describe('selectors: income statement', () => {
   });
 
   it('debtPayments sums liability monthlyPayment', () => {
-    // Teacher: student 12,000 @ 1% + car 6,000 @ 2% + credit 2,000 @ 3%
-    expect(debtPayments(teacher())).toBe(120 + 120 + 60);
+    // Teacher: student 30,000 @ 1% + car 10,000 @ 2% + credit 2,000 @ 3%
+    expect(debtPayments(teacher())).toBe(300 + 200 + 60);
   });
 
   it('totalExpenses is profession baseExpenses plus debtPayments', () => {
-    expect(totalExpenses(teacher())).toBe(2_300 + 300);
+    expect(totalExpenses(teacher())).toBe(4_000 + 560);
   });
 
   it('monthlyCashFlow is salary plus passiveIncome minus totalExpenses', () => {
-    expect(monthlyCashFlow(teacher())).toBe(3_300 + 0 - 2_600);
+    expect(monthlyCashFlow(teacher())).toBe(5_300 + 0 - 4_560);
   });
 
   it('totalExpenses throws on an unknown professionId (programmer bug)', () => {
@@ -56,7 +56,7 @@ describe('selectors: canEscape', () => {
   it('is true when passiveIncome equals totalExpenses (boundary)', () => {
     const p: Player = {
       ...teacher(),
-      assets: [{ id: 'a1', cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_600 }],
+      assets: [{ id: 'a1', cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 4_560 }],
     };
     expect(canEscape(p)).toBe(true);
   });
@@ -64,7 +64,7 @@ describe('selectors: canEscape', () => {
   it('is false one dollar below totalExpenses', () => {
     const p: Player = {
       ...teacher(),
-      assets: [{ id: 'a1', cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 2_599 }],
+      assets: [{ id: 'a1', cardId: 'x', type: 'business', purchasePrice: 1, downPaid: 1, monthlyCashFlow: 4_559 }],
     };
     expect(canEscape(p)).toBe(false);
   });
@@ -101,14 +101,14 @@ describe('selectors: turn bookkeeping', () => {
 
   it('withPlayer patches one player and leaves the rest alone', () => {
     const state = withPlayer(twoPlayerGame(), 'p2', { cash: 9 });
-    expect(state.players.map((p) => p.cash)).toEqual([400, 9]);
+    expect(state.players.map((p) => p.cash)).toEqual([2_500, 9]);
   });
 });
 
 describe('netWorth (spec v2: never stored; growth assets count at marketValue)', () => {
   it('is cash plus asset values minus every liability principal', () => {
-    // Teacher: 400 cash, 20,000 of starting debt.
-    expect(netWorth(teacher())).toBe(400 - 20_000);
+    // Teacher: 2,500 cash, 42,000 of starting debt.
+    expect(netWorth(teacher())).toBe(2_500 - 42_000);
   });
 
   it('counts a rental at its purchase price and subtracts its mortgage', () => {
@@ -117,7 +117,7 @@ describe('netWorth (spec v2: never stored; growth assets count at marketValue)',
       assets: [{ id: 'd', cardId: 'small-001', type: 'rental', purchasePrice: 50_000, downPaid: 5_000, monthlyCashFlow: 160 }],
       liabilities: [...teacher().liabilities, { id: 'm', kind: 'mortgage', principal: 45_000, monthlyPayment: 0, assetId: 'd' }],
     };
-    expect(netWorth(owner)).toBe(400 - 20_000 + 50_000 - 45_000);
+    expect(netWorth(owner)).toBe(2_500 - 42_000 + 50_000 - 45_000);
   });
 
   it('counts a growth asset at marketValue and a stock lot at its cost basis', () => {
@@ -129,7 +129,7 @@ describe('netWorth (spec v2: never stored; growth assets count at marketValue)',
         { id: 's', cardId: 'small-005', type: 'stock', purchasePrice: 200, downPaid: 200, monthlyCashFlow: 0, shares: 10 },
       ],
     };
-    expect(netWorth(owner)).toBe(400 + 2_600 + 200);
+    expect(netWorth(owner)).toBe(2_500 + 2_600 + 200);
   });
 });
 
@@ -144,16 +144,16 @@ describe('freedomPercent (spec v2, Winning: floor(passiveIncome × 100 / totalEx
   });
 
   it('is passive income over totalExpenses, floored', () => {
-    // Teacher totalExpenses 2,600.
-    expect(freedomPercent(withPassive(1_300))).toBe(50);
-    expect(freedomPercent(withPassive(1_299))).toBe(49);
-    expect(freedomPercent(withPassive(2_599))).toBe(99);
+    // Teacher totalExpenses 4,560.
+    expect(freedomPercent(withPassive(2_280))).toBe(50);
+    expect(freedomPercent(withPassive(2_279))).toBe(49);
+    expect(freedomPercent(withPassive(4_559))).toBe(99);
   });
 
   it('reaches 100 exactly when the player can escape, and keeps counting past it', () => {
-    expect(freedomPercent(withPassive(2_600))).toBe(100);
-    expect(canEscape(withPassive(2_600))).toBe(true);
-    expect(freedomPercent(withPassive(5_200))).toBe(200);
+    expect(freedomPercent(withPassive(4_560))).toBe(100);
+    expect(canEscape(withPassive(4_560))).toBe(true);
+    expect(freedomPercent(withPassive(9_120))).toBe(200);
   });
 });
 
@@ -191,8 +191,8 @@ describe('winner (spec v2, Winning: escape, else highest freedomPercent, then ca
   });
 
   it('is the highest freedomPercent among players still in, even with less cash', () => {
-    // Teacher: 1,300 of 2,600 = 50%. Doctor (totalExpenses 11,340): 2,268 passive = 20%.
-    const state = finished(withPlayer(withPlayer(twoPlayerGame(), 'p1', { assets: [asset(1_300)], cash: 0 }), 'p2', { assets: [asset(2_268)], cash: 50_000 }));
+    // Teacher: 2,280 of 4,560 = 50%. Doctor (totalExpenses 17,040): 3,408 passive = 20%.
+    const state = finished(withPlayer(withPlayer(twoPlayerGame(), 'p1', { assets: [asset(2_280)], cash: 0 }), 'p2', { assets: [asset(3_408)], cash: 50_000 }));
     expect(freedomPercent(playerById(state, 'p1'))).toBe(50);
     expect(freedomPercent(playerById(state, 'p2'))).toBe(20);
     expect(winner(state)?.id).toBe('p1');
@@ -200,11 +200,11 @@ describe('winner (spec v2, Winning: escape, else highest freedomPercent, then ca
 
   it('ties on freedomPercent go to cash, then netWorth, then the earlier seat', () => {
     const tied = twoPlayerGame();
-    expect(winner(finished(withPlayer(tied, 'p2', { cash: 400 + 1 })))?.id).toBe('p2');
-    // Same cash: netWorth decides (the Teacher has 20,000 of debt, the Doctor 178,000).
-    expect(winner(finished(withPlayer(tied, 'p2', { cash: 400 })))?.id).toBe('p1');
+    expect(winner(finished(withPlayer(tied, 'p2', { cash: 2_500 + 1 })))?.id).toBe('p2');
+    // Same cash: netWorth decides (the Teacher has 42,000 of debt, the Doctor 248,000).
+    expect(winner(finished(withPlayer(tied, 'p2', { cash: 2_500 })))?.id).toBe('p1');
     // Everything equal: the earlier seat.
-    const clone = finished(withPlayer(tied, 'p2', { cash: 400, liabilities: tied.players[0]?.liabilities ?? [], professionId: 'teacher', salary: 3_300 }));
+    const clone = finished(withPlayer(tied, 'p2', { cash: 2_500, liabilities: tied.players[0]?.liabilities ?? [], professionId: 'teacher', salary: 5_300 }));
     expect(winner(clone)?.id).toBe('p1');
   });
 

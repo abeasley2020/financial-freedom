@@ -10,7 +10,7 @@ import { aboutToRoll, drawn, offered, rolledClean, twoPlayerGame, withGame } fro
 const borrow = (amount: number, playerId = 'p1'): Action => ({ type: 'BORROW', playerId, amount });
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-/** p1 has rolled (Payday 700 credited) and skipped a Giving space: pending none, cash 400 + 700 = 1,100. */
+/** p1 has rolled (Payday 740 credited) and skipped a Giving space: pending none, cash 2,500 + 740 = 3,240. */
 function afterRoll(state: GameState = twoPlayerGame()): GameState {
   return rolledClean(state, 'p1');
 }
@@ -19,7 +19,7 @@ describe('BORROW: taking a bank loan', () => {
   it('BORROW: adds the amount to cash and one bank liability at 10% of principal per month', () => {
     const before = afterRoll();
     const next = apply(before, borrow(3_000));
-    expect(p1(next).cash).toBe(1_100 + 3_000);
+    expect(p1(next).cash).toBe(3_240 + 3_000);
     expect(p1(next).liabilities).toEqual([
       ...p1(before).liabilities,
       { id: expect.any(String) as string, kind: 'bank', principal: 3_000, monthlyPayment: 300 },
@@ -30,8 +30,8 @@ describe('BORROW: taking a bank loan', () => {
     const before = afterRoll();
     const next = apply(before, borrow(1_000));
     expect(debtPayments(p1(next))).toBe(debtPayments(p1(before)) + 100);
-    expect(totalExpenses(p1(next))).toBe(2_600 + 100);
-    expect(monthlyCashFlow(p1(next))).toBe(700 - 100);
+    expect(totalExpenses(p1(next))).toBe(4_560 + 100);
+    expect(monthlyCashFlow(p1(next))).toBe(740 - 100);
   });
 
   it('BORROW: the smallest loan is one $1,000 step', () => {
@@ -45,7 +45,7 @@ describe('BORROW: taking a bank loan', () => {
     const loans = p1(twice).liabilities.filter((l) => l.kind === 'bank');
     expect(loans.map((l) => l.principal)).toEqual([1_000, 2_000]);
     expect(loans[0]?.id).not.toBe(loans[1]?.id);
-    expect(p1(twice).cash).toBe(1_100 + 3_000);
+    expect(p1(twice).cash).toBe(3_240 + 3_000);
   });
 
   it('BORROW: works with zero cash on hand', () => {
@@ -61,7 +61,7 @@ describe('BORROW: taking a bank loan', () => {
     const borrowed = apply(afterRoll(), borrow(1_000));
     const nextTurn = withGame(apply(borrowed, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const paid = rolledClean(nextTurn, 'p1');
-    expect(p1(paid).cash).toBe(2_100 + 600);
+    expect(p1(paid).cash).toBe(3_240 + 1_000 + 640);
   });
 
   it('BORROW: leaves assets, position, decks, pending, and the other player unchanged', () => {
@@ -93,32 +93,32 @@ describe('BORROW: while a decision is open', () => {
   });
 
   it('BORROW: lets a player who was short complete BUY', () => {
-    // Ada has 400 + 700 Payday = 1,100; the Duplex needs 5,000 down.
+    // Ada has 2,500 + 740 Payday = 3,240; the Duplex needs 5,000 down.
     const short = offered(twoPlayerGame(), 'small-001');
     expect(reject(short, { type: 'BUY', playerId: 'p1' })).toBe('INSUFFICIENT_CASH');
     const funded = apply(short, borrow(5_000));
     const bought = apply(funded, { type: 'BUY', playerId: 'p1' });
-    expect(p1(bought).cash).toBe(1_100);
+    expect(p1(bought).cash).toBe(3_240);
     expect(p1(bought).assets).toHaveLength(1);
     expect(p1(bought).assets[0]).toMatchObject({ cardId: 'small-001', downPaid: 5_000 });
     expect(p1(bought).liabilities.filter((l) => l.kind === 'bank')).toHaveLength(1);
     expect(p1(bought).liabilities.filter((l) => l.kind === 'mortgage')).toHaveLength(1);
     expect(bought.pending).toEqual({ kind: 'none' });
-    expect(monthlyCashFlow(p1(bought))).toBe(700 + 160 - 500);
+    expect(monthlyCashFlow(p1(bought))).toBe(740 + 160 - 500);
   });
 
   it('BORROW: allowed during lifeChoice and leaves the decision open (spec, turn step 4)', () => {
     const before = drawn(twoPlayerGame(), 'life-001');
     const next = apply(before, borrow(4_000));
     expect(next.pending).toEqual({ kind: 'lifeChoice', cardId: 'life-001' });
-    expect(p1(next).cash).toBe(1_100 + 4_000);
+    expect(p1(next).cash).toBe(3_240 + 4_000);
   });
 
   it('BORROW: the deal can still be passed after borrowing', () => {
     const funded = apply(offered(twoPlayerGame(), 'small-001'), borrow(1_000));
     const passed = apply(funded, { type: 'PASS', playerId: 'p1' });
     expect(passed.pending).toEqual({ kind: 'none' });
-    expect(p1(passed).cash).toBe(1_100 + 1_000);
+    expect(p1(passed).cash).toBe(3_240 + 1_000);
   });
 });
 
@@ -128,7 +128,7 @@ describe('BORROW: amount', () => {
   });
 
   it.each([1_000, 2_000, 10_000])('BORROW: accepts %d', (amount) => {
-    expect(p1(apply(afterRoll(), borrow(amount))).cash).toBe(1_100 + amount);
+    expect(p1(apply(afterRoll(), borrow(amount))).cash).toBe(3_240 + amount);
   });
 });
 

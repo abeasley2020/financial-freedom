@@ -38,7 +38,7 @@ Every card, every Life Choices option, and every decision log event carries one 
 ### Winning and game length
 
 - **Escape:** a player escapes when passiveIncome is greater than or equal to totalExpenses at END_TURN. Escape ends the game at once and that player wins.
-- **Round limit:** if nobody escapes, the game ends after round 15 in standard mode and round 10 in kids mode. A round is complete when every seat that is still in has taken a turn since the round began. A skipped turn (Setback) counts as that seat's turn. The game ends at the END_TURN that completes the final round.
+- **Round limit:** if nobody escapes, the game ends after round 15 in standard mode and round 10 in kids mode. A round is complete when every seat that is still in has taken a turn since the round began. A skipped turn (Setback) counts as that seat's turn. The game ends at the END_TURN that completes the final round. In engine terms (decided 2026-10-26): a round completes when END_TURN passes the turn to a seat at or before the seat that just played, after skipping out players and consuming skipped turns; that END_TURN logs `roundCompleted`, and roundNumber counts those events.
 - **Freedom percentage:** freedomPercent = floor(passiveIncome × 100 / totalExpenses). It is a selector, never stored.
 - **Winner at the limit:** highest freedomPercent among players still in. Ties go to higher cash, then higher netWorth, then the earlier seat.
 - **Bankruptcy end:** if bankruptcy leaves fewer than two players in, the game ends and the survivor wins (v1 rule, kept). The round limit makes this rare.
@@ -81,7 +81,7 @@ Numbers rule (**proposed**; Stage C writes the numbers and records sources in `d
 - Starting monthly cash flow (salary minus totalExpenses) between 10 and 25 percent of salary.
 - Starting cash between one half and two months of totalExpenses.
 
-The six v1 professions stay in the fixtures, with their v1 numbers, until Stage C replaces them.
+Stage C (2026-10-26) wrote all sixteen into `packages/shared/src/data/professions.json`; sources and reasoning are in `docs/content-notes.md`. Salary is gross median pay, so baseExpenses includes taxes.
 
 Liability payments: the profession table's Expenses column is baseExpenses. Each liability adds a monthly payment, floored to whole dollars: student loan 1% of principal, car loan 2%, credit card 3%, mortgage 0% (the deal card's monthlyCashFlow is already net of the mortgage payment), bank loan 10%, lifestyle loan and Life Choices car loan the option's stated monthly payment, subscription the option's stated monthly cost with principal 0. totalExpenses = baseExpenses + the sum of those payments.
 
@@ -124,7 +124,7 @@ Every card carries: id, deck, title, principles (at least one), kidsText (90 cha
 
 Fields: id, deck, title, type, price, downPayment, mortgage, monthlyCashFlow, plus the type-specific fields below. downPayment + mortgage = price.
 
-Types: rental, business, land, stock, fund (growth assets: savings, cd, index).
+Types: rental, business, land, stock, and the three growth types savings, cd, and index. There is no separate fund type (decided 2026-10-26).
 
 Stock rules (v1, kept): stocks are bought with cash only (mortgage 0). When a stock card is drawn the engine rolls sharePrice inside priceRange; the player buys a whole number of shares up to sharesAvailable. Each BUY creates a lot with purchasePrice = shares × sharePrice and monthlyCashFlow = floor(shares × dividendPerShare). Stocks are sold only by the current player when the same stock card is drawn again at a new price; the decision then offers buy, sell, or pass. A stock card never leaves its deck. A partial sale shrinks the lot's purchasePrice and downPaid in proportion (floored).
 
@@ -132,13 +132,13 @@ Stock rules (v1, kept): stocks are bought with cash only (mortgage 0). When a st
 
 Savings accounts, CDs, and index funds are growth assets. They teach compounding (P8) and still count toward freedom.
 
-- Bought with cash only. The player chooses an amount in $100 steps between the card's minimum and their cash.
+- Bought with cash only. The card's price is its minimum investment (no separate field, decided 2026-10-26). The player chooses an amount in $100 steps between that minimum and their cash.
 - The asset stores marketValue (starts at the amount invested), plus growthPercent and payoutPercent from the card.
 - At each Payday (every turn), marketValue grows by pct(marketValue, growthPercent). This happens before cash flow is credited.
 - The asset's monthly cash flow is derived, never stored: pct(marketValue, payoutPercent). As the value compounds, the payout grows with it.
 - **Proposed ranges:** savings growthPercent 1, payoutPercent 0; CD growthPercent 2, payoutPercent 1; index fund growthPercent 3 to 5, payoutPercent 1. Stage D tunes within growthPercent 1 to 6 and payoutPercent 0 to 2.
 - Market cards can move marketValue with changeMarketValue (a crash or a boom).
-- Selling uses marketValue. A growth asset is sold with SELL_ASSET at any time when pending is none.
+- Selling uses marketValue. A growth asset is sold with SELL_ASSET at any time when pending is none and the player has rolled this turn (turn step 4, like REPAY and BORROW; before the roll it is rejected with MUST_ROLL_FIRST, decided 2026-10-26).
 
 ### Market cards
 
@@ -146,11 +146,11 @@ Fields: id, title, principles, texts, effects (array), appliesTo (asset types).
 
 Effects: offerBuyout, forceSale, changeCashFlow, splitShares (v1), plus changeMarketValue { percent } for growth assets, signed (a crash is negative).
 
-Resolution (v1, kept): ACCEPT_MARKET applies the card's effects in order to the current player's assets whose type is in appliesTo. offerBuyout and forceSale sell at pct(purchasePrice, percentOfPurchasePrice) with the linked mortgage paid first. changeCashFlow adds delta to each qualifying asset. splitShares multiplies shares and leaves purchasePrice and monthlyCashFlow unchanged. changeMarketValue adds pct(marketValue, percent) to each qualifying growth asset, never below $0. offerBuyout sells one asset (the only qualifying one, or the one named by assetId). DECLINE_MARKET is legal only when every effect is an offerBuyout or the player owns no qualifying asset.
+Resolution (v1, kept): ACCEPT_MARKET applies the card's effects in order to the current player's assets whose type is in appliesTo. offerBuyout and forceSale sell at pct(purchasePrice, percentOfPurchasePrice) with the linked mortgage paid first. changeCashFlow adds delta to each qualifying asset. splitShares multiplies shares and leaves purchasePrice and monthlyCashFlow unchanged. changeMarketValue adds pct(marketValue, percent) to each qualifying growth asset, never below $0. pct floors, so a crash can cost up to $1 more than the exact percent; every percent in the engine floors the same way (decided 2026-10-26). offerBuyout sells one asset (the only qualifying one, or the one named by assetId). DECLINE_MARKET is legal only when every effect is an offerBuyout or the player owns no qualifying asset.
 
 ### Life Choices cards
 
-Life Choices replaces Lifestyle. Each card is a real decision with two or three options. **At least one option on every card has no monthly cost.** Temptation is only a lesson when saying no is possible, so there are no required Life Choices cards; true emergencies live in the Setback deck.
+Life Choices replaces Lifestyle. Each card is a real decision with two or three options. **At least one option on every card has no monthly cost.** The content tests hold a stronger rule (decided 2026-10-26): every card has a free option, meaning no payCash, addLoan, addSubscription, or investGrowth effect, and that option is kidsOk whenever the card is. That is what guarantees a kid is never stuck. Temptation is only a lesson when saying no is possible, so there are no required Life Choices cards; true emergencies live in the Setback deck.
 
 Card fields: id, deck, category (vehicle, clothing, gadget, subscription, bigLife, windfall), title, principles, kidsText, adultText, kidsOk, options.
 
@@ -158,10 +158,10 @@ Option fields: id, label, principles, kidsText, adultText, kidsOk, effects (arra
 
 - payCash { amount }
 - gainCash { amount } (windfalls)
-- addLoan { kind: car or lifestyle, principal, monthlyPayment }
+- addLoan { loanKind: car or lifestyle, principal, monthlyPayment } (the schema names this field loanKind, and investGrowth's type assetType, because kind is the effect discriminator; decided 2026-10-26)
 - addSubscription { monthlyCost } (a subscription liability, principal 0)
-- investGrowth { type: savings, cd, or index; amount, growthPercent, payoutPercent } (a windfall option that invests directly)
-- repayLargestLoan (a windfall option that pays off the player's highest monthly-payment loan, other than a mortgage, up to the windfall amount)
+- investGrowth { assetType: savings, cd, or index; amount, growthPercent, payoutPercent } (a windfall option that invests directly)
+- repayLargestLoan { amount } (a windfall option that pays down the player's highest monthly-payment loan, never a mortgage or a subscription, by up to the amount. A percent-based loan (student, car, credit, bank) gets its payment recomputed from the new principal; a loan with a stated payment (lifestyle, Life Choices car loan) keeps that payment while its principal shrinks. Decided 2026-10-26.)
 
 Each option shows two derived numbers, computed by an engine selector so the UI never does math: costToday (cash out, or cash in as negative) and monthlyChange.
 
@@ -186,6 +186,7 @@ The debrief reads only the final state and the log. Every decision event records
 - CHOOSE_LIFE_OPTION records the chosen option's costToday and monthlyChange, and the same two numbers for the cheapest option on the card (lowest monthlyChange, then lowest costToday).
 - BORROW records what the borrowed cash was for: the open decision (buyOrPass means an asset, lifeChoice means a want) or none.
 - Setback auto-loans record the loan id, principal, and the card.
+- A sold event carries its card's principles. For a growth asset bought through a windfall option that is the card's tags while the matching bought event carries the option's tags; the debrief attributes "growth asset held" to P8 either way (decided 2026-10-26).
 - paydaySnapshot at every Payday: playerId, passiveIncome, totalExpenses, cash, and roundNumber.
 
 ## The debrief

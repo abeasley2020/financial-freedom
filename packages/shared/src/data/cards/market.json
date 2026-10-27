@@ -123,5 +123,304 @@
       "index",
       "cd"
     ]
+  },
+  {
+    "id": "market-007",
+    "deck": "market",
+    "title": "Rents Go Up",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Rent goes up in town. Each rental you own pays you $50 more a month.",
+    "adultText": "Demand outruns supply. Every rental you own earns 50 more per month at the next lease renewal.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeCashFlow",
+        "delta": 50
+      }
+    ],
+    "appliesTo": [
+      "rental"
+    ]
+  },
+  {
+    "id": "market-008",
+    "deck": "market",
+    "title": "Business Buyer",
+    "principles": [
+      "P2",
+      "P9"
+    ],
+    "kidsText": "Someone wants to buy one of your businesses for one and a half times what you paid.",
+    "adultText": "A buyer offers 150 percent of what you paid for any one business you own. Take the cash, or keep the monthly income?",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "offerBuyout",
+        "percentOfPurchasePrice": 150
+      }
+    ],
+    "appliesTo": [
+      "business"
+    ]
+  },
+  {
+    "id": "market-009",
+    "deck": "market",
+    "title": "Developer Wants Your Land",
+    "principles": [
+      "P4",
+      "P9"
+    ],
+    "kidsText": "A builder wants your land. They offer three times what you paid!",
+    "adultText": "A home builder offers three times your purchase price for any one piece of land you own. Patience can pay.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "offerBuyout",
+        "percentOfPurchasePrice": 300
+      }
+    ],
+    "appliesTo": [
+      "land"
+    ]
+  },
+  {
+    "id": "market-010",
+    "deck": "market",
+    "title": "Recession",
+    "principles": [
+      "P1",
+      "P9"
+    ],
+    "kidsText": "Hard times. Index funds drop 30 percent, and each business earns $100 less a month.",
+    "adultText": "Layoffs spread and spending slows. Index funds lose 30 percent of their value, and each business earns 100 less a month.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeMarketValue",
+        "percent": -30
+      },
+      {
+        "kind": "changeCashFlow",
+        "delta": -100
+      }
+    ],
+    "appliesTo": [
+      "index",
+      "business"
+    ]
+  },
+  {
+    "id": "market-011",
+    "deck": "market",
+    "title": "Recovery Rally",
+    "principles": [
+      "P8"
+    ],
+    "kidsText": "The market comes back. Your index funds grow 15 percent today.",
+    "adultText": "The rebound comes faster than anyone expected. Every index fund you hold gains 15 percent of its value.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeMarketValue",
+        "percent": 15
+      }
+    ],
+    "appliesTo": [
+      "index"
+    ]
+  },
+  {
+    "id": "market-012",
+    "deck": "market",
+    "title": "Bank Loyalty Bonus",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "Your bank gives savers a bonus. Savings and CDs grow 5 percent today.",
+    "adultText": "Banks compete for deposits. Every savings account and CD you hold gets a bonus of 5 percent of its value.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeMarketValue",
+        "percent": 5
+      }
+    ],
+    "appliesTo": [
+      "savings",
+      "cd"
+    ]
+  },
+  {
+    "id": "market-013",
+    "deck": "market",
+    "title": "Big Employer Moves In",
+    "principles": [
+      "P2",
+      "P9"
+    ],
+    "kidsText": "A big factory opens in town. Each rental and business pays $80 more a month.",
+    "adultText": "A battery plant hires two thousand people. Every rental and business you own earns 80 more per month.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeCashFlow",
+        "delta": 80
+      }
+    ],
+    "appliesTo": [
+      "rental",
+      "business"
+    ]
+  },
+  {
+    "id": "market-014",
+    "deck": "market",
+    "title": "Plant Closes",
+    "principles": [
+      "P1",
+      "P9"
+    ],
+    "kidsText": "A big factory closes. Each rental and business pays $80 less a month.",
+    "adultText": "The town's largest employer shuts down. Every rental and business you own earns 80 less per month.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeCashFlow",
+        "delta": -80
+      }
+    ],
+    "appliesTo": [
+      "rental",
+      "business"
+    ]
+  },
+  {
+    "id": "market-015",
+    "deck": "market",
+    "title": "Dividend Raise",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "Companies share more profit. Each stock you own pays $20 more a month.",
+    "adultText": "A strong year for profits. Every stock holding you own pays 20 more per month in dividends.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeCashFlow",
+        "delta": 20
+      }
+    ],
+    "appliesTo": [
+      "stock"
+    ]
+  },
+  {
+    "id": "market-016",
+    "deck": "market",
+    "title": "Three-for-One Split",
+    "principles": [
+      "P9"
+    ],
+    "kidsText": "Each share you own turns into three shares. Same value today.",
+    "adultText": "Every stock you hold splits three for one. Three times the shares at a third of the price.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "splitShares",
+        "ratio": 3
+      }
+    ],
+    "appliesTo": [
+      "stock"
+    ]
+  },
+  {
+    "id": "market-017",
+    "deck": "market",
+    "title": "Investor Buys Rentals",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "A company wants one of your rentals. They offer one and a half times what you paid.",
+    "adultText": "A rental company is buying up homes. It offers 150 percent of what you paid for any one rental. Sell, or keep the rent?",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "offerBuyout",
+        "percentOfPurchasePrice": 150
+      }
+    ],
+    "appliesTo": [
+      "rental"
+    ]
+  },
+  {
+    "id": "market-018",
+    "deck": "market",
+    "title": "Flood Map Redrawn",
+    "principles": [
+      "P9"
+    ],
+    "kidsText": "New maps say your land floods. You must sell it for less than you paid.",
+    "adultText": "New flood maps make your land hard to build on. You must sell any land you own at 80 percent of what you paid.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "forceSale",
+        "percentOfPurchasePrice": 80
+      }
+    ],
+    "appliesTo": [
+      "land"
+    ]
+  },
+  {
+    "id": "market-019",
+    "deck": "market",
+    "title": "Index Fund Correction",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "The market slips. Your index funds are worth 10 percent less today.",
+    "adultText": "A routine pullback. Every index fund you hold loses 10 percent of its value. Selling now locks in the loss.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeMarketValue",
+        "percent": -10
+      }
+    ],
+    "appliesTo": [
+      "index"
+    ]
+  },
+  {
+    "id": "market-020",
+    "deck": "market",
+    "title": "Property Taxes Rise",
+    "principles": [
+      "P3",
+      "P9"
+    ],
+    "kidsText": "Taxes go up on buildings. Each rental pays you $40 less a month.",
+    "adultText": "The county reassesses. Every rental you own earns 40 less per month after the higher tax bill.",
+    "kidsOk": true,
+    "effects": [
+      {
+        "kind": "changeCashFlow",
+        "delta": -40
+      }
+    ],
+    "appliesTo": [
+      "rental"
+    ]
   }
 ]

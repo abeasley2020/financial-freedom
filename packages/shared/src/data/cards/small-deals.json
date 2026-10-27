@@ -151,5 +151,603 @@
     "monthlyCashFlow": 0,
     "growthPercent": 1,
     "payoutPercent": 0
+  },
+  {
+    "id": "small-009",
+    "deck": "smallDeals",
+    "title": "Credit Union Savings",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "Keep money safe at the credit union. It grows a tiny bit each month.",
+    "adultText": "A share account at your credit union. Insured, no fees, open any day. Small growth, but it is your cushion when something breaks.",
+    "kidsOk": true,
+    "type": "savings",
+    "price": 200,
+    "downPayment": 200,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 1,
+    "payoutPercent": 0
+  },
+  {
+    "id": "small-010",
+    "deck": "smallDeals",
+    "title": "Emergency Fund Account",
+    "principles": [
+      "P1",
+      "P4"
+    ],
+    "kidsText": "Save money for surprises. Then a broken car is not a big problem.",
+    "adultText": "A separate account you never touch for fun. Three months of bills in here turns a surprise into an errand.",
+    "kidsOk": true,
+    "type": "savings",
+    "price": 500,
+    "downPayment": 500,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 1,
+    "payoutPercent": 0
+  },
+  {
+    "id": "small-011",
+    "deck": "smallDeals",
+    "title": "Six-Month CD",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "Let the bank keep your money for a while. It grows and pays you a little.",
+    "adultText": "A certificate of deposit at a local bank. Locked up for a while, grows a little faster than savings, and pays a small amount monthly.",
+    "kidsOk": true,
+    "type": "cd",
+    "price": 500,
+    "downPayment": 500,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 2,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-012",
+    "deck": "smallDeals",
+    "title": "Twelve-Month CD",
+    "principles": [
+      "P4",
+      "P8"
+    ],
+    "kidsText": "Wait a whole year and the bank pays you more for waiting.",
+    "adultText": "A one-year certificate at a steady rate. You agree to wait, and the bank pays you for your patience.",
+    "kidsOk": true,
+    "type": "cd",
+    "price": 1000,
+    "downPayment": 1000,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 2,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-013",
+    "deck": "smallDeals",
+    "title": "Credit Union Certificate",
+    "principles": [
+      "P1",
+      "P8"
+    ],
+    "kidsText": "Save at the credit union for a set time. It grows every month.",
+    "adultText": "Your credit union's term certificate. Insured, predictable, and a better rate than the savings account down the hall.",
+    "kidsOk": true,
+    "type": "cd",
+    "price": 1500,
+    "downPayment": 1500,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 2,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-014",
+    "deck": "smallDeals",
+    "title": "Large Company Index Fund",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "Own a tiny piece of the 500 biggest companies. It grows over time.",
+    "adultText": "One fund holds the largest companies in the country. Low fees, no picking winners. It has gone up over every long stretch so far.",
+    "kidsOk": true,
+    "type": "index",
+    "price": 1000,
+    "downPayment": 1000,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 4,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-015",
+    "deck": "smallDeals",
+    "title": "Target Retirement Fund",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "One fund with lots of stocks and bonds mixed. Slow and steady.",
+    "adultText": "Stocks and bonds in one fund that rebalances itself. Grows a bit slower than an all-stock fund and swings less.",
+    "kidsOk": true,
+    "type": "index",
+    "price": 1000,
+    "downPayment": 1000,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 3,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-016",
+    "deck": "smallDeals",
+    "title": "Total World Index Fund",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "A tiny piece of companies all over the world. Many eggs, many baskets.",
+    "adultText": "Thousands of companies in dozens of countries in one fund. About as diversified as one purchase can be.",
+    "kidsOk": true,
+    "type": "index",
+    "price": 500,
+    "downPayment": 500,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 3,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-017",
+    "deck": "smallDeals",
+    "title": "Dividend Index Fund",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "Many companies that share their profits. It grows and pays you.",
+    "adultText": "A fund of companies with long records of paying dividends. Steady growth and a payout every month.",
+    "kidsOk": true,
+    "type": "index",
+    "price": 1000,
+    "downPayment": 1000,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 3,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-018",
+    "deck": "smallDeals",
+    "title": "Growth Index Fund",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "Fast-growing companies in one fund. It can grow quick, and drop too.",
+    "adultText": "Tech and other fast growers in one low-fee fund. Grows faster than the broad market in good years and falls harder in bad ones.",
+    "kidsOk": true,
+    "type": "index",
+    "price": 2000,
+    "downPayment": 2000,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "growthPercent": 5,
+    "payoutPercent": 1
+  },
+  {
+    "id": "small-019",
+    "deck": "smallDeals",
+    "title": "Pinecrest Solar Shares",
+    "principles": [
+      "P9"
+    ],
+    "kidsText": "A young solar company. Its price can jump up or fall down fast.",
+    "adultText": "A small solar panel installer growing fast and losing money. The price can triple or halve. No dividend.",
+    "kidsOk": false,
+    "type": "stock",
+    "price": 12,
+    "downPayment": 12,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 1000,
+    "priceRange": {
+      "min": 2,
+      "max": 25
+    }
+  },
+  {
+    "id": "small-020",
+    "deck": "smallDeals",
+    "title": "Harvest Grocery Shares",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "A big grocery chain. People always buy food, so it pays you each month.",
+    "adultText": "A regional grocery chain. Slow growth, but people buy groceries in every economy, and it pays a steady dividend.",
+    "kidsOk": false,
+    "type": "stock",
+    "price": 110,
+    "downPayment": 110,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 100,
+    "priceRange": {
+      "min": 90,
+      "max": 130
+    },
+    "dividendPerShare": 1
+  },
+  {
+    "id": "small-021",
+    "deck": "smallDeals",
+    "title": "Northgate Bank Shares",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "A bank in your state. It shares some profit with owners every month.",
+    "adultText": "A regional bank with a long dividend record. Rate changes move the price, but the payout has held for decades.",
+    "kidsOk": false,
+    "type": "stock",
+    "price": 85,
+    "downPayment": 85,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 200,
+    "priceRange": {
+      "min": 60,
+      "max": 110
+    },
+    "dividendPerShare": 1
+  },
+  {
+    "id": "small-022",
+    "deck": "smallDeals",
+    "title": "Quantum Leap Biotech Shares",
+    "principles": [
+      "P9"
+    ],
+    "kidsText": "A company testing a new medicine. It could win big or lose it all.",
+    "adultText": "One drug in late trials. If it is approved the shares soar. If not, they crater. A pure bet.",
+    "kidsOk": false,
+    "type": "stock",
+    "price": 8,
+    "downPayment": 8,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 1000,
+    "priceRange": {
+      "min": 1,
+      "max": 30
+    }
+  },
+  {
+    "id": "small-023",
+    "deck": "smallDeals",
+    "title": "Riverside Telecom Shares",
+    "principles": [
+      "P8",
+      "P9"
+    ],
+    "kidsText": "The phone and internet company. It pays owners a little each month.",
+    "adultText": "A cable and phone company with steady customers and a generous dividend. The price barely moves.",
+    "kidsOk": false,
+    "type": "stock",
+    "price": 130,
+    "downPayment": 130,
+    "mortgage": 0,
+    "monthlyCashFlow": 0,
+    "sharesAvailable": 150,
+    "priceRange": {
+      "min": 110,
+      "max": 150
+    },
+    "dividendPerShare": 1
+  },
+  {
+    "id": "small-024",
+    "deck": "smallDeals",
+    "title": "Mobile Home on a Rented Lot",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A small mobile home you rent out. Rent comes in each month.",
+    "adultText": "A clean single-wide in a family park. You own the home, rent the lot, and a retired couple pays you rent.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 38000,
+    "downPayment": 3800,
+    "mortgage": 34200,
+    "monthlyCashFlow": 130
+  },
+  {
+    "id": "small-025",
+    "deck": "smallDeals",
+    "title": "Two-Bedroom Ranch House",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A small house you rent to a family. The bank lends most of the money.",
+    "adultText": "A brick ranch with a fenced yard in a small town. Low-down loan for investors; a family is ready to sign a lease.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 95000,
+    "downPayment": 5000,
+    "mortgage": 90000,
+    "monthlyCashFlow": 150
+  },
+  {
+    "id": "small-026",
+    "deck": "smallDeals",
+    "title": "Condo by the Community College",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A small home near a college. Students rent it every year.",
+    "adultText": "A two-bedroom condo across from the community college. Leases turn over each August, but it never sits empty long.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 72000,
+    "downPayment": 4000,
+    "mortgage": 68000,
+    "monthlyCashFlow": 140
+  },
+  {
+    "id": "small-027",
+    "deck": "smallDeals",
+    "title": "Basement Apartment",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Fix up your basement and rent it out. A renter pays you each month.",
+    "adultText": "Finish your walkout basement with a kitchenette and its own door. A traveling nurse wants it as soon as it is done.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 5000,
+    "downPayment": 5000,
+    "mortgage": 0,
+    "monthlyCashFlow": 250
+  },
+  {
+    "id": "small-028",
+    "deck": "smallDeals",
+    "title": "Foreclosed Bungalow",
+    "principles": [
+      "P2",
+      "P5",
+      "P9"
+    ],
+    "kidsText": "An old house the bank is selling cheap. It needs work but can pay you.",
+    "adultText": "A bank-owned bungalow with old carpet and a solid roof. Cheap for a reason, and a good rent once it is cleaned up.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 60000,
+    "downPayment": 5000,
+    "mortgage": 55000,
+    "monthlyCashFlow": 200
+  },
+  {
+    "id": "small-029",
+    "deck": "smallDeals",
+    "title": "Garage Apartment",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "A little home on top of a garage. Someone rents it from you.",
+    "adultText": "A studio above a detached garage behind a rental house. Small, quiet, and easy to keep rented.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 30000,
+    "downPayment": 3000,
+    "mortgage": 27000,
+    "monthlyCashFlow": 120
+  },
+  {
+    "id": "small-030",
+    "deck": "smallDeals",
+    "title": "Duplex Needing Paint",
+    "principles": [
+      "P2",
+      "P3",
+      "P5"
+    ],
+    "kidsText": "Two homes side by side. Paint them and rent both out.",
+    "adultText": "Side-by-side duplex, both units occupied, both overdue for paint. Rents are below market, so there is room to grow.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 110000,
+    "downPayment": 5000,
+    "mortgage": 105000,
+    "monthlyCashFlow": 180
+  },
+  {
+    "id": "small-031",
+    "deck": "smallDeals",
+    "title": "Cabin Share by the Lake",
+    "principles": [
+      "P2",
+      "P9"
+    ],
+    "kidsText": "Own part of a lake cabin. Visitors rent it in the summer.",
+    "adultText": "A one-quarter share of a lakeside cabin rented to vacationers. Great summers, quiet winters, so the cash flow swings.",
+    "kidsOk": true,
+    "type": "rental",
+    "price": 25000,
+    "downPayment": 2500,
+    "mortgage": 22500,
+    "monthlyCashFlow": 90
+  },
+  {
+    "id": "small-032",
+    "deck": "smallDeals",
+    "title": "Pressure Washing Side Hustle",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "A power washer cleans driveways and decks. A helper does the jobs.",
+    "adultText": "A commercial pressure washer and a trailer. Driveways, decks, and storefronts, with a neighbor's son doing the work.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 2500,
+    "downPayment": 2500,
+    "mortgage": 0,
+    "monthlyCashFlow": 150
+  },
+  {
+    "id": "small-033",
+    "deck": "smallDeals",
+    "title": "Online Used Book Shop",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Buy old books cheap and sell them online for more.",
+    "adultText": "Library sale books bought by the box and resold online. A few hours a week of listing and shipping.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 1500,
+    "downPayment": 1500,
+    "mortgage": 0,
+    "monthlyCashFlow": 80
+  },
+  {
+    "id": "small-034",
+    "deck": "smallDeals",
+    "title": "Gumball and Toy Machines",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Gumball machines in stores. Kids put in coins, and you get the money.",
+    "adultText": "Ten gumball and capsule toy machines in restaurants and laundromats. Refill once a month and split coins with the owners.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 1200,
+    "downPayment": 1200,
+    "mortgage": 0,
+    "monthlyCashFlow": 60
+  },
+  {
+    "id": "small-035",
+    "deck": "smallDeals",
+    "title": "Bounce House Rentals",
+    "principles": [
+      "P2",
+      "P3",
+      "P9"
+    ],
+    "kidsText": "Rent out bounce houses for birthday parties.",
+    "adultText": "Two inflatable bounce houses rented for parties. Busy every summer weekend, slow in winter.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 3500,
+    "downPayment": 3500,
+    "mortgage": 0,
+    "monthlyCashFlow": 170
+  },
+  {
+    "id": "small-036",
+    "deck": "smallDeals",
+    "title": "Air Pumps at Gas Stations",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Air machines for car tires. People pay a little to fill their tires.",
+    "adultText": "Coin-operated tire inflators at four gas stations. They run themselves; you collect and service them monthly.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 4000,
+    "downPayment": 4000,
+    "mortgage": 0,
+    "monthlyCashFlow": 160
+  },
+  {
+    "id": "small-037",
+    "deck": "smallDeals",
+    "title": "Food Truck Partnership",
+    "principles": [
+      "P2",
+      "P5",
+      "P9"
+    ],
+    "kidsText": "Own part of a food truck. When it sells tacos, you get some money.",
+    "adultText": "A half share of a taco truck with a good chef. The loan covers the truck. Busy lunches pay well; a breakdown does not.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 20000,
+    "downPayment": 5000,
+    "mortgage": 15000,
+    "monthlyCashFlow": 200
+  },
+  {
+    "id": "small-038",
+    "deck": "smallDeals",
+    "title": "Online Tutoring Business",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Help kids with homework online. Parents pay you each month.",
+    "adultText": "A website, a scheduling app, and two college students who tutor math and reading online. You keep a cut of every session.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 800,
+    "downPayment": 800,
+    "mortgage": 0,
+    "monthlyCashFlow": 60
+  },
+  {
+    "id": "small-039",
+    "deck": "smallDeals",
+    "title": "Mobile Car Detailing",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Wash and clean cars at people's homes. A helper does the work.",
+    "adultText": "A vacuum, a buffer, and a water tank in a used van. A part-timer details cars in office parking lots.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 3000,
+    "downPayment": 3000,
+    "mortgage": 0,
+    "monthlyCashFlow": 140
+  },
+  {
+    "id": "small-040",
+    "deck": "smallDeals",
+    "title": "Dog Walking Route",
+    "principles": [
+      "P2",
+      "P3"
+    ],
+    "kidsText": "Walk dogs for busy neighbors. A helper walks them after school.",
+    "adultText": "Twelve regular clients, an app for booking, and a reliable high-schooler. You handle scheduling and payments.",
+    "kidsOk": true,
+    "type": "business",
+    "price": 1000,
+    "downPayment": 1000,
+    "mortgage": 0,
+    "monthlyCashFlow": 70
   }
 ]

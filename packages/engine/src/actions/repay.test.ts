@@ -7,14 +7,14 @@ import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
 import { offered, rolledClean, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
-// Ada the Teacher (p1) starts with 400 cash, salary 3,300, baseExpenses 2,300 and
-// three loans: p1-student-0 (12,000 at 1% = 120/mo), p1-car-1 (6,000 at 2% = 120/mo),
-// p1-credit-2 (2,000 at 3% = 60/mo). totalExpenses 2,600, monthly cash flow 700.
+// Ada the Teacher (p1) starts with 2,500 cash, salary 5,300, baseExpenses 4,000 and
+// three loans: p1-student-0 (30,000 at 1% = 300/mo), p1-car-1 (10,000 at 2% = 200/mo),
+// p1-credit-2 (2,000 at 3% = 60/mo). totalExpenses 4,560, monthly cash flow 740.
 
 const repay = (liabilityId: string, playerId = 'p1'): Action => ({ type: 'REPAY', playerId, liabilityId });
 const p1 = (state: GameState) => playerById(state, 'p1');
 
-/** p1 with `cash` has rolled (Payday 700 credited) and skipped a Giving space: pending none, cash + 700. */
+/** p1 with `cash` has rolled (Payday 740 credited) and skipped a Giving space: pending none, cash + 740. */
 function afterRoll(state: GameState = twoPlayerGame(), cash = 5_000): GameState {
   return rolledClean(withPlayer(state, 'p1', { cash }), 'p1');
 }
@@ -22,18 +22,18 @@ function afterRoll(state: GameState = twoPlayerGame(), cash = 5_000): GameState 
 describe('REPAY: paying off a loan in full', () => {
   it('REPAY: pays the principal from cash and removes the liability', () => {
     const before = afterRoll();
-    expect(p1(before).cash).toBe(5_700);
+    expect(p1(before).cash).toBe(5_740);
     const next = apply(before, repay('p1-credit-2'));
-    expect(p1(next).cash).toBe(5_700 - 2_000);
+    expect(p1(next).cash).toBe(5_740 - 2_000);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities.filter((l) => l.id !== 'p1-credit-2'));
     expect(p1(next).liabilities.map((l) => l.id)).toEqual(['p1-student-0', 'p1-car-1']);
   });
 
   it('REPAY: lowers totalExpenses and raises monthly cash flow by the loan payment', () => {
     const next = apply(afterRoll(), repay('p1-credit-2'));
-    expect(debtPayments(p1(next))).toBe(240);
-    expect(totalExpenses(p1(next))).toBe(2_300 + 240);
-    expect(monthlyCashFlow(p1(next))).toBe(760);
+    expect(debtPayments(p1(next))).toBe(500);
+    expect(totalExpenses(p1(next))).toBe(4_000 + 500);
+    expect(monthlyCashFlow(p1(next))).toBe(800);
   });
 
   it('REPAY: can retire a bank loan taken this turn', () => {
@@ -42,7 +42,7 @@ describe('REPAY: paying off a loan in full', () => {
     const loanId = p1(borrowed).liabilities.at(-1)?.id;
     if (loanId === undefined) throw new Error('BORROW must add a liability');
     const next = apply(borrowed, repay(loanId));
-    expect(p1(next).cash).toBe(5_700);
+    expect(p1(next).cash).toBe(5_740);
     expect(p1(next).liabilities).toEqual(p1(before).liabilities);
   });
 
@@ -60,7 +60,7 @@ describe('REPAY: paying off a loan in full', () => {
     const next = apply(before, repay('p1-lifestyle-truck'));
     expect(p1(next).cash).toBe(p1(before).cash - 12_000);
     expect(p1(next).liabilities.find((l) => l.id === 'p1-lifestyle-truck')).toBeUndefined();
-    expect(debtPayments(p1(next))).toBe(300);
+    expect(debtPayments(p1(next))).toBe(560);
   });
 
   it('REPAY: removes only the named loan when several share a kind', () => {
@@ -71,17 +71,17 @@ describe('REPAY: paying off a loan in full', () => {
     const next = apply(twice, repay(first.id));
     const banks = p1(next).liabilities.filter((l) => l.kind === 'bank');
     expect(banks).toEqual([second]);
-    expect(p1(next).cash).toBe(5_700 + 3_000 - 1_000);
+    expect(p1(next).cash).toBe(5_740 + 3_000 - 1_000);
   });
 
   it('REPAY: accepts when cash exactly equals the principal, leaving zero cash', () => {
-    // 1,300 + 700 Payday = 2,000, the credit card principal.
-    const next = apply(afterRoll(twoPlayerGame(), 1_300), repay('p1-credit-2'));
+    // 1,260 + 740 Payday = 2,000, the credit card principal.
+    const next = apply(afterRoll(twoPlayerGame(), 1_260), repay('p1-credit-2'));
     expect(p1(next).cash).toBe(0);
   });
 
   it('REPAY: rejected with INSUFFICIENT_CASH one dollar short, and the loan stays', () => {
-    const before = afterRoll(twoPlayerGame(), 1_299);
+    const before = afterRoll(twoPlayerGame(), 1_259);
     expect(p1(before).cash).toBe(1_999);
     expect(reject(before, repay('p1-credit-2'))).toBe('INSUFFICIENT_CASH');
   });
@@ -111,11 +111,11 @@ describe('REPAY: cancelling a subscription (spec v2, Life Choices: REPAY removes
 
   it('REPAY: removes the subscription and charges nothing, even with zero cash', () => {
     const before = subscribed(0);
-    expect(p1(before).cash).toBe(700 - 60);
+    expect(p1(before).cash).toBe(740 - 60);
     const next = apply(before, repay('p1-sub'));
     expect(p1(next).cash).toBe(p1(before).cash);
     expect(p1(next).liabilities.find((l) => l.id === 'p1-sub')).toBeUndefined();
-    expect(debtPayments(p1(next))).toBe(300);
+    expect(debtPayments(p1(next))).toBe(560);
   });
 
   it('REPAY: logs the cancellation with principal 0 under P7, small costs add up', () => {

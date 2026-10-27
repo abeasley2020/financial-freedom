@@ -120,8 +120,8 @@ describe('SELL_ASSET: selling shares when the stock is drawn again', () => {
     if (lotId === undefined) throw new Error('BUY must create a lot');
     const nextTurn = withGame(apply(bought, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const next = apply(offered(nextTurn, 'small-005', 35), sell(lotId));
-    // Two turns, two Paydays of 700 (the lot pays no dividend).
-    expect(p1(next).cash).toBe(1_000 + 700 - 200 + 700 + 350);
+    // Two turns, two Paydays of 740 (the lot pays no dividend).
+    expect(p1(next).cash).toBe(1_000 + 740 - 200 + 740 + 350);
     expect(p1(next).assets).toEqual([]);
   });
 
