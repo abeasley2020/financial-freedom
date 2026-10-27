@@ -110,6 +110,13 @@ function play(setup: WalkSetup, choices: readonly number[]): Played {
   return { initial, final: state, accepted, steps };
 }
 
+/** [roundNumber of each paydaySnapshot] for `playerId`, in log order. */
+function snapshotRounds(state: GameState, playerId: string): number[] {
+  return state.game.log.flatMap((entry) =>
+    entry.events.flatMap((e) => (e.kind === 'paydaySnapshot' && e.playerId === playerId ? [e.roundNumber] : [])),
+  );
+}
+
 describe('property: random games', () => {
   it('every invariant holds after every accepted action, in standard mode', () => {
     fc.assert(
@@ -161,6 +168,20 @@ describe('property: random games', () => {
         expect(JSON.stringify(play(setup, choices).final)).toBe(JSON.stringify(play(setup, choices).final));
       }),
       { numRuns: Math.max(20, Math.floor(NUM_RUNS / 10)) },
+    );
+  }, PROPERTY_TIMEOUT_MS);
+
+  it('every seat is paid exactly once a round, never past the limit, and each paydaySnapshot carries its own round (spec v2, Winning and game length)', () => {
+    fc.assert(
+      fc.property(fc.oneof(smallTableArb, setupArb(fc.constantFrom('standard', 'kids'))), longChoicesArb, (setup, choices) => {
+        const final = play(setup, choices).final;
+        for (const player of final.players) {
+          const rounds = snapshotRounds(final, player.id);
+          expect(rounds, `paydays of ${player.id}`).toEqual(rounds.map((_, i) => i + 1));
+          expect(rounds.length).toBeLessThanOrEqual(roundLimit(final));
+        }
+      }),
+      { numRuns: Math.max(50, Math.floor(NUM_RUNS / 4)) },
     );
   }, PROPERTY_TIMEOUT_MS);
 

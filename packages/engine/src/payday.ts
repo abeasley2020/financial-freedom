@@ -18,9 +18,12 @@ export interface Payday {
  * takes cash below zero runs the automatic bankruptcy sales (Core rules,
  * Bankruptcy); the snapshot is taken before those sales so it records the
  * month that broke the player. Called by ROLL for the current player and by
- * END_TURN for a seat it passes over.
+ * END_TURN for a seat it passes over. `round` is the round this Payday opens
+ * the player's turn in: the round in progress for ROLL, and for END_TURN the
+ * round the walk has reached, which can be past the last roundCompleted
+ * already in the log.
  */
-export function creditPayday(state: GameState, playerId: string): Payday {
+export function creditPayday(state: GameState, playerId: string, round: number = roundNumber(state)): Payday {
   const events: LogEvent[] = [];
   const grown = playerById(state, playerId).assets.map((asset) => {
     if (!isGrowthAsset(asset)) return asset;
@@ -42,7 +45,7 @@ export function creditPayday(state: GameState, playerId: string): Payday {
       passiveIncome: passiveIncome(player),
       totalExpenses: totalExpenses(player),
       cash,
-      roundNumber: roundNumber(state),
+      roundNumber: round,
     },
   );
   if (cash < 0) {

@@ -302,7 +302,7 @@ describe('DEBRIEF section 6: money story', () => {
   });
 
   it('DEBRIEF: when one END_TURN skips every seat, including its own, each player still gets one round per Payday', () => {
-    // The engine logs no roundCompleted here (STATUS.md, Stage E, question 10), so round markers alone would repeat a round.
+    // This hand-built log has no roundCompleted where the walk passes the last seat; rounds still come from each player's Paydays.
     const log = [
       paydayEntry('p1', 1),
       paydayEntry('p2', 1),

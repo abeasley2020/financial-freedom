@@ -37,10 +37,10 @@ export interface OwnedEvent {
  * endings belong to no one.
  *
  * An event's round is the player's own count of Paydays so far (at least 1).
- * Every turn a seat takes or skips starts with its Payday, so the k-th
- * Payday opens the player's round k. The log's round markers are not used:
- * END_TURN pays skipped seats before it logs roundCompleted, and it can
- * pass every seat without logging one (STATUS.md, Stage E, question 10).
+ * Every turn a seat takes or skips starts with its Payday, and every seat
+ * still in is paid once a round, so the k-th Payday opens the player's round
+ * k. It equals the roundNumber each paydaySnapshot logs (the debrief property
+ * suite checks this) and needs no round markers from the log.
  */
 export function ownedEvents(state: GameState, playerId: string): OwnedEvent[] {
   const owned: OwnedEvent[] = [];

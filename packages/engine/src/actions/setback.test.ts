@@ -1,7 +1,7 @@
 import { BOARD, type Action, type GameState } from '@ff/shared';
 import { describe, expect, it } from 'vitest';
 
-import { debtPayments, monthlyCashFlow, playerById } from '../selectors';
+import { debtPayments, monthlyCashFlow, playerById, roundNumber } from '../selectors';
 import { apply } from '../test/apply';
 import { aboutToRoll, onTopOfDeck, rolledClean, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
@@ -168,6 +168,9 @@ describe('ROLL: Setback log', () => {
 
 describe('END_TURN: skipped turns', () => {
   const kinds = (state: GameState) => state.game.log.at(-1)?.events.map((e) => e.kind);
+  /** [playerId, roundNumber] for each paydaySnapshot in the last log entry. */
+  const snapshotRounds = (state: GameState) =>
+    state.game.log.at(-1)?.events.flatMap((e) => (e.kind === 'paydaySnapshot' ? [[e.playerId, e.roundNumber] as const] : []));
 
   it('END_TURN: passes over a player who must skip, clears the flag, and logs the skip', () => {
     // p1 hits Job Loss, then p2 plays; p2's END_TURN skips p1 and comes back to p2.
@@ -181,7 +184,11 @@ describe('END_TURN: skipped turns', () => {
     expect(next.game.currentPlayerId).toBe('p2');
     expect(next.game.turnNumber).toBe(2);
     expect(p1(next).skipsNextTurn).toBe(false);
-    expect(next.game.log.at(-1)?.events[0]).toEqual({ kind: 'turnSkipped', playerId: 'p1' });
+    // p2's END_TURN completes round 1 first; p1's skipped turn is its round-2 turn.
+    expect(next.game.log.at(-1)?.events.slice(0, 2)).toEqual([
+      { kind: 'roundCompleted', round: 1 },
+      { kind: 'turnSkipped', playerId: 'p1' },
+    ]);
   });
 
   it('END_TURN: the skip lasts one turn only', () => {
@@ -227,14 +234,19 @@ describe('END_TURN: skipped turns', () => {
     expect(next.game.log.at(-1)?.events[0]).toEqual({ kind: 'turnSkipped', playerId: 'p3' });
   });
 
-  it('END_TURN: when every player must skip, each skip is consumed once in seat order and play resumes', () => {
-    // p1 ends; p2 is skipped, then p1 (wrapping) is skipped, then p2 is next.
+  it('END_TURN: when every player must skip, each skip is consumed once in seat order, the round completes as the turn passes the last seat, and play resumes', () => {
+    // p1 ends; p2 skips its round-1 turn, round 1 completes, p1 skips its round-2 turn, and p2 plays round 2.
     const both = withPlayer(withPlayer(twoPlayerGame(), 'p1', { skipsNextTurn: true }), 'p2', { skipsNextTurn: true });
     const next = apply(rolledClean(both, 'p1'), { type: 'END_TURN', playerId: 'p1' });
     expect(next.game.currentPlayerId).toBe('p2');
     expect(p1(next).skipsNextTurn).toBe(false);
     expect(playerById(next, 'p2').skipsNextTurn).toBe(false);
-    expect(kinds(next)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'turnSkipped', 'payday', 'paydaySnapshot']);
+    expect(kinds(next)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'roundCompleted', 'turnSkipped', 'payday', 'paydaySnapshot']);
+    expect(roundNumber(next)).toBe(2);
+    expect(snapshotRounds(next)).toEqual([
+      ['p2', 1],
+      ['p1', 2],
+    ]);
     expect(next.game.log.at(-1)?.events.filter((e) => e.kind === 'turnSkipped')).toEqual([
       { kind: 'turnSkipped', playerId: 'p2' },
       { kind: 'turnSkipped', playerId: 'p1' },
@@ -250,11 +262,11 @@ describe('END_TURN: a skipped seat still gets its Payday (spec, Core rules, turn
     expect(p1(next).cash).toBe(1_000 + 740);
     expect(p1(next).skipsNextTurn).toBe(false);
     expect(next.game.log.at(-1)?.events).toEqual([
+      // p2's END_TURN completes round 1; p1's skipped turn is its round-2 turn, paid after the marker, and p2 plays round 2.
+      { kind: 'roundCompleted', round: 1 },
       { kind: 'turnSkipped', playerId: 'p1' },
       { kind: 'payday', amount: 740 },
-      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_560, cash: 1_740, roundNumber: 1 },
-      // p1's skipped turn completes the round, so p2 is up again in round 2.
-      { kind: 'roundCompleted', round: 1 },
+      { kind: 'paydaySnapshot', playerId: 'p1', passiveIncome: 0, totalExpenses: 4_560, cash: 1_740, roundNumber: 2 },
     ]);
   });
 
@@ -270,7 +282,7 @@ describe('END_TURN: a skipped seat still gets its Payday (spec, Core rules, turn
     expect(p1(next).cash).toBe(0);
     expect(next.game.phase).toBe('finished');
     expect(next.game.currentPlayerId).toBe('p2');
-    expect(next.game.log.at(-1)?.events.map((e) => e.kind)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'wentOut', 'gameEnded']);
+    expect(next.game.log.at(-1)?.events.map((e) => e.kind)).toEqual(['roundCompleted', 'turnSkipped', 'payday', 'paydaySnapshot', 'wentOut', 'gameEnded']);
   });
 
   it('END_TURN: with three players, a skipped seat that goes out at Payday is passed and play continues', () => {

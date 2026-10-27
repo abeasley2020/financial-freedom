@@ -134,6 +134,8 @@ function expectSound(state: GameState, playerId: string, level: ReadingLevel): D
     const event = state.game.log[p.ref.entry]?.events[p.ref.event];
     expect(event?.kind).toBe('paydaySnapshot');
     expect(event?.kind === 'paydaySnapshot' ? event.playerId : undefined).toBe(playerId);
+    // The player's own Payday count and the round the engine logged agree.
+    expect(event?.kind === 'paydaySnapshot' ? event.roundNumber : undefined, 'logged round').toBe(p.round);
     if (level === 'kids') expect(p.passiveIncome % 10 === 0 && p.totalExpenses % 10 === 0, 'kids money story in $10 steps').toBe(true);
   }
 

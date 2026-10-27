@@ -4,7 +4,7 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 
 ## Morning summary (Stage E, 2026-10-27)
 
-**Stage E is complete and `pnpm check` is green** (819 tests, 29 properties, zero lint warnings; Stage D ended at 738 and 22) on branch `feat/stage-e-debrief-engine`, pushed, with a PR open against main and not merged. **Your gate: read `docs/debrief-samples.md` and judge whether it teaches.** No dependencies were added, no golden game was regenerated, and no engine rule changed.
+**Stage E is complete and `pnpm check` is green** (824 tests, 30 properties, zero lint warnings; Stage D ended at 738 and 22) on branch `feat/stage-e-debrief-engine`, pushed, with a PR open against main and not merged. **Your gate: read `docs/debrief-samples.md` and judge whether it teaches.** No dependencies were added and no golden game was regenerated. After the first run, Andre asked for the three END_TURN round-keeping bugs it found to be fixed; that fix is in the same PR (question 10).
 
 **What was built:**
 
@@ -34,12 +34,17 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 7. **Sale proceeds** for a mortgaged deal means what the player kept after the mortgage. Otherwise a $50,000 duplex sold for $100,000 would score +$95,000 instead of +$50,000. Default: keep.
 8. **Kids rounding.** Kids figures round to the nearest $10, halves away from zero. A decision that rounds to $0 is left out of a kid's lists. Percentages and Freedom points stay exact, and decisions are chosen by their exact numbers. Default: keep.
 9. **Suggestions.** A one-time cost has no monthly difference, so its suggestion shows dollars and no Freedom points. The template follows the decision's first principle, so "Spend it" (P4) on Tax Refund suggests paying down the loan under "Wait for what you want". Default: keep.
-10. **Engine bugs found, not changed.** The debrief property suite found three round-keeping quirks in END_TURN's `advance` (`actions/endTurn.ts`):
-    - **(a) Lost round.** When one END_TURN passes every other seat and then the ending seat's own skip, it logs no roundCompleted. The engine then loses a round: everyone gets a Payday, but roundNumber does not advance, so that game runs one month longer. This needs two Setback skips at once; it showed up about once in 1,900 random two-player games, and in two of 4,000 probe seeds.
-    - **(b) Stale snapshot round.** A skipped seat is paid before the roundCompleted the same END_TURN logs, so that paydaySnapshot's roundNumber is one low.
-    - **(c) Extra Payday at the limit.** The END_TURN that ends the game at the round limit still pays a skipped seat, a 16th month (11th in kids). That can move cash and growth before the final ranking.
+10. **Engine round-keeping bugs: fixed (Andre, 2026-10-27, "Fix the bugs").** The debrief property suite found three bugs in END_TURN's `advance` (`actions/endTurn.ts`):
+    - **(a) Lost round.** When one END_TURN passed every other seat and then the ending seat's own skip, it logged no roundCompleted, and the game lost a round.
+    - **(b) Stale snapshot round.** A skipped seat in the new round was paid before the roundCompleted marker, so its paydaySnapshot carried the old round.
+    - **(c) Extra Payday at the limit.** The END_TURN that ends the game at the round limit still paid a skipped seat a 16th Payday.
 
-    The debrief does not rely on round markers: a player's round is their own count of Paydays, which is exact because every turn, taken or skipped, starts with that seat's Payday. Default: fix (a) and (c) in the engine as a small follow-up, test-first, once you approve re-recording any golden game they change; (b) then follows from (a).
+    Now a round completes each time the walk passes from the last seat to the first. roundCompleted is logged right there, before any skipped seat in the new round is paid, and one END_TURN can complete two rounds when every seat skips. Completing the final round ends the game on the spot. Changes:
+    - `docs/spec.md` (Winning and game length): the "engine terms" sentence is corrected; the game-design rule is unchanged.
+    - Tests, test-first: four existing tests that pinned the old behavior now expect the fix, and four new tests cover these cases.
+    - A new property: every seat is paid exactly once a round, never past the limit, and each paydaySnapshot carries its own round.
+
+    Effects: none of the five golden games has a skipped turn, so all replay unchanged and none was re-recorded. `pnpm sim --summary` gives the same numbers as `docs/sim/tuned.md` on all ten targets.
 11. **`tsx` scope.** tsx was approved for the simulation script. `pnpm debrief:samples` (`packages/engine/sim/debriefSamples.ts`) is a second script in `sim/` that plays sim games through it. Default: treat it as part of the simulation tooling.
 12. **Two Stage E branches.** An earlier unattended run (commit `e5ad498`, 2026-10-27 03:27 UTC) left a different Stage E attempt on `origin/feat/stage-e-debrief`, with no PR. This work did not build on it or touch it, so it is pushed as `feat/stage-e-debrief-engine`, and the PR comes from that branch. Default: review this PR and delete the older branch.
 
