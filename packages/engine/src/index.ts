@@ -4,6 +4,7 @@
 // See CLAUDE.md, Rule 1.
 
 export { createGame, type CreateGameOptions } from './createGame';
+export { debrief } from './debrief/debrief';
 export type { EngineError } from './errors';
 export { assertInvariants, checkInvariants } from './invariants';
 export { pct } from './money';

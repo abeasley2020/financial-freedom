@@ -2,6 +2,31 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## Morning summary (Stage E, 2026-10-27)
+
+Stage D is merged to main (#17, squash). **Stage E is complete** on branch `feat/stage-e-debrief`, pushed, not merged, no PR. `pnpm check` is green: 793 tests plus 25 properties, zero lint warnings. No dependencies were added. **Your gate: read `docs/debrief-samples.md` and judge whether it teaches.**
+
+**What was built:**
+
+1. **`debrief(state, playerId, readingLevel)`** in `packages/engine/src/debrief/`, exported from `@ff/engine`. It is a pure function of the final state and the log, with no replay. It walks the log once and applies the spec's attribution table row by row. It returns the result line, the three drivers, up to three helped and three hurt decisions, up to two suggestions (dollars and Freedom points), the money story, and principles practiced. Winners get hurt decisions and suggestions too. Every decision points at the log event that recorded it.
+2. **Types and words in `@ff/shared`:** the `Debrief` types (`debrief.ts`), plus `formatMoney` and `debriefText` (`debriefText.ts`). Each line ends with its principle in that reading level's words. Templates fill numbers in and never compute them. `formatMoney` is off the deferred list.
+3. **Tests, written first:** 40 attribution tests on hand-built logs, one or more per table row and section, each confirmed failing against a stub before the code. 12 template tests. Three properties at 1,000 runs:
+   - every decision references a real event, and every dollar figure is a whole number;
+   - the assets the debrief tracks add up to each Payday's recorded passive income;
+   - ranks run 1 to N.
+   The passive-income check also passed across 6,036 seats of full bot games.
+4. **`docs/debrief-samples.md`:** three bot games (kids, Wealth Builder vs Big Spender, mixed with an escape). For each, the winner and the last-placed player at both reading levels. Regenerate with `pnpm exec tsx packages/engine/sim/debrief-samples.ts`.
+
+**Questions for Andre (none blocks Stage F):**
+
+1. **"Why you lost" can list only good decisions.** The spec defines drivers as the three largest decisions by absolute impact. A loser who played carefully but had less to invest sees "Why you lost" followed by three things that helped (samples, Game 1 and Game 3 last place). The attribution table has no row for cash left idle or deals they could not afford. Default: for a player who did not win, list hurt decisions first among the drivers, and add an "idle cash" row (cash above one month of bills held at the end, in Paydays). That is a spec change, so I left it for you.
+2. **A subscription is counted twice.** It gets the Life Choices row (against the cheapest option) and the Subscription row (cost times months it ran), so it can appear twice in the hurt list. The spec lists both rows and I followed it. Default: keep the Subscription row only for subscriptions, and score their Life Choices option on its cash today alone.
+3. **A bank loan with nothing pending** (purpose "none") is scored as hurt, like a want. The spec names only asset (neutral), want, and setback. Default: keep.
+4. **Losses on helped rows.** The spec marks a growth asset as "helped" and a bought deal as "helped when above 0". I follow the sign: a crash or a half-price bankruptcy sale shows as hurt. Default: keep.
+5. **Neutral rows** (a loan for an asset, a zero impact) appear in no list, including the drivers. Default: keep, as the spec says the asset's own row carries the result.
+6. **End-of-game point in the money story.** Escape is checked at END_TURN, after the Payday. Without an extra point taken from the final state, an escaper's chart stops short of the crossing (Game 2 and Game 3 winners). I added that point, marked `endOfGame`. Default: keep, and write it into the spec.
+7. **Rank and rounding.** Rank puts the winner first, then the spec's ranking, then players who went out, latest out first. Kids money is rounded to the nearest $10, halves away from zero, after ranking on exact numbers. Default: keep.
+
 ## Morning summary (Stage D, 2026-10-27)
 
 **Stage D is complete and `pnpm check` is green** (738 tests, 22 properties, zero lint warnings) on branch `feat/stage-d-tuning`. It is pushed, not merged, and has no PR. All ten balance targets are met, including the escape-rate target Andre added mid-session (at least 15% of standard games end by escape, replacing "escape reachable"). Tuning stopped at round 14 of 30. Andre then approved the three recommendations: the golden games, the one-month Wealth Builder fund, and raising the test-named deals.
@@ -174,7 +199,7 @@ The repo is a pnpm workspace with three packages:
 
 | Package | Purpose | Contents today |
 | --- | --- | --- |
-| `@ff/shared` | types, Zod schemas, card and profession JSON, principles, `formatMoney` | schemas, types, principles, and fixtures listed below; `formatMoney` not yet written |
+| `@ff/shared` | types, Zod schemas, card and profession JSON, principles, `formatMoney` | schemas, types, principles, and fixtures listed below; `formatMoney` and the debrief types and templates (Stage E) |
 | `@ff/engine` | pure reducer, selectors, rng, invariants, sim | `reduce`, `createGame`, 13 actions, selectors, `payday`, `rng`, `pct`, `decks`; test helpers in `src/test/` |
 | `@ff/web` | React 18 + Vite, routes `/table` and `/player` | placeholder `App`, one render test, `@` alias |
 
@@ -198,6 +223,7 @@ The repo is a pnpm workspace with three packages:
 | `actions/give.ts`, `actions/skipGive.ts` | 10% of cash and a Favor token (`INSUFFICIENT_CASH` at $0), or skip. Both carry P10. |
 | `bankruptcy.ts`, `sales.ts` | Automatic sales lowest cash flow first (ties lowest purchasePrice) at `bankruptcyPrice` (half purchasePrice, or half marketValue for growth); `liquidate` retires a linked mortgage first and returns a property card to its deck; stock lots and growth assets simply disappear. |
 | `selectors.ts` | `assetCashFlow`, `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `freedomPercent`, `assetValue`, `netWorth`, `roundLimit`, `roundNumber`, `rankPlayers`, `winner`, `optionCost`, `cheapestOption`, `priciestOption`, `largestLoan`, `paidDown`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn`. |
+| `debrief/debrief.ts` | `debrief(state, playerId, readingLevel)`: the spec's attribution table applied in one walk of the log; `debriefTrace` is a test seam for the property suite. Tests in `debrief.test.ts` (hand-built logs) and `debrief.props.test.ts`. |
 | `invariants.ts` | Schema, non-negative cash for players in, out players hold nothing, mortgages finance a held asset, subscriptions have principal 0, card liabilities point at a Life Choices card, growth assets have marketValue ≥ 0 and a card that could produce them, deck conservation (stock lots and growth assets never take a card out), pending cards of the right deck, the round limit, log turn numbers. |
 | `invariants.props.test.ts` | 22 properties: invariants after every accepted action (standard and kids), coverage of every action and effect and a round-limit ending, growth monotonic except through Market cards, only the current player acts, END_TURN only with pending none, one log entry per action, replay rebuilds the state, byte-identical determinism, standard and kids games never stuck, the round limit holds, wrong-player actions are `NOT_YOUR_TURN`. |
 | `test/golden/*.json` + `test/golden.test.ts` | Five Stage D recordings (approved 2026-10-27): two- and four-player round-limit games, a kids game, a last-standing game, and the first escape game. Never regenerate without Andre's approval. |
@@ -222,13 +248,12 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage D is done (2026-10-27) on `feat/stage-d-tuning`, green. Next: merge to main, then Stage E (debrief engine).
+Stage E is done (2026-10-27) on `feat/stage-e-debrief`, green. Next: Andre reads `docs/debrief-samples.md` and answers the Stage E questions, then merge to main, then Stage F (single-device UI with the debrief, attended, plan mode).
 
 ## Deferred from the scaffold
 
 Not installed or configured yet, each waiting for the session that needs it:
 
-- `formatMoney` in `@ff/shared` (first UI session, or whenever the first display code needs it)
 - Tailwind v3, shadcn/ui, Zustand (first UI session)
 - A router for `/table` and `/player`. `react-router` is not on the approved dependency list; ask before adding.
 - Playwright + `@axe-core/playwright` and the real `pnpm e2e` script
