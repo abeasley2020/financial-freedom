@@ -78,7 +78,7 @@ describe('PASS: log and determinism', () => {
       turnNumber: 0,
       action: PASS,
       events: [
-        { kind: 'passed', cardId: 'small-001', principles: ['P2', 'P3', 'P5'], monthlyCashFlow: 160, downPayment: 5_000, affordable: false },
+        { kind: 'passed', cardId: 'small-001', principles: ['P2', 'P3', 'P5'], monthlyCashFlow: 700, downPayment: 5_000, affordable: false },
       ],
     });
   });

@@ -2,41 +2,39 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
-## Morning summary (Stage D, unattended, 2026-10-27)
+## Morning summary (Stage D, 2026-10-27)
 
-**All ten balance targets are met**, on branch `feat/stage-d-tuning` (pushed, not merged, no PR opened). It took 14 of 30 rounds. Mid-session your parent session relayed a new target: at least 15% of standard games must end by escape. It replaced "escape reachable", so I resumed tuning after the first stop at round 11. **One thing waits on you: the golden games.** The safety check blocked me from overwriting them, which matches the CLAUDE.md rule, so the re-recordings are in `docs/sim/golden-proposed/` with copy-paste commands to approve. Until you run them, `pnpm test` shows 4 golden failures. Everything else passes: typecheck, lint (zero warnings), 729 other tests, and 22 properties.
+**Stage D is complete and `pnpm check` is green** (738 tests, 22 properties, zero lint warnings) on branch `feat/stage-d-tuning`. It is pushed, not merged, and has no PR. All ten balance targets are met, including the escape-rate target Andre added mid-session (at least 15% of standard games end by escape, replacing "escape reachable"). Tuning stopped at round 14 of 30. Andre then approved the three recommendations: the golden games, the one-month Wealth Builder fund, and raising the test-named deals.
 
-| Target | Stage C | Tuned |
+| Target | Stage C | Final |
 | --- | --- | --- |
 | Escape or round limit (at least 70%) | 99.4% | 99.7% |
-| Seats bankrupt (at most 20%) | 0.9% | 1.0% |
-| Profession win rates (20% to 45%) | 4.4% to 59.9% | 26.9% (Restaurant Server) to 41.0% (Pharmacist) |
-| Wealth Builder beats Big Spender head to head (at least 70%) | n/a | 89.4% |
-| Best strategy minus worst (at least 15 points) | n/a | 47.6 (Balanced 54.0%, Big Spender 6.4%) |
+| Seats bankrupt (at most 20%) | 0.9% | 0.9% |
+| Profession win rates (20% to 45%) | 4.4% to 59.9% | 28.2% (Farmer) to 44.1% (Doctor) |
+| Wealth Builder beats Big Spender head to head (at least 70%) | n/a | 96.1% |
+| Best strategy minus worst (at least 15 points) | n/a | 44.9 (Aggressive 49.9%, Big Spender 5.0%) |
 | Median game (10 to 15 rounds) | 15 | 15 |
-| Games ending by escape (at least 15%) | 0% | 20.0%, median escape round 13, earliest 6 |
+| Games ending by escape (at least 15%) | 0% | 35.9%, median escape round 13, earliest 5 |
 | Kids: none stuck, median at or under 10 rounds | yes, 10 | yes, 10 |
 
-The targets also held on two other seed ranges (escapes 20.9% and 18.8%). Full report: `docs/sim/tuned.md`. Round-by-round log: `docs/sim/tuning-log.md`.
+Two other seed ranges also met all ten. Full report: `docs/sim/tuned.md`. Log of every round: `docs/sim/tuning-log.md`.
 
 **What changed:**
 
-1. **Bots.** Added Wealth Builder and Big Spender; the three original bots are unchanged. `pnpm sim` now runs three suites: mixed standard games, 1,000 head-to-head games, and kids games. It prints a pass/fail target table with the escape rate and median escape round; `--summary` prints only the table. I fixed one bug in my own Wealth Builder mid-run, and the log records it with a fresh baseline.
-2. **Deal returns raised a lot.** Every rental and business except the test-named ones now returns 11% to 29% of its down payment a month, above the 10% bank rate. A 15% escape rate needed that: on Stage C numbers the best bot ended at about 5% Freedom. These are game returns, not real ones (`docs/content-notes.md`, Stage D).
-3. **Growth assets:** savings 2%/1%, CDs 3%/2%, index funds 4% to 6% growth with 2% payout, all inside the spec ranges.
-4. **Board:** 13 Opportunity, 6 Life Choices, 3 Market, 1 Giving, 1 Setback, so each player gets about eight deal draws instead of six. Spaces 0 to 6 are unchanged. Updated in `docs/spec.md` and the board data test.
-5. **Smaller levers:** seven Setbacks cut to $500 to $1,500; three windfalls raised; two Market buyers raised (rentals 200%, businesses 250%). I fixed the card texts that quote those numbers.
-6. **Untouched:** every card an engine test names by id, the bank rate, liability percents, professions, and every rule. `docs/cards.md` is regenerated.
+1. **Bots.** Added Wealth Builder (one-month emergency fund, approved 2026-10-27; the spec said three) and Big Spender. The three original bots are unchanged. `pnpm sim` runs mixed, head-to-head, and kids suites and prints a pass/fail target table; `--summary` prints only the table.
+2. **Deal returns.** Every rental and business pays 11% to 29% of its down payment a month, more than the 10% bank rate, so borrowing for an asset always pays (P5). These are game returns, not real ones (`docs/content-notes.md`, Stage D). The seven test-named deals were raised too, and five engine tests were re-pinned.
+3. **Growth assets:** savings 2%/1%, CDs 3%/2%, index funds 4% to 6% growth with 2% payout.
+4. **Board:** 13 Opportunity, 6 Life Choices, 3 Market, 1 Giving, 1 Setback (spec, Board).
+5. **Smaller levers:** cheaper Setbacks, bigger windfalls, and more generous Market buyers. The card texts that quote these numbers are fixed.
+6. **Golden games** re-recorded with Andre's approval: the four Stage C setups keep their endings (the four-player game moved to seed 1, because seed 0 now escapes), plus the first escape recording, `escape-three-players`.
 
-**Questions for Andre:**
+**Open questions for Andre (none block Stage E):**
 
-1. **Approve the golden games** (`docs/sim/golden-proposed/README.md`). Three setups kept their seeds and endings. The four-player game moved from seed 0 to seed 1, because seed 0 now ends in an escape. A fifth recording is the first escape: a Real Estate Agent borrows for a foreclosed bungalow, sells it at 200%, pays off every loan, buys two big deals, and escapes in round 6. Default: approve.
-2. **The Wealth Builder's three-month fund backfires.** In kids mode, where it cannot borrow, it **loses to Big Spender (7.4% vs 24.4%)**, which teaches the wrong lesson. With a one-month fund it wins 48.7% overall (35.5% now), 93.9% head to head, and beats Big Spender in kids mode, and every target still holds (table in the tuning log). Default: change the bot to one month of totalExpenses. I left it at three because the definition said three.
-3. **Every deal now beats the bank.** That fits P5 (debt that buys income pays for itself), but it means borrowing for any deal is always right: 196 of 200 escapers borrowed. The difference between a good deal and a bad one is now only how much a deal beats the bank. Default: keep, and watch at the first playtest whether players learn "borrow for everything".
-4. **Realism.** A small rental now returns 140% to 230% a year. The honest alternative to such high returns is more months (a higher round limit), which is a rule change. Default: keep the tuned numbers and judge them at the first playtest.
-5. **The test-named deals are now traps.** Duplex in Decatur, Starter Condo, Lawn Care Trailer, Vending Route, Laundromat, Eight-Unit Apartment Building, and Car Wash still return 3% to 5.5% a month, so next to every other deal they look like mistakes. I left them alone so no engine test had to be re-pinned. Default: raise them to the tuned range in a small follow-up, re-pinning the engine tests that use them.
-6. **Board positions.** You decided the proposed positions (Q8) and allowed the mix to change. Changing the mix forced new positions from space 7 onward. Default: keep.
-7. **Kids mode** never escapes in 10 rounds. Kids profession balance is outside the targets, and in kids games the Restaurant Server wins only 15.4%. Default: leave it for now; revisit if playtests show it.
+1. **Every deal now beats the bank,** so borrowing for any deal is always right: 355 of 359 escapers borrowed. Default: keep, and watch at the first playtest whether players learn "borrow for everything".
+2. **Escapes are now 36%,** above the 15% floor, after the test-named deals were raised. The Doctor sits at 44.1%, close to the 45% ceiling. Default: keep; trim if a playtest feels too easy.
+3. **Realism.** A small rental returns 140% to 230% a year. The honest alternative is more months (a higher round limit), which is a rule change. Default: keep for now.
+4. **Board positions** changed from space 7 onward when the mix changed (Q8). Default: keep.
+5. **Kids profession balance** is outside the targets; in kids games the Restaurant Server wins 13.7%. Default: revisit after playtests.
 
 ## Morning summary (Stage C, 2026-10-26)
 
@@ -202,7 +200,7 @@ The repo is a pnpm workspace with three packages:
 | `selectors.ts` | `assetCashFlow`, `passiveIncome`, `debtPayments`, `totalExpenses`, `monthlyCashFlow`, `canEscape`, `freedomPercent`, `assetValue`, `netWorth`, `roundLimit`, `roundNumber`, `rankPlayers`, `winner`, `optionCost`, `cheapestOption`, `priciestOption`, `largestLoan`, `paidDown`, `currentPlayer`, `playerById`, `professionOf`, `hasRolledThisTurn`. |
 | `invariants.ts` | Schema, non-negative cash for players in, out players hold nothing, mortgages finance a held asset, subscriptions have principal 0, card liabilities point at a Life Choices card, growth assets have marketValue ≥ 0 and a card that could produce them, deck conservation (stock lots and growth assets never take a card out), pending cards of the right deck, the round limit, log turn numbers. |
 | `invariants.props.test.ts` | 22 properties: invariants after every accepted action (standard and kids), coverage of every action and effect and a round-limit ending, growth monotonic except through Market cards, only the current player acts, END_TURN only with pending none, one log entry per action, replay rebuilds the state, byte-identical determinism, standard and kids games never stuck, the round limit holds, wrong-player actions are `NOT_YOUR_TURN`. |
-| `test/golden/*.json` + `test/golden.test.ts` | Four Stage C recordings, out of date after Stage D tuning; the re-recordings plus a first escape game wait in `docs/sim/golden-proposed/` for approval. Never regenerate without Andre's approval. |
+| `test/golden/*.json` + `test/golden.test.ts` | Five Stage D recordings (approved 2026-10-27): two- and four-player round-limit games, a kids game, a last-standing game, and the first escape game. Never regenerate without Andre's approval. |
 | `test/` | `deepFreeze`, `apply`/`reject`, `fixtures.ts` (`twoPlayerGame`, `withGame`, `withPlayer`, `withZeroCashFlow`, `aboutToRoll`, `rolledClean`, `onTopOfDeck`, `offered`, `drawn`), `walk.ts` (candidate actions for every pending state, including CHOOSE_LIFE_OPTION, BUY by amount, growth sales; idle-turn BORROW on one choice in five). |
 | `../sim/` | `bots.ts` (cautious, balanced, aggressive, Wealth Builder, Big Spender), `simulate.ts` (random or fixed lineups, final freedomPercent per seat, escape rounds), `run.ts` (three suites: mixed, head to head, kids; target table with pass/fail; `--summary`, `--only`). |
 
@@ -224,7 +222,7 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage D is done (2026-10-27) on `feat/stage-d-tuning`. Next: Andre approves the golden games (`docs/sim/golden-proposed/README.md`) and decides the Wealth Builder fund question, then merge to main, then Stage E (debrief engine).
+Stage D is done (2026-10-27) on `feat/stage-d-tuning`, green. Next: merge to main, then Stage E (debrief engine).
 
 ## Deferred from the scaffold
 

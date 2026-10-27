@@ -15,7 +15,7 @@
     "price": 50000,
     "downPayment": 5000,
     "mortgage": 45000,
-    "monthlyCashFlow": 160
+    "monthlyCashFlow": 700
   },
   {
     "id": "small-002",
@@ -33,7 +33,7 @@
     "price": 45000,
     "downPayment": 4000,
     "mortgage": 41000,
-    "monthlyCashFlow": 120
+    "monthlyCashFlow": 520
   },
   {
     "id": "small-003",
@@ -50,7 +50,7 @@
     "price": 3000,
     "downPayment": 3000,
     "mortgage": 0,
-    "monthlyCashFlow": 150
+    "monthlyCashFlow": 450
   },
   {
     "id": "small-004",
@@ -108,7 +108,7 @@
     "price": 4500,
     "downPayment": 4500,
     "mortgage": 0,
-    "monthlyCashFlow": 180
+    "monthlyCashFlow": 630
   },
   {
     "id": "small-007",

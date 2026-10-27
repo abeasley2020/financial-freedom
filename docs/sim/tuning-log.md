@@ -69,3 +69,14 @@ Wealth Builder fund sensitivity at round 14:
 | 3 months (committed) | 35.5% | 89.4% | 7.4% vs 24.4% | 26.9% to 41.0% | 20.0% | yes |
 | 2 months | 41.3% | 92.6% | 11.4% vs 23.4% | 26.9% to 42.9% | 21.7% | yes |
 | 1 month | 48.7% | 93.9% | 27.1% vs 19.4% | 26.4% to 43.5% | 26.7% | yes |
+
+## After the stop: Andre's approvals (2026-10-27)
+
+Andre approved the three recommendations from the Morning summary. These are decisions, not tuning rounds.
+
+| Change | End | Bkr | Prof | H2H | Spread | Med | Esc | Kids |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Wealth Builder fund cut from three months of totalExpenses to one | 99.7% | 0.9% | 26.4% Server to 43.5% Doctor | 93.9% | 43.2 (Aggressive 48.7, BS 5.5) | 15 | 267 (26.7%), median round 14 | 0 stuck, 10 (WB 27.1% vs BS 19.4%) |
+| The seven test-named deals raised into the tuned range: Duplex in Decatur 700, Starter Condo 520, Lawn Care Trailer 450, Vending Route 630, Laundromat 4,200, Eight-Unit Apartment Building 6,000, Car Wash 6,500. Five engine tests re-pinned to the new numbers | 99.7% | 0.9% | 28.2% Farmer to 44.1% Doctor | 96.1% | 44.9 (Aggressive 49.9, BS 5.0) | 15 | 359 (35.9%), median round 13 | 0 stuck, 10 (WB 25.9% vs BS 19.4%) |
+
+The golden games were then re-recorded on this content and installed, with Andre's approval.

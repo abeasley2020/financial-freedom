@@ -1,5 +1,5 @@
 {
-  "description": "Standard game, two players (Engineer vs Doctor), Stage C professions and full decks. Ends at the 15-round limit after 29 turns with the winner by Freedom percentage. No seed searched produced an escape.",
+  "description": "Standard game, two players (Engineer vs Doctor), Stage D tuned content. Ends at the 15-round limit after 29 turns with the winner by Freedom percentage.",
   "strategies": [
     "aggressive",
     "balanced"
@@ -26,6 +26,11 @@
     {
       "type": "ROLL",
       "playerId": "p1"
+    },
+    {
+      "type": "REPAY",
+      "playerId": "p1",
+      "liabilityId": "p1-credit-2"
     },
     {
       "type": "END_TURN",
@@ -73,7 +78,7 @@
     {
       "type": "BUY",
       "playerId": "p2",
-      "amount": 5700
+      "amount": 6200
     },
     {
       "type": "END_TURN",
@@ -91,7 +96,7 @@
     {
       "type": "BUY",
       "playerId": "p1",
-      "amount": 2800
+      "amount": 2700
     },
     {
       "type": "END_TURN",
@@ -115,7 +120,12 @@
       "playerId": "p1"
     },
     {
-      "type": "ACCEPT_MARKET",
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p1",
+      "size": "small"
+    },
+    {
+      "type": "BUY",
       "playerId": "p1"
     },
     {
@@ -149,7 +159,48 @@
       "size": "small"
     },
     {
-      "type": "PASS",
+      "type": "BUY",
+      "playerId": "p1",
+      "amount": 2400
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p2",
+      "size": "small"
+    },
+    {
+      "type": "BUY",
+      "playerId": "p2",
+      "shares": 911
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p1",
+      "size": "small"
+    },
+    {
+      "type": "BORROW",
+      "playerId": "p1",
+      "amount": 4000
+    },
+    {
+      "type": "BUY",
       "playerId": "p1"
     },
     {
@@ -173,45 +224,44 @@
       "playerId": "p1"
     },
     {
+      "type": "ACCEPT_MARKET",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "CHOOSE_LIFE_OPTION",
+      "playerId": "p2",
+      "optionId": "invest"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
       "type": "CHOOSE_LIFE_OPTION",
       "playerId": "p1",
-      "optionId": "spend"
+      "optionId": "monitor"
     },
     {
       "type": "REPAY",
       "playerId": "p1",
-      "liabilityId": "p1-credit-2"
+      "liabilityId": "p1-life-017-52-1"
     },
     {
-      "type": "END_TURN",
-      "playerId": "p1"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p2"
-    },
-    {
-      "type": "CHOOSE_LIFE_OPTION",
-      "playerId": "p2",
-      "optionId": "skip"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p2"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p1"
-    },
-    {
-      "type": "CHOOSE_DEAL_SIZE",
+      "type": "REPAY",
       "playerId": "p1",
-      "size": "small"
-    },
-    {
-      "type": "BUY",
-      "playerId": "p1",
-      "amount": 2300
+      "liabilityId": "p1-bank-39"
     },
     {
       "type": "END_TURN",
@@ -229,75 +279,7 @@
     {
       "type": "BORROW",
       "playerId": "p2",
-      "amount": 3000
-    },
-    {
-      "type": "BUY",
-      "playerId": "p2"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p2"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p1"
-    },
-    {
-      "type": "CHOOSE_DEAL_SIZE",
-      "playerId": "p1",
-      "size": "small"
-    },
-    {
-      "type": "PASS",
-      "playerId": "p1"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p1"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p2"
-    },
-    {
-      "type": "ACCEPT_MARKET",
-      "playerId": "p2"
-    },
-    {
-      "type": "REPAY",
-      "playerId": "p2",
-      "liabilityId": "p2-bank-47"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p2"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p1"
-    },
-    {
-      "type": "ACCEPT_MARKET",
-      "playerId": "p1"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p1"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p2"
-    },
-    {
-      "type": "CHOOSE_DEAL_SIZE",
-      "playerId": "p2",
-      "size": "small"
-    },
-    {
-      "type": "BORROW",
-      "playerId": "p2",
-      "amount": 1000
+      "amount": 7000
     },
     {
       "type": "BUY",
@@ -319,32 +301,7 @@
     {
       "type": "BUY",
       "playerId": "p1",
-      "amount": 4200
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p1"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p2"
-    },
-    {
-      "type": "GIVE",
-      "playerId": "p2"
-    },
-    {
-      "type": "REPAY",
-      "playerId": "p2",
-      "liabilityId": "p2-bank-63"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p2"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p1"
+      "amount": 3800
     },
     {
       "type": "END_TURN",
@@ -368,72 +325,7 @@
       "playerId": "p1"
     },
     {
-      "type": "CHOOSE_DEAL_SIZE",
-      "playerId": "p1",
-      "size": "small"
-    },
-    {
-      "type": "PASS",
-      "playerId": "p1"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p1"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p2"
-    },
-    {
-      "type": "CHOOSE_LIFE_OPTION",
-      "playerId": "p2",
-      "optionId": "keep"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p2"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p1"
-    },
-    {
-      "type": "CHOOSE_DEAL_SIZE",
-      "playerId": "p1",
-      "size": "small"
-    },
-    {
-      "type": "BUY",
-      "playerId": "p1",
-      "shares": 22
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p1"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p2"
-    },
-    {
       "type": "ACCEPT_MARKET",
-      "playerId": "p2"
-    },
-    {
-      "type": "END_TURN",
-      "playerId": "p2"
-    },
-    {
-      "type": "ROLL",
-      "playerId": "p1"
-    },
-    {
-      "type": "CHOOSE_DEAL_SIZE",
-      "playerId": "p1",
-      "size": "small"
-    },
-    {
-      "type": "PASS",
       "playerId": "p1"
     },
     {
@@ -452,7 +344,148 @@
     {
       "type": "BORROW",
       "playerId": "p2",
-      "amount": 8000
+      "amount": 16000
+    },
+    {
+      "type": "BUY",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "CHOOSE_LIFE_OPTION",
+      "playerId": "p1",
+      "optionId": "plan"
+    },
+    {
+      "type": "REPAY",
+      "playerId": "p1",
+      "liabilityId": "p1-life-014-77-0"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p2",
+      "size": "small"
+    },
+    {
+      "type": "BUY",
+      "playerId": "p2",
+      "shares": 500
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "CHOOSE_LIFE_OPTION",
+      "playerId": "p1",
+      "optionId": "move"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p2",
+      "size": "big"
+    },
+    {
+      "type": "BORROW",
+      "playerId": "p2",
+      "amount": 12000
+    },
+    {
+      "type": "BUY",
+      "playerId": "p2"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p1",
+      "size": "small"
+    },
+    {
+      "type": "BUY",
+      "playerId": "p1",
+      "shares": 31
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "REPAY",
+      "playerId": "p2",
+      "liabilityId": "p2-bank-58"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p2"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p1"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p1",
+      "size": "small"
+    },
+    {
+      "type": "BUY",
+      "playerId": "p1"
+    },
+    {
+      "type": "END_TURN",
+      "playerId": "p1"
+    },
+    {
+      "type": "ROLL",
+      "playerId": "p2"
+    },
+    {
+      "type": "CHOOSE_DEAL_SIZE",
+      "playerId": "p2",
+      "size": "big"
+    },
+    {
+      "type": "BORROW",
+      "playerId": "p2",
+      "amount": 19000
     },
     {
       "type": "BUY",
@@ -484,9 +517,18 @@
       "playerId": "p2"
     },
     {
-      "type": "CHOOSE_LIFE_OPTION",
+      "type": "CHOOSE_DEAL_SIZE",
       "playerId": "p2",
-      "optionId": "stay"
+      "size": "big"
+    },
+    {
+      "type": "BORROW",
+      "playerId": "p2",
+      "amount": 39000
+    },
+    {
+      "type": "BUY",
+      "playerId": "p2"
     },
     {
       "type": "END_TURN",
@@ -538,15 +580,38 @@
             },
             {
               "kind": "cashChanged",
-              "delta": -4000,
+              "delta": -1500,
               "reason": "setback"
             },
             {
               "kind": "setback",
               "cardId": "setback-005",
-              "cost": 4000,
+              "cost": 1500,
               "autoBorrowed": 0,
               "skipsNextTurn": false
+            }
+          ]
+        },
+        {
+          "turnNumber": 0,
+          "action": {
+            "type": "REPAY",
+            "playerId": "p1",
+            "liabilityId": "p1-credit-2"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -3000,
+              "reason": "repay"
+            },
+            {
+              "kind": "repaid",
+              "liabilityId": "p1-credit-2",
+              "principal": 3000,
+              "principles": [
+                "P5"
+              ]
             }
           ]
         },
@@ -593,13 +658,13 @@
             },
             {
               "kind": "cashChanged",
-              "delta": -1200,
+              "delta": -700,
               "reason": "setback"
             },
             {
               "kind": "setback",
               "cardId": "setback-006",
-              "cost": 1200,
+              "cost": 700,
               "autoBorrowed": 0,
               "skipsNextTurn": false
             }
@@ -650,14 +715,14 @@
           "events": [
             {
               "kind": "payday",
-              "amount": 1210
+              "amount": 1300
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
               "passiveIncome": 0,
-              "totalExpenses": 6790,
-              "cash": 2420,
+              "totalExpenses": 6700,
+              "cash": 2010,
               "roundNumber": 2
             },
             {
@@ -700,7 +765,7 @@
             },
             {
               "kind": "bought",
-              "assetId": "p1-small-038-7",
+              "assetId": "p1-small-038-8",
               "cardId": "small-038",
               "cost": 800,
               "principles": [
@@ -734,7 +799,7 @@
               "playerId": "p2",
               "passiveIncome": 0,
               "totalExpenses": 16800,
-              "cash": 6760,
+              "cash": 7260,
               "roundNumber": 2
             },
             {
@@ -768,19 +833,19 @@
           "action": {
             "type": "BUY",
             "playerId": "p2",
-            "amount": 5700
+            "amount": 6200
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -5700,
+              "delta": -6200,
               "reason": "buy"
             },
             {
               "kind": "bought",
-              "assetId": "p2-small-017-11",
+              "assetId": "p2-small-017-12",
               "cardId": "small-017",
-              "cost": 5700,
+              "cost": 6200,
               "principles": [
                 "P8",
                 "P9"
@@ -810,14 +875,14 @@
           "events": [
             {
               "kind": "payday",
-              "amount": 1270
+              "amount": 1530
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 60,
-              "totalExpenses": 6790,
-              "cash": 2890,
+              "passiveIncome": 230,
+              "totalExpenses": 6700,
+              "cash": 2740,
               "roundNumber": 3
             },
             {
@@ -851,19 +916,19 @@
           "action": {
             "type": "BUY",
             "playerId": "p1",
-            "amount": 2800
+            "amount": 2700
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -2800,
+              "delta": -2700,
               "reason": "buy"
             },
             {
               "kind": "bought",
-              "assetId": "p1-small-012-15",
+              "assetId": "p1-small-012-16",
               "cardId": "small-012",
-              "cost": 2800,
+              "cost": 2700,
               "principles": [
                 "P4",
                 "P8"
@@ -888,20 +953,20 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 171,
-              "marketValue": 5871
+              "assetId": "p2-small-017-12",
+              "delta": 248,
+              "marketValue": 6448
             },
             {
               "kind": "payday",
-              "amount": 3158
+              "amount": 3228
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 58,
+              "passiveIncome": 128,
               "totalExpenses": 16800,
-              "cash": 4218,
+              "cash": 4288,
               "roundNumber": 3
             },
             {
@@ -972,20 +1037,20 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 56,
-              "marketValue": 2856
+              "assetId": "p1-small-012-16",
+              "delta": 81,
+              "marketValue": 2781
             },
             {
               "kind": "payday",
-              "amount": 1298
+              "amount": 1585
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 88,
-              "totalExpenses": 6790,
-              "cash": 1388,
+              "passiveIncome": 285,
+              "totalExpenses": 6700,
+              "cash": 1625,
               "roundNumber": 4
             },
             {
@@ -996,21 +1061,47 @@
               "kind": "moved",
               "from": 13,
               "to": 16
-            },
-            {
-              "kind": "drewCard",
-              "deck": "market",
-              "cardId": "market-017"
             }
           ]
         },
         {
           "turnNumber": 6,
           "action": {
-            "type": "ACCEPT_MARKET",
+            "type": "CHOOSE_DEAL_SIZE",
+            "playerId": "p1",
+            "size": "small"
+          },
+          "events": [
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-040"
+            }
+          ]
+        },
+        {
+          "turnNumber": 6,
+          "action": {
+            "type": "BUY",
             "playerId": "p1"
           },
-          "events": []
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -1000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p1-small-040-23",
+              "cardId": "small-040",
+              "cost": 1000,
+              "principles": [
+                "P2",
+                "P3"
+              ]
+            }
+          ]
         },
         {
           "turnNumber": 6,
@@ -1029,20 +1120,20 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 176,
-              "marketValue": 6047
+              "assetId": "p2-small-017-12",
+              "delta": 257,
+              "marketValue": 6705
             },
             {
               "kind": "payday",
-              "amount": 3160
+              "amount": 3234
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 60,
+              "passiveIncome": 134,
               "totalExpenses": 16800,
-              "cash": 7378,
+              "cash": 7522,
               "roundNumber": 4
             },
             {
@@ -1067,7 +1158,7 @@
             {
               "kind": "drewCard",
               "deck": "smallDeals",
-              "cardId": "small-040"
+              "cardId": "small-036"
             }
           ]
         },
@@ -1080,14 +1171,14 @@
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -1000,
+              "delta": -4000,
               "reason": "buy"
             },
             {
               "kind": "bought",
-              "assetId": "p2-small-040-25",
-              "cardId": "small-040",
-              "cost": 1000,
+              "assetId": "p2-small-036-27",
+              "cardId": "small-036",
+              "cost": 4000,
               "principles": [
                 "P2",
                 "P3"
@@ -1117,20 +1208,20 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 57,
-              "marketValue": 2913
+              "assetId": "p1-small-012-16",
+              "delta": 83,
+              "marketValue": 2864
             },
             {
               "kind": "payday",
-              "amount": 1299
+              "amount": 1857
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 89,
-              "totalExpenses": 6790,
-              "cash": 2687,
+              "passiveIncome": 557,
+              "totalExpenses": 6700,
+              "cash": 2482,
               "roundNumber": 5
             },
             {
@@ -1155,27 +1246,32 @@
             {
               "kind": "drewCard",
               "deck": "smallDeals",
-              "cardId": "small-036"
+              "cardId": "small-010"
             }
           ]
         },
         {
           "turnNumber": 8,
           "action": {
-            "type": "PASS",
-            "playerId": "p1"
+            "type": "BUY",
+            "playerId": "p1",
+            "amount": 2400
           },
           "events": [
             {
-              "kind": "passed",
-              "cardId": "small-036",
+              "kind": "cashChanged",
+              "delta": -2400,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p1-small-010-31",
+              "cardId": "small-010",
+              "cost": 2400,
               "principles": [
-                "P2",
-                "P3"
-              ],
-              "monthlyCashFlow": 160,
-              "downPayment": 4000,
-              "affordable": false
+                "P1",
+                "P4"
+              ]
             }
           ]
         },
@@ -1196,20 +1292,20 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 181,
-              "marketValue": 6228
+              "assetId": "p2-small-017-12",
+              "delta": 268,
+              "marketValue": 6973
             },
             {
               "kind": "payday",
-              "amount": 3232
+              "amount": 3859
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 132,
+              "passiveIncome": 759,
               "totalExpenses": 16800,
-              "cash": 9610,
+              "cash": 7381,
               "roundNumber": 5
             },
             {
@@ -1220,21 +1316,53 @@
               "kind": "moved",
               "from": 20,
               "to": 21
-            },
-            {
-              "kind": "drewCard",
-              "deck": "market",
-              "cardId": "market-004"
             }
           ]
         },
         {
           "turnNumber": 9,
           "action": {
-            "type": "ACCEPT_MARKET",
-            "playerId": "p2"
+            "type": "CHOOSE_DEAL_SIZE",
+            "playerId": "p2",
+            "size": "small"
           },
-          "events": []
+          "events": [
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-019"
+            },
+            {
+              "kind": "sharePriceRolled",
+              "cardId": "small-019",
+              "sharePrice": 7
+            }
+          ]
+        },
+        {
+          "turnNumber": 9,
+          "action": {
+            "type": "BUY",
+            "playerId": "p2",
+            "shares": 911
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -6377,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p2-small-019-35",
+              "cardId": "small-019",
+              "cost": 6377,
+              "shares": 911,
+              "principles": [
+                "P9"
+              ]
+            }
+          ]
         },
         {
           "turnNumber": 9,
@@ -1258,98 +1386,100 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 58,
-              "marketValue": 2971
+              "assetId": "p1-small-012-16",
+              "delta": 85,
+              "marketValue": 2949
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-010-31",
+              "delta": 48,
+              "marketValue": 2448
             },
             {
               "kind": "payday",
-              "amount": 1299
+              "amount": 1882
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 89,
-              "totalExpenses": 6790,
-              "cash": 3986,
+              "passiveIncome": 582,
+              "totalExpenses": 6700,
+              "cash": 1964,
               "roundNumber": 6
             },
             {
               "kind": "rolled",
-              "value": 2
+              "value": 1
             },
             {
               "kind": "moved",
               "from": 20,
-              "to": 22
-            },
+              "to": 21
+            }
+          ]
+        },
+        {
+          "turnNumber": 10,
+          "action": {
+            "type": "CHOOSE_DEAL_SIZE",
+            "playerId": "p1",
+            "size": "small"
+          },
+          "events": [
             {
               "kind": "drewCard",
-              "deck": "lifeChoices",
-              "cardId": "life-027"
+              "deck": "smallDeals",
+              "cardId": "small-037"
             }
           ]
         },
         {
           "turnNumber": 10,
           "action": {
-            "type": "CHOOSE_LIFE_OPTION",
+            "type": "BORROW",
             "playerId": "p1",
-            "optionId": "spend"
-          },
-          "events": [
-            {
-              "kind": "choseLifeOption",
-              "cardId": "life-027",
-              "optionId": "spend",
-              "principles": [
-                "P4",
-                "P6"
-              ],
-              "costToday": 0,
-              "monthlyChange": 0,
-              "cheapest": {
-                "optionId": "invest",
-                "costToday": 0,
-                "monthlyChange": -30
-              },
-              "priciest": {
-                "optionId": "spend",
-                "costToday": 0,
-                "monthlyChange": 0
-              }
-            },
-            {
-              "kind": "cashChanged",
-              "delta": 3000,
-              "reason": "windfall"
-            },
-            {
-              "kind": "cashChanged",
-              "delta": -3000,
-              "reason": "lifeChoice"
-            }
-          ]
-        },
-        {
-          "turnNumber": 10,
-          "action": {
-            "type": "REPAY",
-            "playerId": "p1",
-            "liabilityId": "p1-credit-2"
+            "amount": 4000
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -3000,
-              "reason": "repay"
+              "delta": 4000,
+              "reason": "borrow"
             },
             {
-              "kind": "repaid",
-              "liabilityId": "p1-credit-2",
-              "principal": 3000,
+              "kind": "borrowed",
+              "liabilityId": "p1-bank-39",
+              "amount": 4000,
+              "monthlyPayment": 400,
               "principles": [
                 "P5"
+              ],
+              "purpose": "asset"
+            }
+          ]
+        },
+        {
+          "turnNumber": 10,
+          "action": {
+            "type": "BUY",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -5000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p1-small-037-40",
+              "cardId": "small-037",
+              "cost": 5000,
+              "principles": [
+                "P2",
+                "P5",
+                "P9"
               ]
             }
           ]
@@ -1371,67 +1501,45 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 186,
-              "marketValue": 6414
+              "assetId": "p2-small-017-12",
+              "delta": 278,
+              "marketValue": 7251
             },
             {
               "kind": "payday",
-              "amount": 3234
+              "amount": 3865
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 134,
+              "passiveIncome": 765,
               "totalExpenses": 16800,
-              "cash": 12844,
+              "cash": 4869,
               "roundNumber": 6
             },
             {
               "kind": "rolled",
-              "value": 1
+              "value": 5
             },
             {
               "kind": "moved",
               "from": 21,
-              "to": 22
+              "to": 2
             },
             {
               "kind": "drewCard",
-              "deck": "lifeChoices",
-              "cardId": "life-017"
+              "deck": "market",
+              "cardId": "market-017"
             }
           ]
         },
         {
           "turnNumber": 11,
           "action": {
-            "type": "CHOOSE_LIFE_OPTION",
-            "playerId": "p2",
-            "optionId": "skip"
+            "type": "ACCEPT_MARKET",
+            "playerId": "p2"
           },
-          "events": [
-            {
-              "kind": "choseLifeOption",
-              "cardId": "life-017",
-              "optionId": "skip",
-              "principles": [
-                "P4"
-              ],
-              "costToday": 0,
-              "monthlyChange": 0,
-              "cheapest": {
-                "optionId": "skip",
-                "costToday": 0,
-                "monthlyChange": 0
-              },
-              "priciest": {
-                "optionId": "monitor",
-                "costToday": 300,
-                "monthlyChange": 30
-              }
-            }
-          ]
+          "events": []
         },
         {
           "turnNumber": 11,
@@ -1455,20 +1563,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 59,
-              "marketValue": 3030
+              "assetId": "p1-small-012-16",
+              "delta": 88,
+              "marketValue": 3037
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-010-31",
+              "delta": 48,
+              "marketValue": 2496
             },
             {
               "kind": "payday",
-              "amount": 1390
+              "amount": 2264
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 90,
-              "totalExpenses": 6700,
-              "cash": 2376,
+              "passiveIncome": 1364,
+              "totalExpenses": 7100,
+              "cash": 3228,
               "roundNumber": 7
             },
             {
@@ -1477,50 +1591,23 @@
             },
             {
               "kind": "moved",
-              "from": 22,
-              "to": 3
-            }
-          ]
-        },
-        {
-          "turnNumber": 12,
-          "action": {
-            "type": "CHOOSE_DEAL_SIZE",
-            "playerId": "p1",
-            "size": "small"
-          },
-          "events": [
-            {
-              "kind": "drewCard",
-              "deck": "smallDeals",
-              "cardId": "small-010"
-            }
-          ]
-        },
-        {
-          "turnNumber": 12,
-          "action": {
-            "type": "BUY",
-            "playerId": "p1",
-            "amount": 2300
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": -2300,
-              "reason": "buy"
+              "from": 21,
+              "to": 2
             },
             {
-              "kind": "bought",
-              "assetId": "p1-small-010-43",
-              "cardId": "small-010",
-              "cost": 2300,
-              "principles": [
-                "P1",
-                "P4"
-              ]
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-004"
             }
           ]
+        },
+        {
+          "turnNumber": 12,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p1"
+          },
+          "events": []
         },
         {
           "turnNumber": 12,
@@ -1539,20 +1626,20 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 192,
-              "marketValue": 6606
+              "assetId": "p2-small-017-12",
+              "delta": 290,
+              "marketValue": 7541
             },
             {
               "kind": "payday",
-              "amount": 3236
+              "amount": 3870
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 136,
+              "passiveIncome": 770,
               "totalExpenses": 16800,
-              "cash": 16080,
+              "cash": 8739,
               "roundNumber": 7
             },
             {
@@ -1561,72 +1648,63 @@
             },
             {
               "kind": "moved",
-              "from": 22,
-              "to": 3
-            }
-          ]
-        },
-        {
-          "turnNumber": 13,
-          "action": {
-            "type": "CHOOSE_DEAL_SIZE",
-            "playerId": "p2",
-            "size": "big"
-          },
-          "events": [
-            {
-              "kind": "drewCard",
-              "deck": "bigDeals",
-              "cardId": "big-013"
-            }
-          ]
-        },
-        {
-          "turnNumber": 13,
-          "action": {
-            "type": "BORROW",
-            "playerId": "p2",
-            "amount": 3000
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": 3000,
-              "reason": "borrow"
+              "from": 2,
+              "to": 7
             },
             {
-              "kind": "borrowed",
-              "liabilityId": "p2-bank-47",
-              "amount": 3000,
-              "monthlyPayment": 300,
-              "principles": [
-                "P5"
-              ],
-              "purpose": "asset"
+              "kind": "drewCard",
+              "deck": "lifeChoices",
+              "cardId": "life-027"
             }
           ]
         },
         {
           "turnNumber": 13,
           "action": {
-            "type": "BUY",
-            "playerId": "p2"
+            "type": "CHOOSE_LIFE_OPTION",
+            "playerId": "p2",
+            "optionId": "invest"
           },
           "events": [
             {
+              "kind": "choseLifeOption",
+              "cardId": "life-027",
+              "optionId": "invest",
+              "principles": [
+                "P4",
+                "P8"
+              ],
+              "costToday": 0,
+              "monthlyChange": -40,
+              "cheapest": {
+                "optionId": "invest",
+                "costToday": 0,
+                "monthlyChange": -40
+              },
+              "priciest": {
+                "optionId": "spend",
+                "costToday": 0,
+                "monthlyChange": 0
+              }
+            },
+            {
               "kind": "cashChanged",
-              "delta": -18000,
-              "reason": "buy"
+              "delta": 4000,
+              "reason": "windfall"
+            },
+            {
+              "kind": "cashChanged",
+              "delta": -4000,
+              "reason": "invest"
             },
             {
               "kind": "bought",
-              "assetId": "p2-big-013-48",
-              "cardId": "big-013",
-              "cost": 18000,
+              "assetId": "p2-life-027-49-1",
+              "cardId": "life-027",
+              "cost": 4000,
               "principles": [
-                "P2",
-                "P3",
-                "P5"
+                "P4",
+                "P8"
               ]
             }
           ]
@@ -1653,26 +1731,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 60,
-              "marketValue": 3090
+              "assetId": "p1-small-012-16",
+              "delta": 91,
+              "marketValue": 3128
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 23,
-              "marketValue": 2323
+              "assetId": "p1-small-010-31",
+              "delta": 49,
+              "marketValue": 2545
             },
             {
               "kind": "payday",
-              "amount": 1390
+              "amount": 2267
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 90,
-              "totalExpenses": 6700,
-              "cash": 1466,
+              "passiveIncome": 1367,
+              "totalExpenses": 7100,
+              "cash": 5495,
               "roundNumber": 8
             },
             {
@@ -1681,47 +1759,95 @@
             },
             {
               "kind": "moved",
-              "from": 3,
-              "to": 8
-            }
-          ]
-        },
-        {
-          "turnNumber": 14,
-          "action": {
-            "type": "CHOOSE_DEAL_SIZE",
-            "playerId": "p1",
-            "size": "small"
-          },
-          "events": [
-            {
-              "kind": "drewCard",
-              "deck": "smallDeals",
-              "cardId": "small-019"
+              "from": 2,
+              "to": 7
             },
             {
-              "kind": "sharePriceRolled",
-              "cardId": "small-019",
-              "sharePrice": 21
+              "kind": "drewCard",
+              "deck": "lifeChoices",
+              "cardId": "life-017"
             }
           ]
         },
         {
           "turnNumber": 14,
           "action": {
-            "type": "PASS",
-            "playerId": "p1"
+            "type": "CHOOSE_LIFE_OPTION",
+            "playerId": "p1",
+            "optionId": "monitor"
           },
           "events": [
             {
-              "kind": "passed",
-              "cardId": "small-019",
+              "kind": "choseLifeOption",
+              "cardId": "life-017",
+              "optionId": "monitor",
               "principles": [
-                "P9"
+                "P6",
+                "P7"
               ],
-              "monthlyCashFlow": 0,
-              "downPayment": 12,
-              "affordable": true
+              "costToday": 300,
+              "monthlyChange": 30,
+              "cheapest": {
+                "optionId": "skip",
+                "costToday": 0,
+                "monthlyChange": 0
+              },
+              "priciest": {
+                "optionId": "monitor",
+                "costToday": 300,
+                "monthlyChange": 30
+              }
+            },
+            {
+              "kind": "cashChanged",
+              "delta": -300,
+              "reason": "lifeChoice"
+            },
+            {
+              "kind": "subscriptionAdded",
+              "liabilityId": "p1-life-017-52-1",
+              "monthlyCost": 30
+            }
+          ]
+        },
+        {
+          "turnNumber": 14,
+          "action": {
+            "type": "REPAY",
+            "playerId": "p1",
+            "liabilityId": "p1-life-017-52-1"
+          },
+          "events": [
+            {
+              "kind": "repaid",
+              "liabilityId": "p1-life-017-52-1",
+              "principal": 0,
+              "principles": [
+                "P7"
+              ]
+            }
+          ]
+        },
+        {
+          "turnNumber": 14,
+          "action": {
+            "type": "REPAY",
+            "playerId": "p1",
+            "liabilityId": "p1-bank-39"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -4000,
+              "reason": "repay"
+            },
+            {
+              "kind": "repaid",
+              "liabilityId": "p1-bank-39",
+              "principal": 4000,
+              "principles": [
+                "P5"
+              ]
             }
           ]
         },
@@ -1742,20 +1868,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 198,
-              "marketValue": 6804
+              "assetId": "p2-small-017-12",
+              "delta": 301,
+              "marketValue": 7842
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 160,
+              "marketValue": 4160
             },
             {
               "kind": "payday",
-              "amount": 3538
+              "amount": 3917
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 738,
-              "totalExpenses": 17100,
-              "cash": 4618,
+              "passiveIncome": 817,
+              "totalExpenses": 16800,
+              "cash": 12656,
               "roundNumber": 8
             },
             {
@@ -1764,42 +1896,71 @@
             },
             {
               "kind": "moved",
-              "from": 3,
-              "to": 9
-            },
-            {
-              "kind": "drewCard",
-              "deck": "market",
-              "cardId": "market-009"
+              "from": 7,
+              "to": 13
             }
           ]
         },
         {
           "turnNumber": 15,
           "action": {
-            "type": "ACCEPT_MARKET",
-            "playerId": "p2"
+            "type": "CHOOSE_DEAL_SIZE",
+            "playerId": "p2",
+            "size": "big"
           },
-          "events": []
+          "events": [
+            {
+              "kind": "drewCard",
+              "deck": "bigDeals",
+              "cardId": "big-013"
+            }
+          ]
         },
         {
           "turnNumber": 15,
           "action": {
-            "type": "REPAY",
+            "type": "BORROW",
             "playerId": "p2",
-            "liabilityId": "p2-bank-47"
+            "amount": 7000
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -3000,
-              "reason": "repay"
+              "delta": 7000,
+              "reason": "borrow"
             },
             {
-              "kind": "repaid",
-              "liabilityId": "p2-bank-47",
-              "principal": 3000,
+              "kind": "borrowed",
+              "liabilityId": "p2-bank-58",
+              "amount": 7000,
+              "monthlyPayment": 700,
               "principles": [
+                "P5"
+              ],
+              "purpose": "asset"
+            }
+          ]
+        },
+        {
+          "turnNumber": 15,
+          "action": {
+            "type": "BUY",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -18000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p2-big-013-59",
+              "cardId": "big-013",
+              "cost": 18000,
+              "principles": [
+                "P2",
+                "P3",
                 "P5"
               ]
             }
@@ -1827,26 +1988,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 61,
-              "marketValue": 3151
+              "assetId": "p1-small-012-16",
+              "delta": 93,
+              "marketValue": 3221
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 23,
-              "marketValue": 2346
+              "assetId": "p1-small-010-31",
+              "delta": 50,
+              "marketValue": 2595
             },
             {
               "kind": "payday",
-              "amount": 1391
+              "amount": 2669
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 91,
+              "passiveIncome": 1369,
               "totalExpenses": 6700,
-              "cash": 2857,
+              "cash": 3864,
               "roundNumber": 9
             },
             {
@@ -1855,190 +2016,13 @@
             },
             {
               "kind": "moved",
-              "from": 8,
-              "to": 9
-            },
-            {
-              "kind": "drewCard",
-              "deck": "market",
-              "cardId": "market-019"
+              "from": 7,
+              "to": 8
             }
           ]
         },
         {
           "turnNumber": 16,
-          "action": {
-            "type": "ACCEPT_MARKET",
-            "playerId": "p1"
-          },
-          "events": []
-        },
-        {
-          "turnNumber": 16,
-          "action": {
-            "type": "END_TURN",
-            "playerId": "p1"
-          },
-          "events": []
-        },
-        {
-          "turnNumber": 17,
-          "action": {
-            "type": "ROLL",
-            "playerId": "p2"
-          },
-          "events": [
-            {
-              "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 204,
-              "marketValue": 7008
-            },
-            {
-              "kind": "payday",
-              "amount": 3840
-            },
-            {
-              "kind": "paydaySnapshot",
-              "playerId": "p2",
-              "passiveIncome": 740,
-              "totalExpenses": 16800,
-              "cash": 5458,
-              "roundNumber": 9
-            },
-            {
-              "kind": "rolled",
-              "value": 6
-            },
-            {
-              "kind": "moved",
-              "from": 9,
-              "to": 15
-            }
-          ]
-        },
-        {
-          "turnNumber": 17,
-          "action": {
-            "type": "CHOOSE_DEAL_SIZE",
-            "playerId": "p2",
-            "size": "small"
-          },
-          "events": [
-            {
-              "kind": "drewCard",
-              "deck": "smallDeals",
-              "cardId": "small-037"
-            }
-          ]
-        },
-        {
-          "turnNumber": 17,
-          "action": {
-            "type": "BORROW",
-            "playerId": "p2",
-            "amount": 1000
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": 1000,
-              "reason": "borrow"
-            },
-            {
-              "kind": "borrowed",
-              "liabilityId": "p2-bank-63",
-              "amount": 1000,
-              "monthlyPayment": 100,
-              "principles": [
-                "P5"
-              ],
-              "purpose": "asset"
-            }
-          ]
-        },
-        {
-          "turnNumber": 17,
-          "action": {
-            "type": "BUY",
-            "playerId": "p2"
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": -5000,
-              "reason": "buy"
-            },
-            {
-              "kind": "bought",
-              "assetId": "p2-small-037-64",
-              "cardId": "small-037",
-              "cost": 5000,
-              "principles": [
-                "P2",
-                "P5",
-                "P9"
-              ]
-            }
-          ]
-        },
-        {
-          "turnNumber": 17,
-          "action": {
-            "type": "END_TURN",
-            "playerId": "p2"
-          },
-          "events": [
-            {
-              "kind": "roundCompleted",
-              "round": 9
-            }
-          ]
-        },
-        {
-          "turnNumber": 18,
-          "action": {
-            "type": "ROLL",
-            "playerId": "p1"
-          },
-          "events": [
-            {
-              "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 63,
-              "marketValue": 3214
-            },
-            {
-              "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 23,
-              "marketValue": 2369
-            },
-            {
-              "kind": "payday",
-              "amount": 1392
-            },
-            {
-              "kind": "paydaySnapshot",
-              "playerId": "p1",
-              "passiveIncome": 92,
-              "totalExpenses": 6700,
-              "cash": 4249,
-              "roundNumber": 10
-            },
-            {
-              "kind": "rolled",
-              "value": 1
-            },
-            {
-              "kind": "moved",
-              "from": 9,
-              "to": 10
-            }
-          ]
-        },
-        {
-          "turnNumber": 18,
           "action": {
             "type": "CHOOSE_DEAL_SIZE",
             "playerId": "p1",
@@ -2053,23 +2037,23 @@
           ]
         },
         {
-          "turnNumber": 18,
+          "turnNumber": 16,
           "action": {
             "type": "BUY",
             "playerId": "p1",
-            "amount": 4200
+            "amount": 3800
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -4200,
+              "delta": -3800,
               "reason": "buy"
             },
             {
               "kind": "bought",
-              "assetId": "p1-small-009-68",
+              "assetId": "p1-small-009-63",
               "cardId": "small-009",
-              "cost": 4200,
+              "cost": 3800,
               "principles": [
                 "P1",
                 "P8"
@@ -2078,7 +2062,7 @@
           ]
         },
         {
-          "turnNumber": 18,
+          "turnNumber": 16,
           "action": {
             "type": "END_TURN",
             "playerId": "p1"
@@ -2086,7 +2070,7 @@
           "events": []
         },
         {
-          "turnNumber": 19,
+          "turnNumber": 17,
           "action": {
             "type": "ROLL",
             "playerId": "p2"
@@ -2094,196 +2078,35 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 210,
-              "marketValue": 7218
+              "assetId": "p2-small-017-12",
+              "delta": 313,
+              "marketValue": 8155
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 166,
+              "marketValue": 4326
             },
             {
               "kind": "payday",
-              "amount": 3942
+              "amount": 5336
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 942,
-              "totalExpenses": 16900,
-              "cash": 5400,
-              "roundNumber": 10
+              "passiveIncome": 2936,
+              "totalExpenses": 17500,
+              "cash": 6992,
+              "roundNumber": 9
             },
             {
               "kind": "rolled",
-              "value": 2
+              "value": 6
             },
             {
               "kind": "moved",
-              "from": 15,
-              "to": 17
-            }
-          ]
-        },
-        {
-          "turnNumber": 19,
-          "action": {
-            "type": "GIVE",
-            "playerId": "p2"
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": -540,
-              "reason": "give"
-            },
-            {
-              "kind": "gave",
-              "amount": 540,
-              "favorTokens": 1,
-              "principles": [
-                "P10"
-              ]
-            }
-          ]
-        },
-        {
-          "turnNumber": 19,
-          "action": {
-            "type": "REPAY",
-            "playerId": "p2",
-            "liabilityId": "p2-bank-63"
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": -1000,
-              "reason": "repay"
-            },
-            {
-              "kind": "repaid",
-              "liabilityId": "p2-bank-63",
-              "principal": 1000,
-              "principles": [
-                "P5"
-              ]
-            }
-          ]
-        },
-        {
-          "turnNumber": 19,
-          "action": {
-            "type": "END_TURN",
-            "playerId": "p2"
-          },
-          "events": [
-            {
-              "kind": "roundCompleted",
-              "round": 10
-            }
-          ]
-        },
-        {
-          "turnNumber": 20,
-          "action": {
-            "type": "ROLL",
-            "playerId": "p1"
-          },
-          "events": [
-            {
-              "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 64,
-              "marketValue": 3278
-            },
-            {
-              "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 23,
-              "marketValue": 2392
-            },
-            {
-              "kind": "valueChanged",
-              "assetId": "p1-small-009-68",
-              "delta": 42,
-              "marketValue": 4242
-            },
-            {
-              "kind": "payday",
-              "amount": 1392
-            },
-            {
-              "kind": "paydaySnapshot",
-              "playerId": "p1",
-              "passiveIncome": 92,
-              "totalExpenses": 6700,
-              "cash": 1441,
-              "roundNumber": 11
-            },
-            {
-              "kind": "rolled",
-              "value": 2
-            },
-            {
-              "kind": "moved",
-              "from": 10,
-              "to": 12
-            },
-            {
-              "kind": "drewCard",
-              "deck": "setback",
-              "cardId": "setback-010"
-            },
-            {
-              "kind": "cashChanged",
-              "delta": -1000,
-              "reason": "setback"
-            },
-            {
-              "kind": "setback",
-              "cardId": "setback-010",
-              "cost": 1000,
-              "autoBorrowed": 0,
-              "skipsNextTurn": false
-            }
-          ]
-        },
-        {
-          "turnNumber": 20,
-          "action": {
-            "type": "END_TURN",
-            "playerId": "p1"
-          },
-          "events": []
-        },
-        {
-          "turnNumber": 21,
-          "action": {
-            "type": "ROLL",
-            "playerId": "p2"
-          },
-          "events": [
-            {
-              "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 216,
-              "marketValue": 7434
-            },
-            {
-              "kind": "payday",
-              "amount": 4044
-            },
-            {
-              "kind": "paydaySnapshot",
-              "playerId": "p2",
-              "passiveIncome": 944,
-              "totalExpenses": 16800,
-              "cash": 7904,
-              "roundNumber": 11
-            },
-            {
-              "kind": "rolled",
-              "value": 2
-            },
-            {
-              "kind": "moved",
-              "from": 17,
+              "from": 13,
               "to": 19
             },
             {
@@ -2294,7 +2117,7 @@
           ]
         },
         {
-          "turnNumber": 21,
+          "turnNumber": 17,
           "action": {
             "type": "CHOOSE_LIFE_OPTION",
             "playerId": "p2",
@@ -2324,6 +2147,418 @@
           ]
         },
         {
+          "turnNumber": 17,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "roundCompleted",
+              "round": 9
+            }
+          ]
+        },
+        {
+          "turnNumber": 18,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-012-16",
+              "delta": 96,
+              "marketValue": 3317
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-010-31",
+              "delta": 51,
+              "marketValue": 2646
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-009-63",
+              "delta": 76,
+              "marketValue": 3876
+            },
+            {
+              "kind": "payday",
+              "amount": 2710
+            },
+            {
+              "kind": "paydaySnapshot",
+              "playerId": "p1",
+              "passiveIncome": 1410,
+              "totalExpenses": 6700,
+              "cash": 2774,
+              "roundNumber": 10
+            },
+            {
+              "kind": "rolled",
+              "value": 1
+            },
+            {
+              "kind": "moved",
+              "from": 8,
+              "to": 9
+            },
+            {
+              "kind": "drewCard",
+              "deck": "market",
+              "cardId": "market-009"
+            }
+          ]
+        },
+        {
+          "turnNumber": 18,
+          "action": {
+            "type": "ACCEPT_MARKET",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 18,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-small-017-12",
+              "delta": 326,
+              "marketValue": 8481
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 173,
+              "marketValue": 4499
+            },
+            {
+              "kind": "payday",
+              "amount": 5343
+            },
+            {
+              "kind": "paydaySnapshot",
+              "playerId": "p2",
+              "passiveIncome": 2943,
+              "totalExpenses": 17500,
+              "cash": 12335,
+              "roundNumber": 10
+            },
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 19,
+              "to": 21
+            }
+          ]
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "CHOOSE_DEAL_SIZE",
+            "playerId": "p2",
+            "size": "big"
+          },
+          "events": [
+            {
+              "kind": "drewCard",
+              "deck": "bigDeals",
+              "cardId": "big-009"
+            }
+          ]
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "BORROW",
+            "playerId": "p2",
+            "amount": 16000
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": 16000,
+              "reason": "borrow"
+            },
+            {
+              "kind": "borrowed",
+              "liabilityId": "p2-bank-73",
+              "amount": 16000,
+              "monthlyPayment": 1600,
+              "principles": [
+                "P5"
+              ],
+              "purpose": "asset"
+            }
+          ]
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "BUY",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -27000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p2-big-009-74",
+              "cardId": "big-009",
+              "cost": 27000,
+              "principles": [
+                "P2",
+                "P3",
+                "P9"
+              ]
+            }
+          ]
+        },
+        {
+          "turnNumber": 19,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "roundCompleted",
+              "round": 10
+            }
+          ]
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p1"
+          },
+          "events": [
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-012-16",
+              "delta": 99,
+              "marketValue": 3416
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-010-31",
+              "delta": 52,
+              "marketValue": 2698
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p1-small-009-63",
+              "delta": 77,
+              "marketValue": 3953
+            },
+            {
+              "kind": "payday",
+              "amount": 2713
+            },
+            {
+              "kind": "paydaySnapshot",
+              "playerId": "p1",
+              "passiveIncome": 1413,
+              "totalExpenses": 6700,
+              "cash": 5487,
+              "roundNumber": 11
+            },
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 9,
+              "to": 11
+            },
+            {
+              "kind": "drewCard",
+              "deck": "lifeChoices",
+              "cardId": "life-014"
+            }
+          ]
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "CHOOSE_LIFE_OPTION",
+            "playerId": "p1",
+            "optionId": "plan"
+          },
+          "events": [
+            {
+              "kind": "choseLifeOption",
+              "cardId": "life-014",
+              "optionId": "plan",
+              "principles": [
+                "P6",
+                "P7"
+              ],
+              "costToday": 0,
+              "monthlyChange": 50,
+              "cheapest": {
+                "optionId": "keep",
+                "costToday": 0,
+                "monthlyChange": 0
+              },
+              "priciest": {
+                "optionId": "plan",
+                "costToday": 0,
+                "monthlyChange": 50
+              }
+            },
+            {
+              "kind": "loanAdded",
+              "liabilityId": "p1-life-014-77-0",
+              "loanKind": "lifestyle",
+              "principal": 1000,
+              "monthlyPayment": 50
+            }
+          ]
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "REPAY",
+            "playerId": "p1",
+            "liabilityId": "p1-life-014-77-0"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -1000,
+              "reason": "repay"
+            },
+            {
+              "kind": "repaid",
+              "liabilityId": "p1-life-014-77-0",
+              "principal": 1000,
+              "principles": [
+                "P5"
+              ]
+            }
+          ]
+        },
+        {
+          "turnNumber": 20,
+          "action": {
+            "type": "END_TURN",
+            "playerId": "p1"
+          },
+          "events": []
+        },
+        {
+          "turnNumber": 21,
+          "action": {
+            "type": "ROLL",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-small-017-12",
+              "delta": 339,
+              "marketValue": 8820
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 179,
+              "marketValue": 4678
+            },
+            {
+              "kind": "payday",
+              "amount": 7262
+            },
+            {
+              "kind": "paydaySnapshot",
+              "playerId": "p2",
+              "passiveIncome": 6462,
+              "totalExpenses": 19100,
+              "cash": 8597,
+              "roundNumber": 11
+            },
+            {
+              "kind": "rolled",
+              "value": 2
+            },
+            {
+              "kind": "moved",
+              "from": 21,
+              "to": 23
+            }
+          ]
+        },
+        {
+          "turnNumber": 21,
+          "action": {
+            "type": "CHOOSE_DEAL_SIZE",
+            "playerId": "p2",
+            "size": "small"
+          },
+          "events": [
+            {
+              "kind": "drewCard",
+              "deck": "smallDeals",
+              "cardId": "small-005"
+            },
+            {
+              "kind": "sharePriceRolled",
+              "cardId": "small-005",
+              "sharePrice": 8
+            }
+          ]
+        },
+        {
+          "turnNumber": 21,
+          "action": {
+            "type": "BUY",
+            "playerId": "p2",
+            "shares": 500
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -4000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p2-small-005-82",
+              "cardId": "small-005",
+              "cost": 4000,
+              "shares": 500,
+              "principles": [
+                "P8",
+                "P9"
+              ]
+            }
+          ]
+        },
+        {
           "turnNumber": 21,
           "action": {
             "type": "END_TURN",
@@ -2345,82 +2580,90 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 65,
-              "marketValue": 3343
+              "assetId": "p1-small-012-16",
+              "delta": 102,
+              "marketValue": 3518
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 23,
-              "marketValue": 2415
+              "assetId": "p1-small-010-31",
+              "delta": 53,
+              "marketValue": 2751
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-009-68",
-              "delta": 42,
-              "marketValue": 4284
+              "assetId": "p1-small-009-63",
+              "delta": 79,
+              "marketValue": 4032
             },
             {
               "kind": "payday",
-              "amount": 1393
+              "amount": 2717
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 93,
+              "passiveIncome": 1417,
               "totalExpenses": 6700,
-              "cash": 1834,
+              "cash": 7204,
               "roundNumber": 12
             },
             {
               "kind": "rolled",
-              "value": 1
+              "value": 3
             },
             {
               "kind": "moved",
-              "from": 12,
-              "to": 13
-            }
-          ]
-        },
-        {
-          "turnNumber": 22,
-          "action": {
-            "type": "CHOOSE_DEAL_SIZE",
-            "playerId": "p1",
-            "size": "small"
-          },
-          "events": [
-            {
-              "kind": "drewCard",
-              "deck": "smallDeals",
-              "cardId": "small-005"
+              "from": 11,
+              "to": 14
             },
             {
-              "kind": "sharePriceRolled",
-              "cardId": "small-005",
-              "sharePrice": 19
+              "kind": "drewCard",
+              "deck": "lifeChoices",
+              "cardId": "life-023"
             }
           ]
         },
         {
           "turnNumber": 22,
           "action": {
-            "type": "PASS",
-            "playerId": "p1"
+            "type": "CHOOSE_LIFE_OPTION",
+            "playerId": "p1",
+            "optionId": "move"
           },
           "events": [
             {
-              "kind": "passed",
-              "cardId": "small-005",
+              "kind": "choseLifeOption",
+              "cardId": "life-023",
+              "optionId": "move",
               "principles": [
-                "P8",
-                "P9"
+                "P3",
+                "P5"
               ],
-              "monthlyCashFlow": 0,
-              "downPayment": 20,
-              "affordable": true
+              "costToday": 5000,
+              "monthlyChange": 450,
+              "cheapest": {
+                "optionId": "stay",
+                "costToday": 0,
+                "monthlyChange": 0
+              },
+              "priciest": {
+                "optionId": "move",
+                "costToday": 5000,
+                "monthlyChange": 450
+              }
+            },
+            {
+              "kind": "cashChanged",
+              "delta": -5000,
+              "reason": "lifeChoice"
+            },
+            {
+              "kind": "loanAdded",
+              "liabilityId": "p1-life-023-85-1",
+              "loanKind": "lifestyle",
+              "principal": 50000,
+              "monthlyPayment": 450
             }
           ]
         },
@@ -2441,20 +2684,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 223,
-              "marketValue": 7657
+              "assetId": "p2-small-017-12",
+              "delta": 352,
+              "marketValue": 9172
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 187,
+              "marketValue": 4865
             },
             {
               "kind": "payday",
-              "amount": 4046
+              "amount": 7271
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 946,
-              "totalExpenses": 16800,
-              "cash": 11950,
+              "passiveIncome": 6471,
+              "totalExpenses": 19100,
+              "cash": 11868,
               "roundNumber": 12
             },
             {
@@ -2463,43 +2712,73 @@
             },
             {
               "kind": "moved",
-              "from": 19,
-              "to": 1
-            },
-            {
-              "kind": "drewCard",
-              "deck": "lifeChoices",
-              "cardId": "life-014"
+              "from": 23,
+              "to": 5
             }
           ]
         },
         {
           "turnNumber": 23,
           "action": {
-            "type": "CHOOSE_LIFE_OPTION",
+            "type": "CHOOSE_DEAL_SIZE",
             "playerId": "p2",
-            "optionId": "keep"
+            "size": "big"
           },
           "events": [
             {
-              "kind": "choseLifeOption",
-              "cardId": "life-014",
-              "optionId": "keep",
+              "kind": "drewCard",
+              "deck": "bigDeals",
+              "cardId": "big-010"
+            }
+          ]
+        },
+        {
+          "turnNumber": 23,
+          "action": {
+            "type": "BORROW",
+            "playerId": "p2",
+            "amount": 12000
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": 12000,
+              "reason": "borrow"
+            },
+            {
+              "kind": "borrowed",
+              "liabilityId": "p2-bank-89",
+              "amount": 12000,
+              "monthlyPayment": 1200,
               "principles": [
-                "P4"
+                "P5"
               ],
-              "costToday": 0,
-              "monthlyChange": 0,
-              "cheapest": {
-                "optionId": "keep",
-                "costToday": 0,
-                "monthlyChange": 0
-              },
-              "priciest": {
-                "optionId": "plan",
-                "costToday": 0,
-                "monthlyChange": 50
-              }
+              "purpose": "asset"
+            }
+          ]
+        },
+        {
+          "turnNumber": 23,
+          "action": {
+            "type": "BUY",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -22000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p2-big-010-90",
+              "cardId": "big-010",
+              "cost": 22000,
+              "principles": [
+                "P2",
+                "P3",
+                "P9"
+              ]
             }
           ]
         },
@@ -2525,32 +2804,32 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 66,
-              "marketValue": 3409
+              "assetId": "p1-small-012-16",
+              "delta": 105,
+              "marketValue": 3623
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 24,
-              "marketValue": 2439
+              "assetId": "p1-small-010-31",
+              "delta": 55,
+              "marketValue": 2806
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-009-68",
-              "delta": 42,
-              "marketValue": 4326
+              "assetId": "p1-small-009-63",
+              "delta": 80,
+              "marketValue": 4112
             },
             {
               "kind": "payday",
-              "amount": 1394
+              "amount": 2271
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 94,
-              "totalExpenses": 6700,
-              "cash": 3228,
+              "passiveIncome": 1421,
+              "totalExpenses": 7150,
+              "cash": 4475,
               "roundNumber": 13
             },
             {
@@ -2559,8 +2838,8 @@
             },
             {
               "kind": "moved",
-              "from": 13,
-              "to": 15
+              "from": 14,
+              "to": 16
             }
           ]
         },
@@ -2589,20 +2868,20 @@
           "action": {
             "type": "BUY",
             "playerId": "p1",
-            "shares": 22
+            "shares": 31
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -3146,
+              "delta": -4433,
               "reason": "buy"
             },
             {
               "kind": "bought",
-              "assetId": "p1-small-023-88",
+              "assetId": "p1-small-023-94",
               "cardId": "small-023",
-              "cost": 3146,
-              "shares": 22,
+              "cost": 4433,
+              "shares": 31,
               "principles": [
                 "P8",
                 "P9"
@@ -2627,20 +2906,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 229,
-              "marketValue": 7886
+              "assetId": "p2-small-017-12",
+              "delta": 366,
+              "marketValue": 9538
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 194,
+              "marketValue": 5059
             },
             {
               "kind": "payday",
-              "amount": 4048
+              "amount": 8540
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 948,
-              "totalExpenses": 16800,
-              "cash": 15998,
+              "passiveIncome": 8940,
+              "totalExpenses": 20300,
+              "cash": 10408,
               "roundNumber": 13
             },
             {
@@ -2649,23 +2934,50 @@
             },
             {
               "kind": "moved",
-              "from": 1,
-              "to": 2
+              "from": 5,
+              "to": 6
             },
             {
               "kind": "drewCard",
-              "deck": "market",
-              "cardId": "market-018"
+              "deck": "setback",
+              "cardId": "setback-010"
+            },
+            {
+              "kind": "cashChanged",
+              "delta": -500,
+              "reason": "setback"
+            },
+            {
+              "kind": "setback",
+              "cardId": "setback-010",
+              "cost": 500,
+              "autoBorrowed": 0,
+              "skipsNextTurn": false
             }
           ]
         },
         {
           "turnNumber": 25,
           "action": {
-            "type": "ACCEPT_MARKET",
-            "playerId": "p2"
+            "type": "REPAY",
+            "playerId": "p2",
+            "liabilityId": "p2-bank-58"
           },
-          "events": []
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -7000,
+              "reason": "repay"
+            },
+            {
+              "kind": "repaid",
+              "liabilityId": "p2-bank-58",
+              "principal": 7000,
+              "principles": [
+                "P5"
+              ]
+            }
+          ]
         },
         {
           "turnNumber": 25,
@@ -2689,32 +3001,32 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 68,
-              "marketValue": 3477
+              "assetId": "p1-small-012-16",
+              "delta": 108,
+              "marketValue": 3731
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 24,
-              "marketValue": 2463
+              "assetId": "p1-small-010-31",
+              "delta": 56,
+              "marketValue": 2862
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-009-68",
-              "delta": 43,
-              "marketValue": 4369
+              "assetId": "p1-small-009-63",
+              "delta": 82,
+              "marketValue": 4194
             },
             {
               "kind": "payday",
-              "amount": 1416
+              "amount": 2304
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 116,
-              "totalExpenses": 6700,
-              "cash": 1498,
+              "passiveIncome": 1454,
+              "totalExpenses": 7150,
+              "cash": 2346,
               "roundNumber": 14
             },
             {
@@ -2723,8 +3035,8 @@
             },
             {
               "kind": "moved",
-              "from": 15,
-              "to": 20
+              "from": 16,
+              "to": 21
             }
           ]
         },
@@ -2746,20 +3058,24 @@
         {
           "turnNumber": 26,
           "action": {
-            "type": "PASS",
+            "type": "BUY",
             "playerId": "p1"
           },
           "events": [
             {
-              "kind": "passed",
+              "kind": "cashChanged",
+              "delta": -1500,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p1-small-031-101",
               "cardId": "small-031",
+              "cost": 1500,
               "principles": [
                 "P2",
                 "P9"
-              ],
-              "monthlyCashFlow": 90,
-              "downPayment": 2500,
-              "affordable": false
+              ]
             }
           ]
         },
@@ -2780,20 +3096,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 236,
-              "marketValue": 8122
+              "assetId": "p2-small-017-12",
+              "delta": 381,
+              "marketValue": 9919
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 202,
+              "marketValue": 5261
             },
             {
               "kind": "payday",
-              "amount": 4051
+              "amount": 9250
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 951,
-              "totalExpenses": 16800,
-              "cash": 20049,
+              "passiveIncome": 8950,
+              "totalExpenses": 19600,
+              "cash": 12158,
               "roundNumber": 14
             },
             {
@@ -2802,8 +3124,8 @@
             },
             {
               "kind": "moved",
-              "from": 2,
-              "to": 8
+              "from": 6,
+              "to": 12
             }
           ]
         },
@@ -2818,7 +3140,7 @@
             {
               "kind": "drewCard",
               "deck": "bigDeals",
-              "cardId": "big-009"
+              "cardId": "big-020"
             }
           ]
         },
@@ -2827,19 +3149,19 @@
           "action": {
             "type": "BORROW",
             "playerId": "p2",
-            "amount": 8000
+            "amount": 19000
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": 8000,
+              "delta": 19000,
               "reason": "borrow"
             },
             {
               "kind": "borrowed",
-              "liabilityId": "p2-bank-99",
-              "amount": 8000,
-              "monthlyPayment": 800,
+              "liabilityId": "p2-bank-105",
+              "amount": 19000,
+              "monthlyPayment": 1900,
               "principles": [
                 "P5"
               ],
@@ -2856,17 +3178,17 @@
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -27000,
+              "delta": -30000,
               "reason": "buy"
             },
             {
               "kind": "bought",
-              "assetId": "p2-big-009-100",
-              "cardId": "big-009",
-              "cost": 27000,
+              "assetId": "p2-big-020-106",
+              "cardId": "big-020",
+              "cost": 30000,
               "principles": [
                 "P2",
-                "P3",
+                "P5",
                 "P9"
               ]
             }
@@ -2894,32 +3216,32 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-012-15",
-              "delta": 69,
-              "marketValue": 3546
+              "assetId": "p1-small-012-16",
+              "delta": 111,
+              "marketValue": 3842
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-010-43",
-              "delta": 24,
-              "marketValue": 2487
+              "assetId": "p1-small-010-31",
+              "delta": 57,
+              "marketValue": 2919
             },
             {
               "kind": "valueChanged",
-              "assetId": "p1-small-009-68",
-              "delta": 43,
-              "marketValue": 4412
+              "assetId": "p1-small-009-63",
+              "delta": 83,
+              "marketValue": 4277
             },
             {
               "kind": "payday",
-              "amount": 1417
+              "amount": 2658
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p1",
-              "passiveIncome": 117,
-              "totalExpenses": 6700,
-              "cash": 2915,
+              "passiveIncome": 1808,
+              "totalExpenses": 7150,
+              "cash": 3504,
               "roundNumber": 15
             },
             {
@@ -2928,8 +3250,8 @@
             },
             {
               "kind": "moved",
-              "from": 20,
-              "to": 23
+              "from": 21,
+              "to": 0
             }
           ]
         },
@@ -2962,7 +3284,7 @@
             },
             {
               "kind": "bought",
-              "assetId": "p1-small-034-104",
+              "assetId": "p1-small-034-110",
               "cardId": "small-034",
               "cost": 1200,
               "principles": [
@@ -2989,20 +3311,26 @@
           "events": [
             {
               "kind": "valueChanged",
-              "assetId": "p2-small-017-11",
-              "delta": 243,
-              "marketValue": 8365
+              "assetId": "p2-small-017-12",
+              "delta": 396,
+              "marketValue": 10315
+            },
+            {
+              "kind": "valueChanged",
+              "assetId": "p2-life-027-49-1",
+              "delta": 210,
+              "marketValue": 5471
             },
             {
               "kind": "payday",
-              "amount": 4253
+              "amount": 10870
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 1953,
-              "totalExpenses": 17600,
-              "cash": 5302,
+              "passiveIncome": 12470,
+              "totalExpenses": 21500,
+              "cash": 12028,
               "roundNumber": 15
             },
             {
@@ -3011,43 +3339,73 @@
             },
             {
               "kind": "moved",
-              "from": 8,
-              "to": 11
-            },
-            {
-              "kind": "drewCard",
-              "deck": "lifeChoices",
-              "cardId": "life-023"
+              "from": 12,
+              "to": 15
             }
           ]
         },
         {
           "turnNumber": 29,
           "action": {
-            "type": "CHOOSE_LIFE_OPTION",
+            "type": "CHOOSE_DEAL_SIZE",
             "playerId": "p2",
-            "optionId": "stay"
+            "size": "big"
           },
           "events": [
             {
-              "kind": "choseLifeOption",
-              "cardId": "life-023",
-              "optionId": "stay",
+              "kind": "drewCard",
+              "deck": "bigDeals",
+              "cardId": "big-007"
+            }
+          ]
+        },
+        {
+          "turnNumber": 29,
+          "action": {
+            "type": "BORROW",
+            "playerId": "p2",
+            "amount": 39000
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": 39000,
+              "reason": "borrow"
+            },
+            {
+              "kind": "borrowed",
+              "liabilityId": "p2-bank-114",
+              "amount": 39000,
+              "monthlyPayment": 3900,
               "principles": [
-                "P4"
+                "P5"
               ],
-              "costToday": 0,
-              "monthlyChange": 0,
-              "cheapest": {
-                "optionId": "stay",
-                "costToday": 0,
-                "monthlyChange": 0
-              },
-              "priciest": {
-                "optionId": "move",
-                "costToday": 5000,
-                "monthlyChange": 450
-              }
+              "purpose": "asset"
+            }
+          ]
+        },
+        {
+          "turnNumber": 29,
+          "action": {
+            "type": "BUY",
+            "playerId": "p2"
+          },
+          "events": [
+            {
+              "kind": "cashChanged",
+              "delta": -50000,
+              "reason": "buy"
+            },
+            {
+              "kind": "bought",
+              "assetId": "p2-big-007-115",
+              "cardId": "big-007",
+              "cost": 50000,
+              "principles": [
+                "P2",
+                "P3",
+                "P5"
+              ]
             }
           ]
         },
@@ -3072,64 +3430,88 @@
         "id": "p1",
         "name": "Ada",
         "professionId": "engineer",
-        "position": 23,
-        "cash": 1715,
+        "position": 0,
+        "cash": 2304,
         "salary": 8000,
         "assets": [
           {
-            "id": "p1-small-038-7",
+            "id": "p1-small-038-8",
             "cardId": "small-038",
             "type": "business",
             "purchasePrice": 800,
             "downPaid": 800,
-            "monthlyCashFlow": 60
+            "monthlyCashFlow": 230
           },
           {
-            "id": "p1-small-012-15",
+            "id": "p1-small-012-16",
             "cardId": "small-012",
             "type": "cd",
-            "purchasePrice": 2800,
-            "downPaid": 2800,
-            "marketValue": 3546,
+            "purchasePrice": 2700,
+            "downPaid": 2700,
+            "marketValue": 3842,
+            "growthPercent": 3,
+            "payoutPercent": 2
+          },
+          {
+            "id": "p1-small-040-23",
+            "cardId": "small-040",
+            "type": "business",
+            "purchasePrice": 1000,
+            "downPaid": 1000,
+            "monthlyCashFlow": 270
+          },
+          {
+            "id": "p1-small-010-31",
+            "cardId": "small-010",
+            "type": "savings",
+            "purchasePrice": 2400,
+            "downPaid": 2400,
+            "marketValue": 2919,
             "growthPercent": 2,
             "payoutPercent": 1
           },
           {
-            "id": "p1-small-010-43",
-            "cardId": "small-010",
-            "type": "savings",
-            "purchasePrice": 2300,
-            "downPaid": 2300,
-            "marketValue": 2487,
-            "growthPercent": 1,
-            "payoutPercent": 0
+            "id": "p1-small-037-40",
+            "cardId": "small-037",
+            "type": "business",
+            "purchasePrice": 20000,
+            "downPaid": 5000,
+            "monthlyCashFlow": 780
           },
           {
-            "id": "p1-small-009-68",
+            "id": "p1-small-009-63",
             "cardId": "small-009",
             "type": "savings",
-            "purchasePrice": 4200,
-            "downPaid": 4200,
-            "marketValue": 4412,
-            "growthPercent": 1,
-            "payoutPercent": 0
+            "purchasePrice": 3800,
+            "downPaid": 3800,
+            "marketValue": 4277,
+            "growthPercent": 2,
+            "payoutPercent": 1
           },
           {
-            "id": "p1-small-023-88",
+            "id": "p1-small-023-94",
             "cardId": "small-023",
             "type": "stock",
-            "purchasePrice": 3146,
-            "downPaid": 3146,
-            "monthlyCashFlow": 22,
-            "shares": 22
+            "purchasePrice": 4433,
+            "downPaid": 4433,
+            "monthlyCashFlow": 31,
+            "shares": 31
           },
           {
-            "id": "p1-small-034-104",
+            "id": "p1-small-031-101",
+            "cardId": "small-031",
+            "type": "rental",
+            "purchasePrice": 25000,
+            "downPaid": 1500,
+            "monthlyCashFlow": 350
+          },
+          {
+            "id": "p1-small-034-110",
             "cardId": "small-034",
             "type": "business",
             "purchasePrice": 1200,
             "downPaid": 1200,
-            "monthlyCashFlow": 60
+            "monthlyCashFlow": 340
           }
         ],
         "liabilities": [
@@ -3144,6 +3526,27 @@
             "kind": "car",
             "principal": 20000,
             "monthlyPayment": 400
+          },
+          {
+            "id": "p1-small-037-40-mortgage",
+            "kind": "mortgage",
+            "principal": 15000,
+            "monthlyPayment": 0,
+            "assetId": "p1-small-037-40"
+          },
+          {
+            "id": "p1-life-023-85-1",
+            "kind": "lifestyle",
+            "principal": 50000,
+            "monthlyPayment": 450,
+            "sourceCardId": "life-023"
+          },
+          {
+            "id": "p1-small-031-101-mortgage",
+            "kind": "mortgage",
+            "principal": 23500,
+            "monthlyPayment": 0,
+            "assetId": "p1-small-031-101"
           }
         ],
         "favorTokens": 0,
@@ -3155,51 +3558,95 @@
         "id": "p2",
         "name": "Grace",
         "professionId": "doctor",
-        "position": 11,
-        "cash": 5302,
+        "position": 15,
+        "cash": 1028,
         "salary": 19900,
         "assets": [
           {
-            "id": "p2-small-017-11",
+            "id": "p2-small-017-12",
             "cardId": "small-017",
             "type": "index",
-            "purchasePrice": 5700,
-            "downPaid": 5700,
-            "marketValue": 8365,
-            "growthPercent": 3,
+            "purchasePrice": 6200,
+            "downPaid": 6200,
+            "marketValue": 10315,
+            "growthPercent": 4,
+            "payoutPercent": 2
+          },
+          {
+            "id": "p2-small-036-27",
+            "cardId": "small-036",
+            "type": "business",
+            "purchasePrice": 4000,
+            "downPaid": 4000,
+            "monthlyCashFlow": 620
+          },
+          {
+            "id": "p2-small-019-35",
+            "cardId": "small-019",
+            "type": "stock",
+            "purchasePrice": 6377,
+            "downPaid": 6377,
+            "monthlyCashFlow": 0,
+            "shares": 911
+          },
+          {
+            "id": "p2-life-027-49-1",
+            "cardId": "life-027",
+            "type": "index",
+            "purchasePrice": 4000,
+            "downPaid": 4000,
+            "marketValue": 5471,
+            "growthPercent": 4,
             "payoutPercent": 1
           },
           {
-            "id": "p2-small-040-25",
-            "cardId": "small-040",
-            "type": "business",
-            "purchasePrice": 1000,
-            "downPaid": 1000,
-            "monthlyCashFlow": 70
-          },
-          {
-            "id": "p2-big-013-48",
+            "id": "p2-big-013-59",
             "cardId": "big-013",
             "type": "rental",
             "purchasePrice": 180000,
             "downPaid": 18000,
-            "monthlyCashFlow": 600
+            "monthlyCashFlow": 2110
           },
           {
-            "id": "p2-small-037-64",
-            "cardId": "small-037",
-            "type": "business",
-            "purchasePrice": 20000,
-            "downPaid": 5000,
-            "monthlyCashFlow": 200
-          },
-          {
-            "id": "p2-big-009-100",
+            "id": "p2-big-009-74",
             "cardId": "big-009",
             "type": "rental",
             "purchasePrice": 270000,
             "downPaid": 27000,
-            "monthlyCashFlow": 1000
+            "monthlyCashFlow": 3510
+          },
+          {
+            "id": "p2-small-005-82",
+            "cardId": "small-005",
+            "type": "stock",
+            "purchasePrice": 4000,
+            "downPaid": 4000,
+            "monthlyCashFlow": 0,
+            "shares": 500
+          },
+          {
+            "id": "p2-big-010-90",
+            "cardId": "big-010",
+            "type": "rental",
+            "purchasePrice": 220000,
+            "downPaid": 22000,
+            "monthlyCashFlow": 2460
+          },
+          {
+            "id": "p2-big-020-106",
+            "cardId": "big-020",
+            "type": "business",
+            "purchasePrice": 160000,
+            "downPaid": 30000,
+            "monthlyCashFlow": 3510
+          },
+          {
+            "id": "p2-big-007-115",
+            "cardId": "big-007",
+            "type": "rental",
+            "purchasePrice": 600000,
+            "downPaid": 50000,
+            "monthlyCashFlow": 9130
           }
         ],
         "liabilities": [
@@ -3216,34 +3663,66 @@
             "monthlyPayment": 800
           },
           {
-            "id": "p2-big-013-48-mortgage",
+            "id": "p2-big-013-59-mortgage",
             "kind": "mortgage",
             "principal": 162000,
             "monthlyPayment": 0,
-            "assetId": "p2-big-013-48"
+            "assetId": "p2-big-013-59"
           },
           {
-            "id": "p2-small-037-64-mortgage",
-            "kind": "mortgage",
-            "principal": 15000,
-            "monthlyPayment": 0,
-            "assetId": "p2-small-037-64"
-          },
-          {
-            "id": "p2-bank-99",
+            "id": "p2-bank-73",
             "kind": "bank",
-            "principal": 8000,
-            "monthlyPayment": 800
+            "principal": 16000,
+            "monthlyPayment": 1600
           },
           {
-            "id": "p2-big-009-100-mortgage",
+            "id": "p2-big-009-74-mortgage",
             "kind": "mortgage",
             "principal": 243000,
             "monthlyPayment": 0,
-            "assetId": "p2-big-009-100"
+            "assetId": "p2-big-009-74"
+          },
+          {
+            "id": "p2-bank-89",
+            "kind": "bank",
+            "principal": 12000,
+            "monthlyPayment": 1200
+          },
+          {
+            "id": "p2-big-010-90-mortgage",
+            "kind": "mortgage",
+            "principal": 198000,
+            "monthlyPayment": 0,
+            "assetId": "p2-big-010-90"
+          },
+          {
+            "id": "p2-bank-105",
+            "kind": "bank",
+            "principal": 19000,
+            "monthlyPayment": 1900
+          },
+          {
+            "id": "p2-big-020-106-mortgage",
+            "kind": "mortgage",
+            "principal": 130000,
+            "monthlyPayment": 0,
+            "assetId": "p2-big-020-106"
+          },
+          {
+            "id": "p2-bank-114",
+            "kind": "bank",
+            "principal": 39000,
+            "monthlyPayment": 3900
+          },
+          {
+            "id": "p2-big-007-115-mortgage",
+            "kind": "mortgage",
+            "principal": 550000,
+            "monthlyPayment": 0,
+            "assetId": "p2-big-007-115"
           }
         ],
-        "favorTokens": 1,
+        "favorTokens": 0,
         "isOut": false,
         "hasEscaped": false,
         "skipsNextTurn": false
@@ -3283,20 +3762,15 @@
         "discardPile": [
           "small-017",
           "small-012",
-          "small-036",
           "small-010",
           "small-019",
           "small-009",
           "small-005",
-          "small-023",
-          "small-031"
+          "small-023"
         ]
       },
       "bigDeals": {
         "drawPile": [
-          "big-010",
-          "big-020",
-          "big-007",
           "big-004",
           "big-012",
           "big-018",
@@ -3322,6 +3796,8 @@
       },
       "market": {
         "drawPile": [
+          "market-019",
+          "market-018",
           "market-005",
           "market-010",
           "market-013",
@@ -3341,9 +3817,7 @@
         "discardPile": [
           "market-017",
           "market-004",
-          "market-009",
-          "market-019",
-          "market-018"
+          "market-009"
         ]
       },
       "lifeChoices": {

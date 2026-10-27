@@ -112,8 +112,8 @@ Five decks, all original content, stored as JSON and validated with Zod at load.
 
 | Deck | Count | What it teaches | Example |
 | --- | --- | --- | --- |
-| Small deals | 40 | Savings, CDs, index funds, stocks, dividend stocks, small rentals, side hustles, vending routes; down payment $5,000 or less | Duplex in Decatur: price 50,000, down 5,000, cash flow +160/mo |
-| Big deals | 25 | Apartment buildings, car wash, laundromat, franchise, land; $6,000 to $50,000 down | Laundromat: price 120,000, down 30,000, cash flow +1,400/mo |
+| Small deals | 40 | Savings, CDs, index funds, stocks, dividend stocks, small rentals, side hustles, vending routes; down payment $5,000 or less | Duplex in Decatur: price 50,000, down 5,000, cash flow +700/mo |
+| Big deals | 25 | Apartment buildings, car wash, laundromat, franchise, land; $6,000 to $50,000 down | Laundromat: price 120,000, down 30,000, cash flow +4,200/mo |
 | Market | 20 | Prices move, buyers appear, tenants leave, markets crash and recover | Buyer offers 2x purchase price for any small rental you own |
 | Life Choices | 30 | Vehicles, clothing, gadgets, subscriptions, big life spending, windfalls | Your car is 9 years old: keep it, buy used, or buy new |
 | Setback | 10 | Car repair, medical bill, job layoff, roof leak | Furnace dies: pay 3,500 |

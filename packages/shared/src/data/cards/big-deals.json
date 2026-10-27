@@ -15,7 +15,7 @@
     "price": 120000,
     "downPayment": 30000,
     "mortgage": 90000,
-    "monthlyCashFlow": 1400
+    "monthlyCashFlow": 4200
   },
   {
     "id": "big-002",
@@ -33,7 +33,7 @@
     "price": 320000,
     "downPayment": 40000,
     "mortgage": 280000,
-    "monthlyCashFlow": 2200
+    "monthlyCashFlow": 6000
   },
   {
     "id": "big-003",
@@ -68,7 +68,7 @@
     "price": 200000,
     "downPayment": 50000,
     "mortgage": 150000,
-    "monthlyCashFlow": 1900
+    "monthlyCashFlow": 6500
   },
   {
     "id": "big-005",

@@ -80,7 +80,7 @@ Reports: `docs/sim/stage-c-content.md` (standard) and `docs/sim/stage-c-content-
 
 ## Stage D tuning (2026-10-27)
 
-Every number change is in `docs/sim/tuning-log.md`, one lever per round, and the final simulator report is `docs/sim/tuned.md`. The cards that engine tests name by id (small-001 to small-008, big-001 to big-004, market-001 to market-006, life-001 to life-005, setback-001 to setback-003) kept their numbers, so no engine test had to be re-pinned.
+Every number change is in `docs/sim/tuning-log.md`, one lever per round, and the final simulator report is `docs/sim/tuned.md`. The cards that engine tests name by id (small-001 to small-008, big-001 to big-004, market-001 to market-006, life-001 to life-005, setback-001 to setback-003) kept their numbers during the tuning rounds. Afterwards, with Andre's approval, the seven test-named rentals and businesses were raised (below) and five engine tests re-pinned.
 
 **Why the returns went up.** A game is 15 months. On the Stage C numbers the best bot finished with about 5% Freedom. Andre's target that at least 15% of games end by escape needs much more. Stage D sets:
 
@@ -88,9 +88,9 @@ Every number change is in `docs/sim/tuning-log.md`, one lever per round, and the
 - Nine small "gems" at 23% to 29% a month (Basement Apartment, Pressure Washing, Gumball Machines, Online Tutoring, Dog Walking, Garage Apartment, Cabin Share, Used Book Shop, Car Detailing).
 - Big rentals and businesses at 11% to 19% a month. Land still loses money until a buyer appears.
 - Growth assets: savings 2% growth and 1% payout, CDs 3% and 2%, index funds 4% to 6% and 2%.
-- The four small deals and three big deals that engine tests name kept their Stage C numbers (3% to 5.5% a month), so they now read as the weak deals in their decks.
+- The four small deals and three big deals that engine tests name were raised into the same range after Andre approved it: Duplex in Decatur 700, Starter Condo 520, Lawn Care Trailer 450, Vending Route 630, Laundromat 4,200, Eight-Unit Apartment Building 6,000, Car Wash 6,500.
 
-Every income deal now beats the bank's 10% a month, so borrowing for an asset always pays for itself (P5). Borrowing for a want still only costs. In the simulator, 196 of 200 escapes borrowed for a deal.
+Every income deal now beats the bank's 10% a month, so borrowing for an asset always pays for itself (P5). Borrowing for a want still only costs. In the simulator, 355 of 359 escapes borrowed for a deal.
 
 **Realism:** these are game returns, not real ones. A small rental returns 140% to 230% a year on the cash put in. The two numbers each decision shows stay honest relative to each other: the better deal still shows the bigger monthly number. The other way to make escape common is more months (a higher round limit), which is a rule change and is listed as a question in STATUS.md.
 

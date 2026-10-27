@@ -33,21 +33,21 @@ Sources and reasoning: `docs/content-notes.md`.
 
 ### small-001 Duplex in Decatur
 
-rental, price $50,000, down $5,000, mortgage $45,000, cash flow +$160/mo, return on cash 38%/yr. P2 P3 P5. kids: yes.
+rental, price $50,000, down $5,000, mortgage $45,000, cash flow +$700/mo, return on cash 168%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Two units on a quiet street, both rented to long-term tenants. The bank will carry most of it.
 - Kids: Two homes you rent out. The bank lends most of the money. Rent pays you each month.
 
 ### small-002 Starter Condo
 
-rental, price $45,000, down $4,000, mortgage $41,000, cash flow +$120/mo, return on cash 36%/yr. P2 P3 P5. kids: yes.
+rental, price $45,000, down $4,000, mortgage $41,000, cash flow +$520/mo, return on cash 156%/yr. P2 P3 P5. kids: yes.
 
 - Adult: One bedroom near the hospital. Nurses rent it on rotating contracts, so it is rarely empty.
 - Kids: A small home near a hospital. Nurses rent it, so it is almost never empty.
 
 ### small-003 Lawn Care Trailer
 
-business, price $3,000, down $3,000, mortgage $0, cash flow +$150/mo, return on cash 60%/yr. P2 P3. kids: yes.
+business, price $3,000, down $3,000, mortgage $0, cash flow +$450/mo, return on cash 180%/yr. P2 P3. kids: yes.
 
 - Adult: A used trailer, two mowers, and a list of eight weekly customers. You hire a high-schooler to run it.
 - Kids: Mowers, a trailer, and eight yards to cut each week. A helper does the work.
@@ -68,7 +68,7 @@ stock, 500 shares at $5 to $40, no dividend. P8 P9. kids: no.
 
 ### small-006 Vending Machine Route
 
-business, price $4,500, down $4,500, mortgage $0, cash flow +$180/mo, return on cash 48%/yr. P2 P3. kids: yes.
+business, price $4,500, down $4,500, mortgage $0, cash flow +$630/mo, return on cash 168%/yr. P2 P3. kids: yes.
 
 - Adult: Six snack machines in office lobbies. You restock them on Saturdays and keep the coins.
 - Kids: Six snack machines. Fill them on Saturdays and keep the coins.
@@ -315,14 +315,14 @@ business, price $1,000, down $1,000, mortgage $0, cash flow +$270/mo, return on 
 
 ### big-001 Laundromat
 
-business, price $120,000, down $30,000, mortgage $90,000, cash flow +$1,400/mo, return on cash 56%/yr. P2 P3 P5. kids: yes.
+business, price $120,000, down $30,000, mortgage $90,000, cash flow +$4,200/mo, return on cash 168%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Twenty machines in a strip mall next to a college. Open all night, no employees, quarters every day.
 - Kids: Twenty washing machines near a college. Quarters come in all day and night.
 
 ### big-002 Eight-Unit Apartment Building
 
-rental, price $320,000, down $40,000, mortgage $280,000, cash flow +$2,200/mo, return on cash 66%/yr. P2 P3 P5. kids: yes.
+rental, price $320,000, down $40,000, mortgage $280,000, cash flow +$6,000/mo, return on cash 180%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Brick building, full occupancy, a property manager already in place. Rent covers the mortgage with room to spare.
 - Kids: Eight apartments, all rented out. The rent pays the loan and then some.
@@ -336,7 +336,7 @@ land, price $60,000, down $12,000, mortgage $48,000, cash flow -$50/mo, return o
 
 ### big-004 Car Wash
 
-business, price $200,000, down $50,000, mortgage $150,000, cash flow +$1,900/mo, return on cash 46%/yr. P2 P3 P5. kids: yes.
+business, price $200,000, down $50,000, mortgage $150,000, cash flow +$6,500/mo, return on cash 156%/yr. P2 P3 P5. kids: yes.
 
 - Adult: Automatic tunnel wash on a busy corner. A manager runs it; you check the numbers once a month.
 - Kids: A car wash on a busy corner. A manager runs it for you.

@@ -104,7 +104,7 @@ describe('BORROW: while a decision is open', () => {
     expect(p1(bought).liabilities.filter((l) => l.kind === 'bank')).toHaveLength(1);
     expect(p1(bought).liabilities.filter((l) => l.kind === 'mortgage')).toHaveLength(1);
     expect(bought.pending).toEqual({ kind: 'none' });
-    expect(monthlyCashFlow(p1(bought))).toBe(740 + 160 - 500);
+    expect(monthlyCashFlow(p1(bought))).toBe(740 + 700 - 500);
   });
 
   it('BORROW: allowed during lifeChoice and leaves the decision open (spec, turn step 4)', () => {

@@ -129,8 +129,8 @@ describe('ACCEPT_MARKET: a buyout offer', () => {
     const bought = apply(offered(withPlayer(twoPlayerGame(), 'p1', { cash: 10_000 }), 'small-001'), { type: 'BUY', playerId: 'p1' });
     const nextTurn = withGame(apply(bought, { type: 'END_TURN', playerId: 'p1' }), { currentPlayerId: 'p1' });
     const next = apply(drawn(nextTurn, 'market-001'), ACCEPT);
-    // 10,000 + 740 Payday - 5,000 down, then a second Payday of 740 + 160 rent, then the sale.
-    expect(p1(next).cash).toBe(10_740 - 5_000 + 900 + 55_000);
+    // 10,000 + 740 Payday - 5,000 down, then a second Payday of 740 + 700 rent, then the sale.
+    expect(p1(next).cash).toBe(10_740 - 5_000 + 1_440 + 55_000);
     expect(p1(next).assets).toEqual([]);
     expect(p1(next).liabilities.some((l) => l.kind === 'mortgage')).toBe(false);
     expect(next.decks.smallDeals.discardPile).toContain('small-001');
