@@ -133,6 +133,38 @@ describe('END_TURN: rounds (spec v2, Winning and game length)', () => {
     expect(roundNumber(next)).toBe(2);
   });
 
+  it("END_TURN: a skipped seat's turn in the next round is paid after roundCompleted, and its paydaySnapshot carries the new round", () => {
+    const flagged = withPlayer(turn(twoPlayerGame(), 'p1'), 'p1', { skipsNextTurn: true });
+    const next = turn(flagged, 'p2');
+    expect(next.game.log.at(-1)?.events.map((e) => e.kind)).toEqual(['roundCompleted', 'turnSkipped', 'payday', 'paydaySnapshot']);
+    expect(next.game.log.at(-1)?.events.find((e) => e.kind === 'paydaySnapshot')).toMatchObject({ playerId: 'p1', roundNumber: 2 });
+    expect(next.game.currentPlayerId).toBe('p2');
+    expect(roundNumber(next)).toBe(2);
+  });
+
+  it('END_TURN: when every seat skips, one END_TURN can complete two rounds', () => {
+    // p2 ends round 1 with both seats set to skip: round 1 completes, both skip their round-2 turns, round 2 completes, and p1 plays round 3.
+    const ready = rolledClean(turn(twoPlayerGame(), 'p1'), 'p2');
+    const both = withPlayer(withPlayer(ready, 'p1', { skipsNextTurn: true }), 'p2', { skipsNextTurn: true });
+    const next = apply(both, { type: 'END_TURN', playerId: 'p2' });
+    expect(next.game.currentPlayerId).toBe('p1');
+    expect(next.game.log.at(-1)?.events.map((e) => e.kind)).toEqual([
+      'roundCompleted',
+      'turnSkipped',
+      'payday',
+      'paydaySnapshot',
+      'turnSkipped',
+      'payday',
+      'paydaySnapshot',
+      'roundCompleted',
+    ]);
+    expect(next.game.log.at(-1)?.events.filter((e) => e.kind === 'roundCompleted')).toEqual([
+      { kind: 'roundCompleted', round: 1 },
+      { kind: 'roundCompleted', round: 2 },
+    ]);
+    expect(roundNumber(next)).toBe(3);
+  });
+
   it('END_TURN: a player who is out no longer needs a turn for the round to complete', () => {
     const three = createGame({
       id: 'g3',
@@ -185,6 +217,34 @@ describe('END_TURN: the round limit (spec v2: 15 rounds standard, 10 kids; winne
     expect(finished.game.log.at(-1)?.events).toEqual([{ kind: 'gameEnded', reason: 'roundLimit', winnerId: 'p2' }]);
     expect(roundNumber(finished)).toBe(limit);
     expect(finished.players.every((p) => !p.hasEscaped)).toBe(true);
+  });
+
+  it('END_TURN: the END_TURN that completes the final round pays no skipped seat for a round past the limit', () => {
+    const lastRound = turn(playRounds(twoPlayerGame(), ROUND_LIMIT.standard - 1), 'p1');
+    const flagged = withPlayer(lastRound, 'p1', { skipsNextTurn: true });
+    const cash = playerById(flagged, 'p1').cash;
+    const finished = turn(flagged, 'p2');
+    expect(finished.game.phase).toBe('finished');
+    expect(finished.game.log.at(-1)?.events).toEqual([{ kind: 'gameEnded', reason: 'roundLimit', winnerId: 'p2' }]);
+    expect(playerById(finished, 'p1').cash).toBe(cash);
+  });
+
+  it('END_TURN: a skipped seat whose final-round turn comes before the limit is still paid for it', () => {
+    // Three seats: p2 ends the last round's second turn, p3 skips its final-round turn (paid), then the round and the game end.
+    const three = twoPlayerGame({
+      players: [
+        { id: 'p1', name: 'A', professionId: 'teacher' },
+        { id: 'p2', name: 'B', professionId: 'nurse' },
+        { id: 'p3', name: 'C', professionId: 'doctor' },
+      ],
+    });
+    let s = three;
+    for (let r = 0; r < ROUND_LIMIT.standard - 1; r++) s = turn(turn(turn(s, 'p1'), 'p2'), 'p3');
+    const flagged = withPlayer(turn(s, 'p1'), 'p3', { skipsNextTurn: true });
+    const finished = turn(flagged, 'p2');
+    expect(finished.game.phase).toBe('finished');
+    expect(finished.game.log.at(-1)?.events.map((e) => e.kind)).toEqual(['turnSkipped', 'payday', 'paydaySnapshot', 'gameEnded']);
+    expect(finished.game.log.at(-1)?.events.find((e) => e.kind === 'paydaySnapshot')).toMatchObject({ playerId: 'p3', roundNumber: ROUND_LIMIT.standard });
   });
 
   it('END_TURN: the higher freedomPercent wins at the limit even with less cash', () => {

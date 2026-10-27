@@ -19,6 +19,7 @@
     "test:watch": "vitest",
     "e2e": "node -e \"console.error('e2e: Playwright is not set up yet. See STATUS.md.'); process.exit(1)\"",
     "sim": "tsx packages/engine/sim/run.ts",
+    "debrief:samples": "tsx packages/engine/sim/debriefSamples.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm test:props",
     "prepare": "husky"
   },

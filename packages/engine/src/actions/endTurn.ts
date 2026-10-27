@@ -2,16 +2,13 @@ import type { Action, GameState, LogEvent } from '@ff/shared';
 
 import { creditPayday } from '../payday';
 import { rejected, type ActionResult } from '../reduce';
-import { canEscape, currentPlayer, hasRolledThisTurn, playerById, rankPlayers, roundLimit, roundNumber } from '../selectors';
+import { canEscape, currentPlayer, hasRolledThisTurn, rankPlayers, roundLimit, roundNumber } from '../selectors';
 
 /**
- * Spec, Core rules, turn step 5: check escape, then the round limit, then
- * advance to the next player who is still in and not sitting out a Setback.
- * Escape ends the game at once (v1). A round completes when every seat still
- * in has taken a turn (a skipped turn counts: decided 2026-10-23, Q3), and
- * the END_TURN that completes the final round ends the game with the winner
- * by freedomPercent, cash, netWorth, then seat (spec v2, Winning). The game
- * also ends when fewer than two players remain (Core rules, Bankruptcy).
+ * Spec, Core rules, turn step 5: check escape, then advance to the next
+ * player who is still in and not sitting out a Setback. Escape ends the game
+ * at once (v1). The game also ends when fewer than two players remain (Core
+ * rules, Bankruptcy). Rounds and the round limit are kept by `advance`.
  */
 export function endTurn(state: GameState, action: Extract<Action, { type: 'END_TURN' }>): ActionResult {
   if (state.pending.kind !== 'none') return rejected('INVALID_FOR_PENDING');
@@ -36,30 +33,7 @@ export function endTurn(state: GameState, action: Extract<Action, { type: 'END_T
   const remaining = state.players.filter((p) => !p.isOut);
   if (remaining.length < 2) return lastStanding(state, []);
 
-  const advanced = advance(state, action.playerId);
-  const events: LogEvent[] = [...advanced.events];
-
-  // A skipped seat's Payday can put that player out and leave one player standing.
-  if (advanced.state.players.filter((p) => !p.isOut).length < 2) return lastStanding(advanced.state, events);
-
-  if (advanced.wrapped) {
-    const round = roundNumber(advanced.state);
-    if (round >= roundLimit(advanced.state)) {
-      const winnerId = rankPlayers(advanced.state)[0]?.id ?? advanced.nextId;
-      events.push({ kind: 'gameEnded', reason: 'roundLimit', winnerId });
-      return { ok: true, state: finish(advanced.state, winnerId), events };
-    }
-    events.push({ kind: 'roundCompleted', round });
-  }
-
-  return {
-    ok: true,
-    state: {
-      ...advanced.state,
-      game: { ...advanced.state.game, turnNumber: state.game.turnNumber + 1, currentPlayerId: advanced.nextId },
-    },
-    events,
-  };
+  return advance(state, action.playerId);
 }
 
 function finish(state: GameState, winnerId: string): GameState {
@@ -72,42 +46,65 @@ function lastStanding(state: GameState, events: readonly LogEvent[]): ActionResu
   return { ok: true, state: finish(state, winnerId), events: [...events, { kind: 'gameEnded', reason: 'lastStanding', winnerId }] };
 }
 
-interface Advanced {
-  readonly state: GameState;
-  readonly nextId: string;
-  /** True when the next seat is at or before the ending seat: every seat still in has now taken its turn this round. */
-  readonly wrapped: boolean;
-  readonly events: LogEvent[];
-}
-
 /**
- * Finds the next seat after `playerId` that is in the game, wrapping around
- * and coming back to `playerId` itself last. A seat that must skip is passed
- * over once and its flag cleared; it still receives its Payday for the month
- * (spec, Core rules, turn step 1), which can put it out. Every seat is tried
- * at most twice.
+ * Walks the seats after `playerId` in order, wrapping around, until it finds
+ * one that is in and not sitting out a Setback, and gives that seat the turn.
+ *
+ * Spec v2, Winning and game length: a round is complete when every seat
+ * still in has taken a turn since it began, and a skipped turn counts
+ * (decided 2026-10-23, Q3). Seat order starts each round, so a round
+ * completes each time the walk passes from the last seat to the first,
+ * whoever takes or skips the turns on either side. roundCompleted is logged
+ * right there, before any skipped seat in the new round is paid, so that
+ * seat's paydaySnapshot carries the new round. One END_TURN can complete two
+ * rounds when every seat is skipping. When the walk completes the final
+ * round the game ends at once with the winner by freedomPercent, cash,
+ * netWorth, then seat; no seat is paid for a round past the limit.
+ *
+ * A seat that must skip is passed over once and its flag cleared; it still
+ * receives its Payday for the month (spec, Core rules, turn step 1), which
+ * can put it out and leave one player standing.
  */
-function advance(state: GameState, playerId: string): Advanced {
-  const seats = state.players;
-  const start = seats.findIndex((p) => p.id === playerId);
+function advance(state: GameState, playerId: string): ActionResult {
+  const seats = state.players.length;
+  const start = state.players.findIndex((p) => p.id === playerId);
   let next = state;
+  let round = roundNumber(state);
   const events: LogEvent[] = [];
-  for (let offset = 1; offset <= seats.length * 2; offset++) {
-    const index = (start + offset) % seats.length;
+
+  // Each seat skips at most once, so with two players in, a seat to play turns up within two laps.
+  for (let offset = 1; offset <= seats * 2; offset++) {
+    const index = (start + offset) % seats;
+
+    if (index === 0) {
+      // The walk passes from the last seat to the first: the round is complete.
+      if (round >= roundLimit(next)) {
+        const winnerId = rankPlayers(next)[0]?.id ?? playerId;
+        events.push({ kind: 'gameEnded', reason: 'roundLimit', winnerId });
+        return { ok: true, state: finish(next, winnerId), events };
+      }
+      events.push({ kind: 'roundCompleted', round });
+      round++;
+    }
+
     const candidate = next.players[index];
     if (candidate === undefined || candidate.isOut) continue;
+
     if (candidate.skipsNextTurn) {
       next = { ...next, players: next.players.map((p) => (p.id === candidate.id ? { ...p, skipsNextTurn: false } : p)) };
       events.push({ kind: 'turnSkipped', playerId: candidate.id });
-      const paid = creditPayday(next, candidate.id);
+      const paid = creditPayday(next, candidate.id, round);
       next = paid.state;
       events.push(...paid.events);
-      if (playerById(next, candidate.id).isOut && next.players.filter((p) => !p.isOut).length < 2) break;
+      if (next.players.filter((p) => !p.isOut).length < 2) return lastStanding(next, events);
       continue;
     }
-    return { state: next, nextId: candidate.id, wrapped: index <= start, events };
+
+    return {
+      ok: true,
+      state: { ...next, game: { ...next.game, turnNumber: state.game.turnNumber + 1, currentPlayerId: candidate.id } },
+      events,
+    };
   }
-  const survivor = next.players.find((p) => !p.isOut);
-  if (survivor === undefined) throw new Error('no player left in the game');
-  return { state: next, nextId: survivor.id, wrapped: true, events };
+  throw new Error('END_TURN found no seat to take the next turn');
 }
