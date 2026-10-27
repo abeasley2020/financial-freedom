@@ -10,6 +10,7 @@ import {
   GameStateSchema,
   PROFESSIONS,
   READING_LEVELS,
+  renderDebrief,
   type Debrief,
   type DebriefDecision,
   type DebriefDecisionKind,
@@ -150,6 +151,12 @@ function expectSound(state: GameState, playerId: string, level: ReadingLevel): D
       .flatMap((s) => s.decision.principles),
   );
   expect(new Set(d.principlesPracticed)).toEqual(helpedPrinciples);
+
+  // The templates fill every line: no raw placeholder, no missing number.
+  for (const section of renderDebrief(d)) {
+    expect(section.lines.length, section.id).toBeGreaterThan(0);
+    for (const line of section.lines) expect(line, line).not.toMatch(/[{}]|undefined|NaN/);
+  }
   return d;
 }
 
