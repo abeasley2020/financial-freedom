@@ -159,7 +159,7 @@
     "effects": [
       {
         "kind": "offerBuyout",
-        "percentOfPurchasePrice": 150
+        "percentOfPurchasePrice": 250
       }
     ],
     "appliesTo": [
@@ -354,7 +354,7 @@
     "effects": [
       {
         "kind": "offerBuyout",
-        "percentOfPurchasePrice": 150
+        "percentOfPurchasePrice": 200
       }
     ],
     "appliesTo": [
