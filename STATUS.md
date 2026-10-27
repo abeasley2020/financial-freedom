@@ -222,7 +222,7 @@ Tooling and package-manager notes from the scaffold still hold (see the sections
 
 ## Next step
 
-Stage D is done (2026-10-27) on `feat/stage-d-tuning`, green. Next: merge to main, then Stage E (debrief engine).
+Stage D is done and merged to main (PR #17, 2026-10-27). Next: Stage E (debrief engine).
 
 ## Deferred from the scaffold
 
