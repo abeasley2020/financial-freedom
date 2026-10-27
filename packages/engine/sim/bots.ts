@@ -174,8 +174,10 @@ function stockMoves(player: Player, cardId: string, sharePrice: number | undefin
 }
 
 /**
- * Wealth Builder (spec v2, Engineering practices): keeps three months of
- * totalExpenses as an emergency fund, takes the Life Choices option with no
+ * Wealth Builder (spec v2, Engineering practices): keeps an emergency fund
+ * of one month of totalExpenses (the spec said three; Andre cut it to one on
+ * 2026-10-27, because three months held back in a 15-month game made the bot
+ * lose to Big Spender in kids mode, where it cannot borrow), takes the Life Choices option with no
  * monthly cost, buys deals by cash flow per $1,000 down, and borrows only for
  * an asset. The fund counts cash plus growth assets, which sell at
  * marketValue any time after the roll, so the bot holds its fund in growth
@@ -189,7 +191,7 @@ function wealthBuilder(state: GameState): readonly Action[] {
   const playerId = player.id;
   const pending = state.pending;
   const bills = totalExpenses(player);
-  const fund = 3 * bills;
+  const fund = WB_FUND_MONTHS * bills;
   const growth = player.assets.filter(isGrowthAsset);
   /** Money above the fund, in cash or growth assets: what the bot may put into an income deal. */
   const free = Math.max(0, liquid(player) - fund);
@@ -254,6 +256,7 @@ function wealthBuilder(state: GameState): readonly Action[] {
   }
 }
 
+const WB_FUND_MONTHS = 1;
 const WB_MIN_RETURN_PER_THOUSAND = 20;
 const WB_BIG_DEAL_CASH = 12_000;
 
