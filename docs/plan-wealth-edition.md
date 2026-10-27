@@ -148,7 +148,7 @@ Do not tune for balance; that is Stage D. Same unattended rules as Stage B. Fini
 Stage D, unattended
 
 ```markdown
-You are working unattended. Read CLAUDE.md, STATUS.md, docs/spec.md, docs/sim/first-run.md, and docs/cards.md.
+You are working unattended. Read CLAUDE.md, STATUS.md, docs/spec.md, docs/sim/first-run.md, docs/sim/stage-c-content.md (the baseline to beat), and docs/cards.md.
 
 Add two named bots if missing: Wealth Builder (keeps three months of totalExpenses as an emergency fund, picks the no-monthly-cost Life Choices option, buys deals by cash flow per $1,000 down, borrows only for positive cash flow assets) and Big Spender (picks the most expensive Life Choices option, buys deals only with leftover cash, borrows freely). Keep the existing bots.
 
@@ -159,6 +159,7 @@ Tune to these targets, measured by pnpm sim over 1,000 games at 2 to 4 players:
 - Wealth Builder beats Big Spender in at least 70% of head-to-head games, and the best strategy beats the worst by at least 15 points overall.
 - Median game between 10 and 15 rounds.
 - Kids mode: 1,000 games, none stuck, median at or under 10 rounds.
+- Escape must be reachable within 15 rounds; show it in pnpm sim.
 
 Levers you may change: card numbers and the mix within spec deck counts, the board space mix (still 24 spaces), Setback costs, growthPercent and payoutPercent within the spec's ranges. Do not change the 10% bank rate, liability payment percents, professions, or any rule without writing it in STATUS.md as a question.
 
