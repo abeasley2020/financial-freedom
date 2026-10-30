@@ -13,14 +13,16 @@ The laptop or TV shows the shared board. Each player's phone shows their private
 The build follows eight stages, A to H, defined in [`docs/plan-wealth-edition.md`](docs/plan-wealth-edition.md). Each box says its status in words, so the colors are only a second cue.
 
 ```mermaid
-flowchart LR
-  A["A: Spec v2<br/>DONE"]:::done --> B["B: Engine rules<br/>DONE"]:::done
-  B --> C["C: Professions + cards<br/>DONE"]:::done
-  C --> D["D: Balance tuning<br/>DONE"]:::done
-  D --> E["E: Debrief engine<br/>IN REVIEW, PR 19"]:::review
-  E --> F["F: Laptop UI<br/>NEXT"]:::next
-  F --> G["G: Phone rooms<br/>PLANNED"]:::planned
-  G --> H["H: Family playtests<br/>PLANNED"]:::planned
+flowchart TB
+  subgraph built["Built and merged"]
+    direction LR
+    A["A: Spec v2<br/>DONE"]:::done --> B["B: Engine rules<br/>DONE"]:::done --> C["C: Professions + cards<br/>DONE"]:::done --> D["D: Balance tuning<br/>DONE"]:::done
+  end
+  subgraph ahead["Ahead"]
+    direction LR
+    E["E: Debrief engine<br/>IN REVIEW, PR 19"]:::review --> F["F: Laptop UI<br/>NEXT"]:::next --> G["G: Phone rooms<br/>PLANNED"]:::planned --> H["H: Family playtests<br/>PLANNED"]:::planned
+  end
+  built --> ahead
 
   classDef done fill:#d1fae5,stroke:#047857,color:#064e3b
   classDef review fill:#fef3c7,stroke:#b45309,color:#78350f
