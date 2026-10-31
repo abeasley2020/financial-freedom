@@ -3,14 +3,14 @@ import type { GameState } from '@ff/shared';
 import { useEffect } from 'react';
 
 import { Board } from './components/Board';
-import { Decision } from './components/Decision';
 import { EndScreen } from './components/EndScreen';
-import { Finances } from './components/Finances';
+import { MoneyHud } from './components/Finances';
 import { Lobby } from './components/Lobby';
 import { Scoreboard } from './components/Scoreboard';
+import { Confetti, PaydayPop, TurnSplash } from './components/Show';
 import { TableView } from './components/TableView';
-import { Turn } from './components/Turn';
-import { ERROR_TEXT } from './lib/text';
+import { BoardCenter, Stage } from './components/Turn';
+import { celebrationKey, ERROR_TEXT, tokenLabels } from './lib/text';
 import { tableUrl, useRoute } from './router';
 import { useGame } from './store';
 
@@ -25,55 +25,66 @@ export function App() {
 
 function GameScreen({ state }: { state: GameState }) {
   const quit = useGame((s) => s.quit);
+  const undo = useGame((s) => s.undo);
+  const canUndo = useGame((s) => s.undoStack.length > 0);
   const player = currentPlayer(state);
   const legal = legalActions(state, player.id);
+  const labels = tokenLabels(state.players);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-4">
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-extrabold">Freedom Loop{state.game.mode === 'kids' ? ' (kids mode)' : ''}</h1>
+    <div className="mx-auto max-w-[1500px] px-4 pb-10 pt-4 sm:px-6">
+      <TurnSplash state={state} label={(seat) => labels[seat] ?? '?'} />
+      <PaydayPop state={state} />
+      <Confetti trigger={celebrationKey(state)} />
+
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">
+          <span className="shimmer-text">Freedom Loop</span>
+          {state.game.mode === 'kids' && <span className="ml-2 align-middle text-base font-bold text-white/70">kids</span>}
+        </h1>
         <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={() => {
-            window.open(tableUrl(), 'freedom-loop-table', 'popup=yes,width=1280,height=720');
-          }}
-        >
-          Show on TV
-        </button>
-        <button
-          type="button"
-          className="btn-secondary"
-          onClick={() => {
-            if (window.confirm('End this game and go back to the lobby? The game will be lost.')) quit();
-          }}
-        >
-          Quit game
-        </button>
+          {canUndo && (
+            <button type="button" className="btn-ghost" onClick={undo}>
+              Undo
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => {
+              window.open(tableUrl(), 'freedom-loop-table', 'popup=yes,width=1280,height=720');
+            }}
+          >
+            Show on TV
+          </button>
+          <button
+            type="button"
+            className="btn-ghost"
+            onClick={() => {
+              if (window.confirm('End this game and go back to the lobby? The game will be lost.')) quit();
+            }}
+          >
+            Quit
+          </button>
         </div>
       </header>
-      <p className="mt-1 text-sm text-slate-700">TV: click Show on TV, drag that window to the TV screen, press F for full screen. This window stays private.</p>
       <ErrorBanner />
-      {/* Phones: board, decision, money, table. Laptops: board and table left, decision and money right. */}
-      <main className="mt-4 flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="contents lg:block lg:space-y-4">
-          <div className="order-1">
+
+      {/* Phones: stage first. Laptops: board left, stage right. */}
+      <main className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div className="order-2 lg:order-1">
+          <div className="mx-auto max-w-[640px]">
             <Board state={state}>
-              <Turn state={state} player={player} legal={legal} />
+              <BoardCenter state={state} player={player} />
             </Board>
           </div>
-          <div className="order-4">
-            <Scoreboard state={state} />
-          </div>
         </div>
-        <div className="contents lg:block lg:space-y-4">
-          <div className="order-2">
-            <Decision state={state} player={player} legal={legal} />
-          </div>
-          <div className="order-3">
-            <Finances state={state} player={player} legal={legal} />
-          </div>
+        <div className="order-1 space-y-5 lg:order-2">
+          <Stage state={state} player={player} legal={legal} />
+          <MoneyHud state={state} player={player} legal={legal} />
+        </div>
+        <div className="order-3 lg:col-span-2">
+          <Scoreboard state={state} />
         </div>
       </main>
     </div>
@@ -91,7 +102,7 @@ function ErrorBanner() {
     };
   }, [error, clear]);
   return (
-    <div role="alert" className={error === null ? 'sr-only' : 'mt-3 rounded-lg border-2 border-loss bg-red-50 p-3 font-semibold text-loss'}>
+    <div role="alert" className={error === null ? 'sr-only' : 'rise mt-3 rounded-2xl border border-loss/60 bg-loss/15 p-3 font-semibold text-loss'}>
       {error === null ? '' : ERROR_TEXT[error]}
     </div>
   );

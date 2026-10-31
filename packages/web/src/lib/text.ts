@@ -44,16 +44,16 @@ export function tokenLabels(players: readonly { readonly name: string }[]): read
   return unique ? initials : players.map((_, i) => String(i + 1));
 }
 
-export const SPACE_STYLE: Readonly<Record<SpaceKind, string>> = {
-  opportunity: 'bg-emerald-50 border-emerald-700',
-  lifeChoices: 'bg-amber-50 border-amber-700',
-  market: 'bg-sky-50 border-sky-700',
-  giving: 'bg-violet-50 border-violet-700',
-  setback: 'bg-rose-50 border-rose-700',
-};
-
 /** Token colors for up to six seats, each with a letter so color is never the only cue. */
-export const SEAT_COLORS = ['#0b5c8a', '#b42318', '#15703a', '#7a3db8', '#a15c00', '#1f2328'] as const;
+/** Seat fills: each takes white text at 4.5:1 or better, and reads on the dark stage. */
+export const SEAT_COLORS = ['#2563eb', '#dc2626', '#15803d', '#9333ea', '#b45309', '#db2777'] as const;
+
+/** A lighter partner of each seat color, for glows and bars. */
+export const SEAT_GLOW = ['#60a5fa', '#f87171', '#4ade80', '#c084fc', '#fbbf24', '#f472b6'] as const;
+
+export function seatGlow(index: number): string {
+  return SEAT_GLOW[index % SEAT_GLOW.length] ?? '#ffffff';
+}
 
 export function seatColor(index: number): string {
   return SEAT_COLORS[index % SEAT_COLORS.length] ?? '#1f2328';
@@ -232,4 +232,11 @@ export function lastRoll(state: GameState): { readonly value: number; readonly k
     for (const event of entry.events) if (event.kind === 'rolled') return { value: event.value, key: i };
   }
   return null;
+}
+
+/** Confetti key for the latest log entry when it bought something or ended the game. */
+export function celebrationKey(state: GameState): number | null {
+  const last = state.game.log.at(-1);
+  if (last === undefined) return null;
+  return last.events.some((e) => e.kind === 'bought' || e.kind === 'gameEnded') ? state.game.log.length : null;
 }
