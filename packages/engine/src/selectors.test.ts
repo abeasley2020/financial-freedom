@@ -9,6 +9,7 @@ import {
   hasRolledThisTurn,
   monthlyCashFlow,
   netWorth,
+  totalDebt,
   passiveIncome,
   playerById,
   roundLimit,
@@ -211,5 +212,26 @@ describe('winner (spec v2, Winning: escape, else highest freedomPercent, then ca
   it('ignores players who are out', () => {
     const state = finished(withPlayer(withPlayer(twoPlayerGame(), 'p1', { isOut: true, cash: 0 }), 'p2', { cash: 0 }));
     expect(winner(state)?.id).toBe('p2');
+  });
+});
+
+describe('totalDebt (never stored)', () => {
+  it('totalDebt: sums every liability principal, mortgages included', () => {
+    // Teacher: 42,000 of starting debt.
+    expect(totalDebt(teacher())).toBe(42_000);
+    const owner: Player = {
+      ...teacher(),
+      liabilities: [...teacher().liabilities, { id: 'm', kind: 'mortgage', principal: 45_000, monthlyPayment: 0, assetId: 'd' }],
+    };
+    expect(totalDebt(owner)).toBe(87_000);
+  });
+
+  it('totalDebt: is 0 with no liabilities, and a subscription adds nothing', () => {
+    expect(totalDebt({ ...teacher(), liabilities: [] })).toBe(0);
+    const subscriber: Player = {
+      ...teacher(),
+      liabilities: [{ id: 's', kind: 'subscription', principal: 0, monthlyPayment: 15, sourceCardId: 'life-001' }],
+    };
+    expect(totalDebt(subscriber)).toBe(0);
   });
 });

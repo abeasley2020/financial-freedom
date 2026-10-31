@@ -2,6 +2,23 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## Game night build (Stage F core, 2026-10-31)
+
+**The game is playable on one laptop, pass-and-play.** Lobby (2 to 6 players, profession picker with starting numbers, standard or kids), board, turn panel, decision cards for every pending kind, balance sheet with repay, sell, and borrow, undo per Q7, autosave to the browser, and an end screen with the family ranking and a money-story chart per player. `pnpm check` is green (761 tests, 22 properties, zero warnings).
+
+**Engine and shared additions, test-first:** `legalActions(state, playerId)` (candidates filtered through `reduce`, so it agrees with the reducer by construction), `totalDebt` selector, `formatMoney` and `formatSignedMoney`. Web adds Tailwind v3 and Zustand (both approved). shadcn/ui is not installed yet; the few primitives are plain Tailwind classes.
+
+**Fixed:** fresh clones failed `pnpm install` on pnpm 12 (esbuild build script blocked). `pnpm-workspace.yaml` now allows esbuild.
+
+**Verified in headless Chromium:** nine full games through the real UI (standard and kids, 2 to 6 players, random clicks including undo, repay, sell, and borrow-then-buy), zero console errors, never stuck; an escape ending; refresh mid-game keeps the game; axe (WCAG 2.2 AA rules) clean on lobby, every decision type, and the end screen; no horizontal scroll at 390 px.
+
+**Not built yet:** Stage E debrief (the end screen shows ranking and charts, not the seven-section debrief), Playwright e2e in the repo (`pnpm e2e` still a stub), Stage G phones.
+
+**Questions for Andre:**
+
+1. **Borrow for every big deal escapes in about 4 months.** A UI bot that borrowed the full shortfall for each big deal escaped in round 4 or 5. This is open question 1 below, now seen in the real UI. Default: play tonight as is and watch whether anyone finds it.
+2. **Undo crosses END_TURN.** Q7 only blocks undo past a roll or card draw, so the next player can undo the previous END_TURN before rolling. Default: keep (handy for "I forgot to repay").
+
 ## Morning summary (Stage D, 2026-10-27)
 
 **Stage D is complete and `pnpm check` is green** (738 tests, 22 properties, zero lint warnings) on branch `feat/stage-d-tuning`. It is pushed, not merged, and has no PR. All ten balance targets are met, including the escape-rate target Andre added mid-session (at least 15% of standard games end by escape, replacing "escape reachable"). Tuning stopped at round 14 of 30. Andre then approved the three recommendations: the golden games, the one-month Wealth Builder fund, and raising the test-named deals.

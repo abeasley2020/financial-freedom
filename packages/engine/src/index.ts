@@ -6,6 +6,7 @@
 export { createGame, type CreateGameOptions } from './createGame';
 export type { EngineError } from './errors';
 export { assertInvariants, checkInvariants } from './invariants';
+export { legalActions } from './legalActions';
 export { pct } from './money';
 export { reduce, type ReduceResult } from './reduce';
 export { replay } from './replay';
@@ -30,6 +31,7 @@ export {
   rankPlayers,
   roundLimit,
   roundNumber,
+  totalDebt,
   totalExpenses,
   winner,
   type OptionCost,

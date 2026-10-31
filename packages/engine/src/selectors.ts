@@ -235,3 +235,8 @@ function rankOptions(card: LifeChoicesCard, player: Player, compare: (a: OptionC
   if (best === undefined) throw new Error(`Life Choices card "${card.id}" has no options`);
   return best.option;
 }
+
+/** Sum of every liability principal, mortgages included. A subscription has principal 0. */
+export function totalDebt(player: Player): number {
+  return player.liabilities.reduce((sum, l) => sum + l.principal, 0);
+}
