@@ -1,5 +1,10 @@
 packages:
   - 'packages/*'
 
+# esbuild (used by Vite) needs its install script. pnpm 11 and later read
+# allowBuilds; pnpm 10 reads onlyBuiltDependencies. Both are listed so a
+# fresh install works whichever pnpm Vercel or a laptop picks.
 allowBuilds:
   esbuild: true
+onlyBuiltDependencies:
+  - esbuild
