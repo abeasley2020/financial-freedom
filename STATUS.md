@@ -2,6 +2,14 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## TV table (2026-10-31, evening)
+
+**The board now goes on the TV.** `#/table` is a read-only table view: dark background, the loop at full height with icons on every tile, tokens that walk space by space, a tumbling die, the card being decided shown large with its two numbers (Life Choices shows every option), a Freedom race with a bar per player, and a three-line ticker. The laptop stays the controller at `#/` with the buttons and private numbers. **Show on TV** opens the table in a second window; drag it to the TV and press F for full screen. The two windows share one browser's storage, so every action on the laptop appears on the TV at once, with no server. Phones are still Stage G.
+
+Also: tile labels are short (Deal, Life, Market, Give, Setback) so they never clip; token labels are initials, or seat numbers when initials collide; money colors have a dark-background variant that keeps 4.5:1.
+
+Verified: two-window sync in headless Chromium (controller at 1366 by 900, table at 1920 by 1080) through every decision kind with 3 and 6 players, zero console errors; axe clean on both windows at every decision; `pnpm check` green (770 tests, 22 properties).
+
 ## Game night build (Stage F core, 2026-10-31)
 
 **The game is playable on one laptop, pass-and-play.** Lobby (2 to 6 players, profession picker with starting numbers, standard or kids), board, turn panel, decision cards for every pending kind, balance sheet with repay, sell, and borrow, undo per Q7, autosave to the browser, and an end screen with the family ranking and a money-story chart per player. `pnpm check` is green (761 tests, 22 properties, zero warnings).

@@ -112,7 +112,8 @@ export function Lobby() {
         </div>
       </section>
 
-      <div className="mt-6 flex justify-end">
+      <p className="mt-6 text-sm text-slate-700">Playing on a TV? Start the game, then click Show on TV and drag that window to the TV. Your laptop keeps the buttons and everyone&rsquo;s private numbers.</p>
+      <div className="mt-3 flex justify-end">
         <button type="button" className="btn-primary px-8 text-lg" onClick={begin}>
           Start game
         </button>
