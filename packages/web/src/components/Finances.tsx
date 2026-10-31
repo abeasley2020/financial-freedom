@@ -1,5 +1,5 @@
-import { assetCashFlow, assetValue, freedomPercent, monthlyCashFlow, passiveIncome, pct, totalDebt, totalExpenses } from '@ff/engine';
-import { BORROW_STEP, formatMoney, formatSignedMoney, isGrowthAsset, LIABILITY_PAYMENT_PERCENT, type Action, type GameState, type Player } from '@ff/shared';
+import { assetCashFlow, assetValue, creditAvailable, freedomPercent, monthlyCashFlow, passiveIncome, pct, reduce, totalDebt, totalExpenses } from '@ff/engine';
+import { BANK_CREDIT_LIMIT_MONTHS, BORROW_STEP, formatMoney, formatSignedMoney, isGrowthAsset, LIABILITY_PAYMENT_PERCENT, type Action, type GameState, type Player } from '@ff/shared';
 import { useId, useState } from 'react';
 
 import { assetName, assetTypeLabel, liabilityName, professionName } from '../lib/text';
@@ -105,20 +105,27 @@ export function Finances({ state, player, legal }: { state: GameState; player: P
       )}
       <p className="mt-1 text-sm text-slate-600">Total debt: {formatMoney(totalDebt(player))}</p>
 
-      {!kids && canBorrow && state.pending.kind === 'none' && <Borrow playerId={player.id} />}
+      {!kids && canBorrow && state.pending.kind === 'none' && <Borrow state={state} player={player} />}
     </section>
   );
 }
 
-export function Borrow({ playerId }: { playerId: string }) {
+export function Borrow({ state, player }: { state: GameState; player: Player }) {
   const dispatch = useGame((s) => s.dispatch);
+  const playerId = player.id;
   const [amount, setAmount] = useState(BORROW_STEP);
+  // Ask the engine whether one more step is allowed, so the credit limit is never re-implemented here.
+  const canMore = reduce(state, { type: 'BORROW', playerId, amount: amount + BORROW_STEP }).ok;
+  const canThis = reduce(state, { type: 'BORROW', playerId, amount }).ok;
   const id = useId();
   const payment = pct(amount, LIABILITY_PAYMENT_PERCENT.bank);
   return (
     <div className="mt-4 rounded-lg border border-slate-300 bg-slate-50 p-3">
       <h3 className="font-bold">Borrow from the bank</h3>
       <p className="text-sm text-slate-700">Bank loans cost {LIABILITY_PAYMENT_PERCENT.bank}% of the loan every month until you pay them off. Borrow to buy things that pay you.</p>
+      <p className="mt-1 text-sm font-semibold">
+        The bank will lend you up to {formatMoney(creditAvailable(player))} more (limit: {BANK_CREDIT_LIMIT_MONTHS} months of salary in bank loans).
+      </p>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <button
           type="button"
@@ -138,6 +145,7 @@ export function Borrow({ playerId }: { playerId: string }) {
           type="button"
           className="btn-secondary"
           aria-label="Borrow $1,000 more"
+          disabled={!canMore}
           onClick={() => {
             setAmount((a) => a + BORROW_STEP);
           }}
@@ -148,6 +156,7 @@ export function Borrow({ playerId }: { playerId: string }) {
           type="button"
           className="btn-primary"
           aria-describedby={id}
+          disabled={!canThis}
           onClick={() => {
             if (dispatch({ type: 'BORROW', playerId, amount })) setAmount(BORROW_STEP);
           }}

@@ -16,7 +16,7 @@ Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file
 
 **Questions for Andre:**
 
-1. **Borrow for every big deal escapes in about 4 months.** A UI bot that borrowed the full shortfall for each big deal escaped in round 4 or 5. This is open question 1 below, now seen in the real UI. Default: play tonight as is and watch whether anyone finds it.
+1. **Fixed 2026-10-31 (Andre: "fix it"): bank credit limit.** A probe bot that borrowed the shortfall for every cash-positive deal beat Wealth Builder in 98.3% of 1,000 head-to-head games and escaped by month 7 (earliest month 1). BORROW is now rejected with CREDIT_LIMIT past two months of salary in total bank principal; Setback auto-loans are exempt but count. The same probe now wins 47%. All ten sim targets still pass (`docs/sim/credit-limit.md`): escapes 18.1% (was 35.9%), Doctor 42.9%, Restaurant Server 22.0%. Golden games limit-two-players and escape-three-players re-recorded with the same bots; both kept their endings.
 2. **Undo crosses END_TURN.** Q7 only blocks undo past a roll or card draw, so the next player can undo the previous END_TURN before rolling. Default: keep (handy for "I forgot to repay").
 
 ## Morning summary (Stage D, 2026-10-27)

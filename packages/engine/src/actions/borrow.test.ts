@@ -5,7 +5,7 @@ import { reduce } from '../reduce';
 import { debtPayments, monthlyCashFlow, playerById, totalExpenses } from '../selectors';
 import { apply, reject } from '../test/apply';
 import { deepFreeze } from '../test/deepFreeze';
-import { aboutToRoll, drawn, offered, rolledClean, twoPlayerGame, withGame } from '../test/fixtures';
+import { aboutToRoll, drawn, offered, onTopOfDeck, rolledClean, twoPlayerGame, withGame, withPlayer } from '../test/fixtures';
 
 const borrow = (amount: number, playerId = 'p1'): Action => ({ type: 'BORROW', playerId, amount });
 const p1 = (state: GameState) => playerById(state, 'p1');
@@ -216,5 +216,53 @@ describe('BORROW: records what the borrowed cash was for (spec, Decision log)', 
     const next = apply(afterRoll(), borrow(1_000));
     expect(next.game.log.at(-1)?.events[1]).toMatchObject({ kind: 'borrowed', purpose: 'none' });
     expect(next.game.log.at(-1)?.events[1]).not.toHaveProperty('cardId');
+  });
+});
+
+// Credit limit (decided by Andre 2026-10-31): the bank lends up to two months
+// of salary in total. Ada the Teacher earns 5,300, so her limit is 10,600.
+describe('BORROW: credit limit of two months of salary', () => {
+  const bankLoan = (principal: number) => ({ id: `old-${String(principal)}`, kind: 'bank' as const, principal, monthlyPayment: principal / 10 });
+
+  it('BORROW: accepts loans up to two months of salary in total', () => {
+    const next = apply(afterRoll(), borrow(10_000));
+    expect(p1(next).cash).toBe(3_240 + 10_000);
+  });
+
+  it('BORROW: rejected with CREDIT_LIMIT when bank debt would pass two months of salary', () => {
+    expect(reject(afterRoll(), borrow(11_000))).toBe('CREDIT_LIMIT');
+    expect(reject(apply(afterRoll(), borrow(10_000)), borrow(1_000))).toBe('CREDIT_LIMIT');
+  });
+
+  it('BORROW: accepts a loan that lands exactly on the limit', () => {
+    const state = withPlayer(afterRoll(), 'p1', { salary: 5_000 });
+    const next = apply(apply(state, borrow(9_000)), borrow(1_000));
+    expect(reject(next, borrow(1_000))).toBe('CREDIT_LIMIT');
+  });
+
+  it('BORROW: existing bank loans, including Setback loans, count toward the limit', () => {
+    const state = afterRoll();
+    const withOld = withPlayer(state, 'p1', { liabilities: [...p1(state).liabilities, bankLoan(8_000)] });
+    expect(apply(withOld, borrow(2_000)).players[0]?.cash).toBe(3_240 + 2_000);
+    expect(reject(withOld, borrow(3_000))).toBe('CREDIT_LIMIT');
+  });
+
+  it('BORROW: student loans, car loans, credit cards, and mortgages do not count toward the limit', () => {
+    // Ada starts with 42,000 of non-bank debt and can still borrow the full 10,000.
+    expect(apply(afterRoll(), borrow(10_000)).players[0]?.liabilities.filter((l) => l.kind === 'bank')).toHaveLength(1);
+  });
+
+  it('BORROW: repaying a bank loan frees that much credit', () => {
+    const full = withPlayer(apply(afterRoll(), borrow(10_000)), 'p1', {});
+    const loanId = p1(full).liabilities.find((l) => l.kind === 'bank')?.id ?? '';
+    const repaid = apply(full, { type: 'REPAY', playerId: 'p1', liabilityId: loanId });
+    expect(apply(repaid, borrow(10_000)).players[0]?.liabilities.filter((l) => l.kind === 'bank')).toHaveLength(1);
+  });
+
+  it('BORROW: a player at the limit still gets a Setback loan, because Setbacks always resolve', () => {
+    // 1,500 cash; Payday is 740 - 1,000 = -260, leaving 1,240 against a 3,500 Furnace: auto-borrow 3,000.
+    const atLimit = withPlayer(twoPlayerGame(), 'p1', { cash: 1_500, liabilities: [...p1(twoPlayerGame()).liabilities, bankLoan(10_000)] });
+    const next = apply(aboutToRoll(onTopOfDeck(atLimit, 'setback', 'setback-001'), 5, 1), { type: 'ROLL', playerId: 'p1' });
+    expect(p1(next).liabilities.filter((l) => l.kind === 'bank').map((l) => l.principal)).toEqual([10_000, 3_000]);
   });
 });

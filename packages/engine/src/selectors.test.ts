@@ -8,6 +8,8 @@ import {
   freedomPercent,
   hasRolledThisTurn,
   monthlyCashFlow,
+  bankDebt,
+  creditAvailable,
   netWorth,
   totalDebt,
   passiveIncome,
@@ -233,5 +235,22 @@ describe('totalDebt (never stored)', () => {
       liabilities: [{ id: 's', kind: 'subscription', principal: 0, monthlyPayment: 15, sourceCardId: 'life-001' }],
     };
     expect(totalDebt(subscriber)).toBe(0);
+  });
+});
+
+describe('bankDebt and creditAvailable (credit limit, decided 2026-10-31; never stored)', () => {
+  it('bankDebt: sums only bank loan principal', () => {
+    expect(bankDebt(teacher())).toBe(0);
+    const borrower: Player = { ...teacher(), liabilities: [...teacher().liabilities, { id: 'b1', kind: 'bank', principal: 3_000, monthlyPayment: 300 }, { id: 'b2', kind: 'bank', principal: 2_000, monthlyPayment: 200 }] };
+    expect(bankDebt(borrower)).toBe(5_000);
+  });
+
+  it('creditAvailable: two months of salary minus bank debt, never below 0', () => {
+    // Teacher salary 5,300.
+    expect(creditAvailable(teacher())).toBe(10_600);
+    const borrower: Player = { ...teacher(), liabilities: [{ id: 'b1', kind: 'bank', principal: 4_000, monthlyPayment: 400 }] };
+    expect(creditAvailable(borrower)).toBe(6_600);
+    const over: Player = { ...teacher(), liabilities: [{ id: 'b1', kind: 'bank', principal: 14_000, monthlyPayment: 1_400 }] };
+    expect(creditAvailable(over)).toBe(0);
   });
 });

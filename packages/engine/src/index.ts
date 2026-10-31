@@ -14,8 +14,10 @@ export { nextRandom, rollDie, shuffle } from './rng';
 export {
   assetCashFlow,
   assetValue,
+  bankDebt,
   canEscape,
   cheapestOption,
+  creditAvailable,
   currentPlayer,
   debtPayments,
   freedomPercent,

@@ -483,12 +483,7 @@
       "size": "big"
     },
     {
-      "type": "BORROW",
-      "playerId": "p2",
-      "amount": 19000
-    },
-    {
-      "type": "BUY",
+      "type": "PASS",
       "playerId": "p2"
     },
     {
@@ -522,13 +517,13 @@
       "size": "big"
     },
     {
-      "type": "BORROW",
-      "playerId": "p2",
-      "amount": 39000
+      "type": "PASS",
+      "playerId": "p2"
     },
     {
-      "type": "BUY",
-      "playerId": "p2"
+      "type": "REPAY",
+      "playerId": "p2",
+      "liabilityId": "p2-bank-73"
     },
     {
       "type": "END_TURN",
@@ -3147,50 +3142,21 @@
         {
           "turnNumber": 27,
           "action": {
-            "type": "BORROW",
-            "playerId": "p2",
-            "amount": 19000
-          },
-          "events": [
-            {
-              "kind": "cashChanged",
-              "delta": 19000,
-              "reason": "borrow"
-            },
-            {
-              "kind": "borrowed",
-              "liabilityId": "p2-bank-105",
-              "amount": 19000,
-              "monthlyPayment": 1900,
-              "principles": [
-                "P5"
-              ],
-              "purpose": "asset"
-            }
-          ]
-        },
-        {
-          "turnNumber": 27,
-          "action": {
-            "type": "BUY",
+            "type": "PASS",
             "playerId": "p2"
           },
           "events": [
             {
-              "kind": "cashChanged",
-              "delta": -30000,
-              "reason": "buy"
-            },
-            {
-              "kind": "bought",
-              "assetId": "p2-big-020-106",
+              "kind": "passed",
               "cardId": "big-020",
-              "cost": 30000,
               "principles": [
                 "P2",
                 "P5",
                 "P9"
-              ]
+              ],
+              "monthlyCashFlow": 3510,
+              "downPayment": 30000,
+              "affordable": false
             }
           ]
         },
@@ -3284,7 +3250,7 @@
             },
             {
               "kind": "bought",
-              "assetId": "p1-small-034-110",
+              "assetId": "p1-small-034-109",
               "cardId": "small-034",
               "cost": 1200,
               "principles": [
@@ -3323,14 +3289,14 @@
             },
             {
               "kind": "payday",
-              "amount": 10870
+              "amount": 9260
             },
             {
               "kind": "paydaySnapshot",
               "playerId": "p2",
-              "passiveIncome": 12470,
-              "totalExpenses": 21500,
-              "cash": 12028,
+              "passiveIncome": 8960,
+              "totalExpenses": 19600,
+              "cash": 21418,
               "roundNumber": 15
             },
             {
@@ -3362,48 +3328,42 @@
         {
           "turnNumber": 29,
           "action": {
-            "type": "BORROW",
-            "playerId": "p2",
-            "amount": 39000
+            "type": "PASS",
+            "playerId": "p2"
           },
           "events": [
             {
-              "kind": "cashChanged",
-              "delta": 39000,
-              "reason": "borrow"
-            },
-            {
-              "kind": "borrowed",
-              "liabilityId": "p2-bank-114",
-              "amount": 39000,
-              "monthlyPayment": 3900,
+              "kind": "passed",
+              "cardId": "big-007",
               "principles": [
+                "P2",
+                "P3",
                 "P5"
               ],
-              "purpose": "asset"
+              "monthlyCashFlow": 9130,
+              "downPayment": 50000,
+              "affordable": false
             }
           ]
         },
         {
           "turnNumber": 29,
           "action": {
-            "type": "BUY",
-            "playerId": "p2"
+            "type": "REPAY",
+            "playerId": "p2",
+            "liabilityId": "p2-bank-73"
           },
           "events": [
             {
               "kind": "cashChanged",
-              "delta": -50000,
-              "reason": "buy"
+              "delta": -16000,
+              "reason": "repay"
             },
             {
-              "kind": "bought",
-              "assetId": "p2-big-007-115",
-              "cardId": "big-007",
-              "cost": 50000,
+              "kind": "repaid",
+              "liabilityId": "p2-bank-73",
+              "principal": 16000,
               "principles": [
-                "P2",
-                "P3",
                 "P5"
               ]
             }
@@ -3506,7 +3466,7 @@
             "monthlyCashFlow": 350
           },
           {
-            "id": "p1-small-034-110",
+            "id": "p1-small-034-109",
             "cardId": "small-034",
             "type": "business",
             "purchasePrice": 1200,
@@ -3559,7 +3519,7 @@
         "name": "Grace",
         "professionId": "doctor",
         "position": 15,
-        "cash": 1028,
+        "cash": 5418,
         "salary": 19900,
         "assets": [
           {
@@ -3631,22 +3591,6 @@
             "purchasePrice": 220000,
             "downPaid": 22000,
             "monthlyCashFlow": 2460
-          },
-          {
-            "id": "p2-big-020-106",
-            "cardId": "big-020",
-            "type": "business",
-            "purchasePrice": 160000,
-            "downPaid": 30000,
-            "monthlyCashFlow": 3510
-          },
-          {
-            "id": "p2-big-007-115",
-            "cardId": "big-007",
-            "type": "rental",
-            "purchasePrice": 600000,
-            "downPaid": 50000,
-            "monthlyCashFlow": 9130
           }
         ],
         "liabilities": [
@@ -3670,12 +3614,6 @@
             "assetId": "p2-big-013-59"
           },
           {
-            "id": "p2-bank-73",
-            "kind": "bank",
-            "principal": 16000,
-            "monthlyPayment": 1600
-          },
-          {
             "id": "p2-big-009-74-mortgage",
             "kind": "mortgage",
             "principal": 243000,
@@ -3694,32 +3632,6 @@
             "principal": 198000,
             "monthlyPayment": 0,
             "assetId": "p2-big-010-90"
-          },
-          {
-            "id": "p2-bank-105",
-            "kind": "bank",
-            "principal": 19000,
-            "monthlyPayment": 1900
-          },
-          {
-            "id": "p2-big-020-106-mortgage",
-            "kind": "mortgage",
-            "principal": 130000,
-            "monthlyPayment": 0,
-            "assetId": "p2-big-020-106"
-          },
-          {
-            "id": "p2-bank-114",
-            "kind": "bank",
-            "principal": 39000,
-            "monthlyPayment": 3900
-          },
-          {
-            "id": "p2-big-007-115-mortgage",
-            "kind": "mortgage",
-            "principal": 550000,
-            "monthlyPayment": 0,
-            "assetId": "p2-big-007-115"
           }
         ],
         "favorTokens": 0,
@@ -3792,7 +3704,10 @@
           "big-001",
           "big-006"
         ],
-        "discardPile": []
+        "discardPile": [
+          "big-020",
+          "big-007"
+        ]
       },
       "market": {
         "drawPile": [

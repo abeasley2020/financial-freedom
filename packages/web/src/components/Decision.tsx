@@ -190,7 +190,7 @@ function Deal({ state, player, legal, deal, sharePrice }: { state: GameState; pl
         </button>
       ))}
 
-      {cost === null && !kids && legal.some((a) => a.type === 'BORROW') && <Borrow playerId={player.id} />}
+      {cost === null && !kids && (legal.some((a) => a.type === 'BORROW') ? <Borrow state={state} player={player} /> : <p className="text-sm font-semibold">The bank will not lend you more: you have reached your credit limit. Pay off a bank loan to borrow again.</p>)}
 
       <div>
         <button type="button" className="btn-secondary" disabled={pass === undefined} onClick={() => pass && dispatch(pass)}>
@@ -265,7 +265,7 @@ function LifeChoice({ state, player, legal, life }: { state: GameState; player: 
           );
         })}
       </ul>
-      {!kids && legal.some((a) => a.type === 'BORROW') && <Borrow playerId={player.id} />}
+      {!kids && legal.some((a) => a.type === 'BORROW') && <Borrow state={state} player={player} />}
     </Shell>
   );
 }

@@ -114,6 +114,7 @@ export const ERROR_TEXT: Readonly<Record<EngineError, string>> = {
   GAME_NOT_PLAYING: 'The game is over.',
   ALREADY_ROLLED: 'You already rolled this turn.',
   MUST_ROLL_FIRST: 'Roll first.',
+  CREDIT_LIMIT: 'The bank will not lend that much: bank loans are limited to two months of salary.',
   NOT_IMPLEMENTED: 'That is not built yet.',
 };
 
