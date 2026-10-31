@@ -13,4 +13,5 @@ export type EngineError =
   | 'GAME_NOT_PLAYING'
   | 'ALREADY_ROLLED'
   | 'MUST_ROLL_FIRST'
+  | 'CREDIT_LIMIT'
   | 'NOT_IMPLEMENTED';

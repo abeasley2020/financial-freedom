@@ -17,6 +17,13 @@ export type AssetId = z.infer<typeof AssetIdSchema>;
 /** Bank loans come in $1,000 steps (spec, Core rules, turn step 4). */
 export const BORROW_STEP = 1_000;
 
+/**
+ * Credit limit (decided by Andre 2026-10-31): BORROW may not take total bank
+ * debt past this many months of salary. Setback auto-loans ignore the limit
+ * so a Setback always resolves, but they count toward it.
+ */
+export const BANK_CREDIT_LIMIT_MONTHS = 2;
+
 const acting = { playerId: PlayerIdSchema };
 
 /**

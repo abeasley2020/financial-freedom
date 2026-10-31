@@ -80,3 +80,7 @@ Andre approved the three recommendations from the Morning summary. These are dec
 | The seven test-named deals raised into the tuned range: Duplex in Decatur 700, Starter Condo 520, Lawn Care Trailer 450, Vending Route 630, Laundromat 4,200, Eight-Unit Apartment Building 6,000, Car Wash 6,500. Five engine tests re-pinned to the new numbers | 99.7% | 0.9% | 28.2% Farmer to 44.1% Doctor | 96.1% | 44.9 (Aggressive 49.9, BS 5.0) | 15 | 359 (35.9%), median round 13 | 0 stuck, 10 (WB 25.9% vs BS 19.4%) |
 
 The golden games were then re-recorded on this content and installed, with Andre's approval.
+
+## 2026-10-31: bank credit limit (rule change, approved by Andre)
+
+BORROW capped at two months of salary in total bank principal (Setback auto-loans exempt, counted). Probe "borrow for every deal" bot vs Wealth Builder, 600 two-seat games: no cap 98.3% leverage wins and 98.8% escapes (median round 7); 1x salary 40.3% / 7.3%; 2x 47.3% / 21.7%; 3x 58.3% / 33.7%; 4x 69.2% / 40.8%. Chose 2x: leverage stays a real strategy but no longer dominates. Full suite at 2x, all ten targets met: escape or limit 99.6%, bankrupt seats 1.0%, professions 22.0% (Restaurant Server) to 42.9% (Doctor), best minus worst 45.4 points, median 15 rounds, escapes 18.1% (median round 14, earliest 5), Wealth Builder vs Big Spender 94.3%, kids 1,000 of 1,000 finished, kids median 10. Kept.

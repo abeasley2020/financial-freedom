@@ -7,6 +7,7 @@ export * from './actions';
 export * from './board';
 export * from './cards';
 export * from './data/index';
+export * from './formatMoney';
 export * from './money';
 export * from './principles';
 export * from './professions';

@@ -12,6 +12,11 @@
 // strategies and kept their endings; limit-four-players moved from seed 0 to
 // seed 1 because seed 0 now ends in an escape. A fifth recording ends by
 // escape, which Stage D made common (about one game in five).
+//
+// Re-recorded 2026-10-31 with Andre's approval for the bank credit limit
+// (BORROW may not take bank debt past two months of salary): the same bots
+// replayed the same setups. limit-two-players and escape-three-players
+// changed and kept their endings; the other three replayed unchanged.
 
 import { ActionSchema, GameStateSchema, type Action, type GameState } from '@ff/shared';
 import { z } from 'zod';

@@ -1,6 +1,7 @@
 // Derived values. Nothing here is ever stored on state (CLAUDE.md, Rule 2).
 
 import {
+  BANK_CREDIT_LIMIT_MONTHS,
   isGrowthAsset,
   LIABILITY_PAYMENT_PERCENT,
   PROFESSIONS,
@@ -234,4 +235,19 @@ function rankOptions(card: LifeChoicesCard, player: Player, compare: (a: OptionC
   }
   if (best === undefined) throw new Error(`Life Choices card "${card.id}" has no options`);
   return best.option;
+}
+
+/** Sum of every liability principal, mortgages included. A subscription has principal 0. */
+export function totalDebt(player: Player): number {
+  return player.liabilities.reduce((sum, l) => sum + l.principal, 0);
+}
+
+/** Sum of bank loan principal: what counts against the credit limit. */
+export function bankDebt(player: Player): number {
+  return player.liabilities.reduce((sum, l) => (l.kind === 'bank' ? sum + l.principal : sum), 0);
+}
+
+/** How much more the bank will lend: BANK_CREDIT_LIMIT_MONTHS of salary minus bankDebt, never below 0. */
+export function creditAvailable(player: Player): number {
+  return Math.max(0, player.salary * BANK_CREDIT_LIMIT_MONTHS - bankDebt(player));
 }

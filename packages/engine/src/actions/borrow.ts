@@ -2,7 +2,7 @@ import { BORROW_STEP, DECISION_PRINCIPLES, LIABILITY_PAYMENT_PERCENT, type Actio
 
 import { pct } from '../money';
 import { rejected, type ActionResult } from '../reduce';
-import { currentPlayer, hasRolledThisTurn } from '../selectors';
+import { creditAvailable, currentPlayer, hasRolledThisTurn } from '../selectors';
 
 /** Pending states in which borrowing is legal (spec, Core rules, turn step 4). */
 const BORROW_PENDING = new Set<GameState['pending']['kind']>(['none', 'buyOrPass', 'lifeChoice']);
@@ -12,7 +12,8 @@ const BORROW_PENDING = new Set<GameState['pending']['kind']>(['none', 'buyOrPass
  * at 10 percent of principal added to monthly expenses. Legal after the roll
  * with no decision pending, or while a buyOrPass or lifeChoice decision is
  * open so a short player can raise the cash; the decision stays open. Kids
- * mode has no bank loans.
+ * mode has no bank loans. Total bank debt may not pass BANK_CREDIT_LIMIT_MONTHS
+ * of salary (decided 2026-10-31).
  */
 export function borrow(state: GameState, action: Extract<Action, { type: 'BORROW' }>): ActionResult {
   if (!BORROW_PENDING.has(state.pending.kind)) return rejected('INVALID_FOR_PENDING');
@@ -23,6 +24,7 @@ export function borrow(state: GameState, action: Extract<Action, { type: 'BORROW
   if (!Number.isInteger(amount) || amount <= 0 || amount % BORROW_STEP !== 0) return rejected('INVALID_AMOUNT');
 
   const player = currentPlayer(state);
+  if (amount > creditAvailable(player)) return rejected('CREDIT_LIMIT');
   const loan: Liability = {
     id: `${player.id}-bank-${String(state.game.log.length)}`,
     kind: 'bank',
