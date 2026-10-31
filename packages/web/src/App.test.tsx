@@ -45,7 +45,7 @@ describe('App', () => {
       start?.click();
     });
     const labels = [...container.querySelectorAll('button')].map((b) => b.textContent);
-    expect(labels).toContain('Payday and roll');
+    expect(labels).toContain('Payday & roll');
     expect(labels).not.toContain('End turn');
     expect(useGame.getState().state?.game.phase).toBe('playing');
   });
@@ -58,7 +58,7 @@ describe('App', () => {
       [...container.querySelectorAll('button')].find((b) => b.textContent === 'Start game')?.click();
     });
     act(() => {
-      [...container.querySelectorAll('button')].find((b) => b.textContent === 'Payday and roll')?.click();
+      [...container.querySelectorAll('button')].find((b) => b.textContent === 'Payday & roll')?.click();
     });
     expect(useGame.getState().state?.game.log.length).toBe(1);
     expect(useGame.getState().undoStack).toEqual([]);

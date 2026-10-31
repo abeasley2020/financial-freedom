@@ -2,15 +2,16 @@ import { currentPlayer, freedomPercent, optionCost, passiveIncome, totalExpenses
 import { formatMoney, isGrowthAssetType, type GameState, type Player } from '@ff/shared';
 import { useEffect, useState } from 'react';
 
-import { card, cardText, lastRoll, professionName, recentLines, seatColor, tokenLabels } from '../lib/text';
+import { card, cardText, celebrationKey, lastRoll, professionName, recentLines, seatColor, seatGlow, tokenLabels } from '../lib/text';
 import { useGame } from '../store';
 import { Board, Die } from './Board';
 import { EndScreen } from './EndScreen';
 import { Money } from './Money';
+import { BigStat, Confetti, GameCard, PaydayPop, Pawn, TurnSplash, type DeckTone } from './Show';
 
 /**
- * The shared table for the TV: read-only, big, dark. It renders whatever the
- * controller window saved; it never dispatches. Private numbers (cash,
+ * The shared table for the TV: read-only, big, and loud. It renders whatever
+ * the controller window saved; it never dispatches. Private details (the
  * balance sheet) stay on the controller; the TV shows the race and the card.
  */
 export function TableView() {
@@ -18,21 +19,18 @@ export function TableView() {
   useFullscreenShortcut();
 
   if (state === null) return <Waiting />;
-  if (state.game.phase === 'finished') {
-    return (
-      <div className="tv min-h-screen">
-        <EndScreen state={state} readOnly />
-      </div>
-    );
-  }
+  if (state.game.phase === 'finished') return <EndScreen state={state} readOnly />;
   return <Table state={state} />;
 }
 
 function Waiting() {
   return (
-    <main className="tv flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
-      <h1 className="text-[6vw] font-black leading-none">Freedom Loop</h1>
-      <p className="max-w-3xl text-[2vw] opacity-80">Waiting for the game to start. Start it in the other window, then press F or double-click here for full screen.</p>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-8 p-8 text-center">
+      <p className="eyebrow !text-[1.4vw] text-gold">Family game night</p>
+      <h1 className="font-display text-[8vw] font-extrabold leading-none">
+        <span className="shimmer-text">Freedom Loop</span>
+      </h1>
+      <p className="max-w-4xl text-[2vw] text-white/80">Start the game in the other window. Press F or double-click for full screen.</p>
       <FullscreenButton />
     </main>
   );
@@ -44,70 +42,72 @@ function Table({ state }: { state: GameState }) {
   const roll = lastRoll(state);
   const rolledThisTurn = state.game.log.some((e) => e.turnNumber === state.game.turnNumber && e.action.type === 'ROLL');
   const { lines } = recentLines(state);
-  const ranked = [...state.players].sort((a, b) => freedomPercent(b) - freedomPercent(a) || b.cash - a.cash);
   const labels = tokenLabels(state.players);
+  const ranked = [...state.players].sort((a, b) => freedomPercent(b) - freedomPercent(a) || b.cash - a.cash);
+  const dieSize = Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.1);
 
   return (
-    <main className="tv grid h-screen w-screen grid-cols-[minmax(0,54fr)_minmax(0,46fr)] gap-[2vw] overflow-hidden p-[2vw]" onDoubleClick={toggleFullscreen}>
+    <main className="grid h-screen w-screen grid-cols-[minmax(0,54fr)_minmax(0,46fr)] gap-[2vw] overflow-hidden p-[2vw]" onDoubleClick={toggleFullscreen}>
+      <TurnSplash state={state} label={(s) => labels[s] ?? '?'} />
+      <PaydayPop state={state} placement="left-[27vw] top-[70vh]" size="text-[2.4vw]" />
+      <Confetti trigger={celebrationKey(state)} pieces={110} />
+
       <div className="flex min-h-0 items-center justify-center">
         <div className="aspect-square h-full max-h-full max-w-full">
           <Board state={state} tv>
-            <div className="flex flex-col items-center gap-[1vh]">
-              <p className="flex items-center gap-[0.8vw] text-[2.6vw] font-black leading-none">
-                <span aria-hidden="true" className="inline-block h-[2.2vw] w-[2.2vw] rounded-full border-4 border-white" style={{ backgroundColor: seatColor(seat) }} />
-                {player.name}
-              </p>
-              <p className="text-[1.3vw] opacity-80">{rolledThisTurn ? 'is deciding' : 'is up: Payday, then roll'}</p>
-              {roll !== null && rolledThisTurn && <Die value={roll.value} rollKey={roll.key} size={Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.09)} />}
+            <div className="flex flex-col items-center gap-[1.2vh]">
+              <Pawn seat={seat} label={labels[seat] ?? '?'} size={Math.round(dieSize * 0.8)} active />
+              <p className="font-display text-[3vw] font-extrabold leading-none">{player.name}</p>
+              <p className="text-[1.3vw] text-white/80">{rolledThisTurn ? 'is deciding' : 'is up next: Payday, then roll'}</p>
+              {roll !== null && rolledThisTurn && <Die value={roll.value} rollKey={roll.key} size={dieSize} />}
             </div>
           </Board>
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-col gap-[1.5vh]">
-        <header className="flex items-baseline justify-between">
-          <h1 className="text-[2.2vw] font-black tracking-tight">Freedom Loop{state.game.mode === 'kids' ? ' · kids' : ''}</h1>
+      <div className="flex min-h-0 flex-col gap-[1.6vh]">
+        <header className="flex items-center justify-between">
+          <h1 className="font-display text-[2.4vw] font-extrabold tracking-tight">
+            <span className="shimmer-text">Freedom Loop</span>
+            {state.game.mode === 'kids' && <span className="ml-[0.6vw] text-[1.2vw] text-white/70">kids</span>}
+          </h1>
           <FullscreenButton small />
         </header>
 
         <Spotlight state={state} player={player} />
 
-        <section aria-labelledby="race-heading" className="tv-panel min-h-0 flex-1 overflow-hidden">
-          <h2 id="race-heading" className="text-[1.4vw] font-bold uppercase tracking-widest opacity-80">
+        <section aria-labelledby="race-heading" className="glass min-h-0 flex-1 overflow-hidden p-[1.2vw]">
+          <h2 id="race-heading" className="eyebrow !text-[1vw] text-white/70">
             Freedom race
           </h2>
-          <ol className="mt-[0.8vh] space-y-[0.7vh]">
-            {ranked.map((p) => {
+          {/* Five or six players: two columns, so the race never runs off the screen. */}
+          <ol className={`mt-[0.8vh] grid gap-[0.6vh] ${state.players.length > 4 ? 'grid-cols-2 gap-x-[0.8vw]' : 'grid-cols-1'}`}>
+            {ranked.map((p, place) => {
               const i = state.players.findIndex((q) => q.id === p.id);
               const pctFree = freedomPercent(p);
               const isTurn = p.id === player.id;
               return (
-                <li key={p.id} className={`rounded-xl px-[0.6vw] py-[0.4vh] ${isTurn ? 'bg-white/10 ring-2 ring-yellow-400' : ''}`}>
-                  <div className="flex items-center justify-between gap-[1vw] text-[1.35vw] leading-tight">
-                    <span className="flex min-w-0 items-center gap-[0.6vw] font-bold">
-                      <span aria-hidden="true" className="inline-flex h-[1.7vw] w-[1.7vw] shrink-0 items-center justify-center rounded-full border-2 border-white text-[0.95vw] font-black" style={{ backgroundColor: seatColor(i) }}>
-                        {labels[i]}
-                      </span>
-                      <span className="truncate">{p.name}</span>
-                      <span className="truncate text-[0.95vw] font-normal opacity-70">
-                        {professionName(p.professionId)}
-                        {p.isOut ? ' · out' : p.skipsNextTurn ? ' · sits out next turn' : ''}
-                      </span>
-                    </span>
-                    <span className="shrink-0 text-[0.95vw] opacity-80">
-                      {formatMoney(passiveIncome(p))} of {formatMoney(totalExpenses(p))}/mo
-                    </span>
-                    <span className="w-[3.2vw] shrink-0 text-right font-black tabular-nums">{pctFree}%</span>
-                  </div>
-                  <div
-                    role="meter"
-                    aria-label={`${p.name} freedom`}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={Math.min(100, pctFree)}
-                    className="mt-[0.4vh] h-[1.3vh] w-full overflow-hidden rounded-full bg-white/15"
-                  >
-                    <div className="h-full rounded-full transition-[width] duration-700" style={{ width: `${String(Math.min(100, pctFree))}%`, backgroundColor: seatColor(i) }} />
+                <li key={p.id} className={`flex items-center gap-[0.8vw] rounded-2xl px-[0.8vw] py-[0.5vh] transition ${isTurn ? 'bg-white/10 shadow-glow' : ''} ${p.isOut ? 'opacity-50' : ''}`}>
+                  <span className="w-[1.4vw] font-display text-[1.3vw] font-extrabold text-white/60">{place + 1}</span>
+                  <Pawn seat={i} label={labels[i] ?? '?'} size={Math.round(window.innerHeight * 0.038)} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline justify-between gap-[0.6vw]">
+                      <p className="truncate font-display text-[1.35vw] font-extrabold leading-tight">{p.name}</p>
+                      <span className="shrink-0 font-display text-[1.6vw] font-extrabold tabular-nums">{pctFree}%</span>
+                    </div>
+                    <div
+                      role="meter"
+                      aria-label={`${p.name} freedom`}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={Math.min(100, pctFree)}
+                      className="mt-[0.3vh] h-[1.2vh] w-full overflow-hidden rounded-full bg-white/10"
+                    >
+                      <div className="h-full rounded-full transition-[width] duration-1000" style={{ width: `${String(Math.max(2, Math.min(100, pctFree)))}%`, background: `linear-gradient(90deg, ${seatColor(i)}, ${seatGlow(i)})` }} />
+                    </div>
+                    <p className={`mt-[0.3vh] truncate text-[0.85vw] text-white/75 ${state.players.length > 4 ? 'sr-only' : ''}`}>
+                      {p.isOut ? 'out of the game' : p.skipsNextTurn ? 'sits out next turn' : professionName(p.professionId)} · {formatMoney(passiveIncome(p))} of {formatMoney(totalExpenses(p))}
+                    </p>
                   </div>
                 </li>
               );
@@ -115,10 +115,11 @@ function Table({ state }: { state: GameState }) {
           </ol>
         </section>
 
-        <section aria-live="polite" className="tv-panel shrink-0 overflow-hidden">
-          <ul className="space-y-[0.3vh] text-[1.25vw] leading-snug">
+        <section aria-live="polite" className="glass shrink-0 overflow-hidden px-[1.2vw] py-[1vh]">
+          <ul className="space-y-[0.3vh] text-[1.2vw] leading-snug">
             {lines.slice(-3).map((line) => (
-              <li key={line.key} className="rise truncate">
+              <li key={line.key} className="rise flex items-center gap-[0.6vw] truncate">
+                <span aria-hidden="true" className="h-[0.5vw] w-[0.5vw] shrink-0 rounded-full bg-gold" />
                 {line.text}
               </li>
             ))}
@@ -134,76 +135,72 @@ function Spotlight({ state, player }: { state: GameState; player: Player }) {
   const pending = state.pending;
   const mode = state.game.mode;
   const kids = mode === 'kids';
-  if (pending.kind === 'none' || pending.kind === 'chooseDealSize' || pending.kind === 'giveOrSkip') {
-    const text =
-      pending.kind === 'chooseDealSize'
-        ? `${player.name} is choosing: small deal or big deal?`
-        : pending.kind === 'giveOrSkip'
-          ? `${player.name} landed on Giving. Give 10% of cash and earn a Favor token?`
-          : null;
-    return text === null ? null : (
-      <section className="tv-panel rise">
-        <p className="text-[1.8vw] font-bold leading-tight">{text}</p>
-      </section>
+  if (pending.kind === 'none') return null;
+  if (pending.kind === 'chooseDealSize') {
+    return <GameCard key="size" tone="deal" kicker="Opportunity" title={`${player.name} picks: small deal or big deal?`} size="tv" />;
+  }
+  if (pending.kind === 'giveOrSkip') {
+    return (
+      <GameCard key="give" tone="give" kicker="Giving" title={`${player.name}, give 10%?`} size="tv">
+        <p className="text-[1.4vw] text-white/90">Give 10% of cash to help others and earn a Favor token.</p>
+      </GameCard>
     );
   }
   const c = card(pending.cardId);
-  const kicker = c.deck === 'bigDeals' ? 'Big deal' : c.deck === 'smallDeals' ? 'Small deal' : c.deck === 'market' ? 'Market' : 'Life Choices';
+  const tone: DeckTone = c.deck === 'bigDeals' ? 'big' : c.deck === 'smallDeals' ? 'deal' : c.deck === 'market' ? 'market' : 'life';
+  const kicker = c.deck === 'bigDeals' ? 'Big deal' : c.deck === 'smallDeals' ? 'Small deal' : c.deck === 'market' ? 'Market news' : 'Life Choices';
   return (
-    <section key={c.id} className="tv-panel rise border-2 border-yellow-400/70">
-      <p className="text-[1.1vw] font-bold uppercase tracking-widest text-yellow-300">{kicker}</p>
-      <h2 className="text-[2.4vw] font-black leading-tight">{c.title}</h2>
-      <p className="mt-[0.5vh] text-[1.35vw] leading-snug opacity-90">{cardText(c, mode)}</p>
+    <GameCard key={c.id} tone={tone} kicker={kicker} title={c.title} size="tv">
+      <p className="text-[1.35vw] leading-snug text-white/90">{cardText(c, mode)}</p>
       {(c.deck === 'smallDeals' || c.deck === 'bigDeals') && (
-        <dl className="mt-[1vh] grid grid-cols-2 gap-[1vw] text-[1.2vw]">
+        <dl className="mt-[1.2vh] grid grid-cols-2 gap-[0.8vw]">
           {c.type === 'stock' ? (
             <>
-              <Fact label="Price per share today" value={formatMoney(pending.kind === 'buyOrPass' ? (pending.sharePrice ?? c.price) : c.price)} />
-              <Fact label="Dividend per share" value={`${formatMoney(c.dividendPerShare ?? 0)}/mo`} />
+              <BigStat label="Price per share today" tv>
+                {formatMoney(pending.kind === 'buyOrPass' ? (pending.sharePrice ?? c.price) : c.price)}
+              </BigStat>
+              <BigStat label="Dividend per share" tv>
+                <Money amount={c.dividendPerShare ?? 0} suffix="/mo" />
+              </BigStat>
             </>
           ) : isGrowthAssetType(c.type) ? (
             <>
-              <Fact label="Grows every month" value={`${String(c.growthPercent ?? 0)}%`} />
-              <Fact label="Pays out every month" value={`${String(c.payoutPercent ?? 0)}% of value`} />
+              <BigStat label="Grows every month" tv>{`${String(c.growthPercent ?? 0)}%`}</BigStat>
+              <BigStat label="Pays out every month" tv>{`${String(c.payoutPercent ?? 0)}% of value`}</BigStat>
             </>
           ) : (
             <>
-              <Fact label="Cost today" value={formatMoney(c.downPayment)} />
-              <Fact label="Change per month" value={<Money amount={c.monthlyCashFlow} suffix="/mo" />} />
+              <BigStat label="Cost today" tv>
+                {formatMoney(c.downPayment)}
+              </BigStat>
+              <BigStat label="Change per month" tv>
+                <Money amount={c.monthlyCashFlow} suffix="/mo" />
+              </BigStat>
             </>
           )}
         </dl>
       )}
       {c.deck === 'lifeChoices' && (
-        <ul className="mt-[1vh] grid grid-cols-3 gap-[0.8vw]">
+        <ul className="mt-[1.2vh] grid grid-cols-3 gap-[0.8vw]">
           {c.options
             .filter((o) => !kids || o.kidsOk)
             .map((o) => {
               const { costToday, monthlyChange } = optionCost(o, player);
               return (
-                <li key={o.id} className="rounded-xl bg-white/10 p-[0.7vw]">
-                  <p className="text-[1.3vw] font-bold leading-tight">{o.label}</p>
-                  <p className="mt-[0.4vh] text-[1.05vw] leading-tight">
-                    Today: <Money amount={-costToday} />
+                <li key={o.id} className="rounded-2xl bg-white/[0.08] p-[0.8vw]">
+                  <p className="font-display text-[1.35vw] font-extrabold leading-tight">{o.label}</p>
+                  <p className="mt-[0.5vh] text-[1.05vw]">
+                    Today <Money amount={-costToday} />
                   </p>
-                  <p className="text-[1.05vw] leading-tight">
-                    Monthly: <Money amount={-monthlyChange} suffix="/mo" />
+                  <p className="text-[1.05vw]">
+                    Monthly <Money amount={-monthlyChange} suffix="/mo" />
                   </p>
                 </li>
               );
             })}
         </ul>
       )}
-    </section>
-  );
-}
-
-function Fact({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div>
-      <dt className="opacity-70">{label}</dt>
-      <dd className="text-[1.6vw] font-black">{value}</dd>
-    </div>
+    </GameCard>
   );
 }
 
@@ -236,7 +233,7 @@ function FullscreenButton({ small = false }: { small?: boolean }) {
     };
   }, []);
   return (
-    <button type="button" onClick={toggleFullscreen} className={`btn rounded-full border border-white/40 bg-white/10 text-white hover:bg-white/20 ${small ? 'px-3 text-[1vw]' : 'px-6 text-xl'}`}>
+    <button type="button" onClick={toggleFullscreen} className={`btn-ghost ${small ? '!min-h-0 px-3 py-1 text-[0.9vw]' : 'px-8 text-xl'}`}>
       {full ? 'Exit full screen' : 'Full screen (F)'}
     </button>
   );

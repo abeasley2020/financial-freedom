@@ -2,6 +2,17 @@
 
 Progress and next steps for Freedom Loop. `CLAUDE.md` holds the rules; this file holds where we are. Update it at the end of every session.
 
+## Game-show redesign (2026-10-31, night)
+
+Andre: "too basic, looks like it was made in the 80s"; chose the game-show direction. Same engine, new look and flow everywhere.
+
+- **Look:** dark studio stage with spotlight gradients, Bricolage Grotesque display type (Google Fonts), jewel-tone glossy tiles with icons, glowing pawns, Freedom rings. No new npm dependencies.
+- **Laptop as host console:** one big step at a time. A giant Payday & roll, then the card (themed header band, flip-in, whole-tile choices, steppers for shares and amounts), then a recap and a giant End turn. Money shrinks to a HUD with a Freedom ring; the balance sheet with repay, sell, and borrow lives in a My money drawer (native dialog).
+- **Moments:** turn splash in the player's color, Payday pop, confetti on a buy and on the win, podium end screen with area charts. All respect reduced motion.
+- **TV:** the same language; the race switches to two columns above four players.
+
+Verified: headless Chromium games through every card type (2 to 6 players, both modes, random play including drawer moves, borrowing to the limit), zero console errors; axe clean on both windows at every decision; `pnpm check` green.
+
 ## TV table (2026-10-31, evening)
 
 **The board now goes on the TV.** `#/table` is a read-only table view: dark background, the loop at full height with icons on every tile, tokens that walk space by space, a tumbling die, the card being decided shown large with its two numbers (Life Choices shows every option), a Freedom race with a bar per player, and a three-line ticker. The laptop stays the controller at `#/` with the buttons and private numbers. **Show on TV** opens the table in a second window; drag it to the TV and press F for full screen. The two windows share one browser's storage, so every action on the laptop appears on the TV at once, with no server. Phones are still Stage G.

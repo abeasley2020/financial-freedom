@@ -3,89 +3,157 @@
 @tailwind utilities;
 
 @layer base {
+  html,
   body {
-    @apply bg-paper text-ink antialiased;
+    @apply bg-stage font-sans text-white antialiased;
+  }
+  body {
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(124, 58, 237, 0.35), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(14, 165, 233, 0.25), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(236, 72, 153, 0.18), transparent 60%),
+      #0b0d26;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
   }
   :focus-visible {
-    @apply outline outline-[3px] outline-offset-2 outline-accent;
+    @apply outline outline-[3px] outline-offset-2 outline-gold;
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg px-4 py-2 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex min-h-[44px] min-w-[44px] select-none items-center justify-center gap-2 rounded-2xl px-5 py-2 font-display font-extrabold tracking-wide transition duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100;
+  }
+  /* The one thing to press next. */
+  .btn-go {
+    @apply btn text-ink;
+    background: linear-gradient(180deg, #ffe08a 0%, #ffc93c 55%, #f5a524 100%);
+    box-shadow: 0 6px 0 #b9731a, 0 14px 28px -8px rgba(255, 190, 60, 0.6);
+  }
+  .btn-go:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
+  .btn-go:active:not(:disabled) {
+    box-shadow: 0 2px 0 #b9731a;
+    transform: translateY(4px);
   }
   .btn-primary {
-    @apply btn bg-accent text-white hover:bg-[#084a70];
+    @apply btn text-white;
+    background: linear-gradient(180deg, #7c5cff 0%, #5b3df5 100%);
+    box-shadow: 0 5px 0 #3a22b8, 0 12px 24px -10px rgba(91, 61, 245, 0.7);
   }
-  .btn-secondary {
-    @apply btn border border-slate-400 bg-white text-ink hover:bg-slate-100;
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+  .btn-ghost {
+    @apply btn border border-white/20 bg-white/[0.07] text-white hover:bg-white/[0.14];
   }
   .btn-danger {
-    @apply btn border border-loss bg-white text-loss hover:bg-red-50;
+    @apply btn border border-loss/60 bg-loss/10 text-loss hover:bg-loss/20;
   }
-  .panel {
-    @apply rounded-xl border border-slate-300 bg-white p-4 shadow-sm;
+  .glass {
+    @apply rounded-3xl border border-white/10 bg-surface/80 shadow-lift backdrop-blur;
   }
   .chip {
-    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold;
+    @apply inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.07] px-3 py-1 text-sm font-semibold;
+  }
+  .eyebrow {
+    @apply font-display text-xs font-extrabold uppercase tracking-[0.2em];
+  }
+  .field {
+    @apply min-h-[44px] rounded-xl border border-white/20 bg-white/[0.08] px-3 text-white placeholder:text-white/50 focus:border-gold;
+  }
+  .field option {
+    @apply bg-surface text-white;
   }
 }
+
+/* ---------- Motion ---------- */
 
 @keyframes die-tumble {
-  0% {
-    transform: rotate(-200deg) scale(0.4);
-    opacity: 0;
-  }
-  60% {
-    transform: rotate(20deg) scale(1.15);
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(0deg) scale(1);
-  }
+  0% { transform: rotate(-260deg) scale(0.3); opacity: 0; }
+  60% { transform: rotate(18deg) scale(1.18); opacity: 1; }
+  100% { transform: rotate(0) scale(1); }
 }
-.die-tumble {
-  animation: die-tumble 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+.die-tumble { animation: die-tumble 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@keyframes card-flip {
+  0% { transform: perspective(1200px) rotateY(-90deg) scale(0.9); opacity: 0; }
+  60% { transform: perspective(1200px) rotateY(8deg) scale(1.02); opacity: 1; }
+  100% { transform: perspective(1200px) rotateY(0) scale(1); }
 }
+.card-flip { animation: card-flip 650ms cubic-bezier(0.2, 0.8, 0.2, 1) both; transform-origin: center; }
+
 @keyframes rise {
-  from {
-    transform: translateY(12px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(14px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
-.rise {
-  animation: rise 350ms ease-out both;
+.rise { animation: rise 380ms ease-out both; }
+
+@keyframes pop {
+  0% { transform: translate(-50%, 10px) scale(0.6); opacity: 0; }
+  20% { transform: translate(-50%, 0) scale(1.08); opacity: 1; }
+  80% { transform: translate(-50%, -6px) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -26px) scale(0.96); opacity: 0; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .die-tumble,
-  .rise {
-    animation: none;
-  }
-  * {
-    transition-duration: 0ms !important;
-  }
+.pop { animation: pop 2200ms ease-out both; }
+
+@keyframes splash {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+@keyframes splash-name {
+  0% { transform: scale(0.6) translateY(20px); opacity: 0; }
+  25% { transform: scale(1.06); opacity: 1; }
+  40% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+.splash { animation: splash 1600ms ease-out both; }
+.splash-name { animation: splash-name 1600ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.65); }
+  100% { box-shadow: 0 0 0 18px rgba(255, 209, 102, 0); }
+}
+.pulse-ring { animation: pulse-ring 1.6s ease-out infinite; }
+
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0); opacity: 1; }
+  100% { transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin)); opacity: 0.9; }
+}
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  animation: confetti-fall var(--dur) cubic-bezier(0.25, 0.6, 0.4, 1) var(--delay) both;
 }
 
-/* The TV table: dark felt, light text. Tiles keep their own light fills and dark text. */
-.tv {
-  background: radial-gradient(ellipse at center, #15304a 0%, #0b1a2b 70%);
-  color: #f6f1e7;
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
-.tv-panel {
-  @apply rounded-2xl bg-white/5 p-[1vw];
+.shimmer-text {
+  background: linear-gradient(90deg, #ffd166, #fff3c4, #ffd166, #ff9ecd, #ffd166);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
 }
-/* Money and muted text tuned for the dark TV background (both pass 4.5:1 on #0b1a2b). */
-.tv .text-gain {
-  color: #7fe0a6;
-}
-.tv .text-loss {
-  color: #ffa399;
-}
-.tv .text-slate-700 {
-  color: rgba(246, 241, 231, 0.85);
+
+@media (prefers-reduced-motion: reduce) {
+  .die-tumble, .card-flip, .rise, .pop, .splash-name, .pulse-ring, .shimmer-text { animation: none; }
+  .splash { animation: splash 1600ms step-end both; }
+  .confetti-piece { display: none; }
+  * { transition-duration: 0ms !important; }
 }

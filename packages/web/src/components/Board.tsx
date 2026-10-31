@@ -2,7 +2,9 @@ import { roundLimit, roundNumber } from '@ff/engine';
 import { BOARD, BOARD_SIZE, type GameState, type SpaceKind } from '@ff/shared';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { SPACE_LABEL, SPACE_SHORT, seatColor, tokenLabels } from '../lib/text';
+import { Pawn } from './Show';
+
+import { SPACE_LABEL, SPACE_SHORT, tokenLabels } from '../lib/text';
 
 /** Grid cell (row, column), 1-based, for each board position on the 7 by 7 ring, clockwise from the top-left corner. */
 function cellFor(position: number): { row: number; col: number } {
@@ -12,17 +14,17 @@ function cellFor(position: number): { row: number; col: number } {
   return { row: 7 - (position - 18), col: 1 };
 }
 
-/** Tile fills, dark text on a light tint, for both the paper and the TV themes. */
+/** Jewel-tone tiles with white text: every fill keeps white text at 5:1 or better. */
 const TILE: Readonly<Record<SpaceKind, string>> = {
-  opportunity: 'bg-emerald-100 border-emerald-700 text-emerald-950',
-  lifeChoices: 'bg-amber-100 border-amber-700 text-amber-950',
-  market: 'bg-sky-100 border-sky-700 text-sky-950',
-  giving: 'bg-violet-100 border-violet-700 text-violet-950',
-  setback: 'bg-rose-100 border-rose-700 text-rose-950',
+  opportunity: 'from-emerald-700 to-emerald-900 border-emerald-400/40',
+  lifeChoices: 'from-orange-700 to-rose-900 border-orange-300/40',
+  market: 'from-sky-700 to-indigo-900 border-sky-300/40',
+  giving: 'from-violet-700 to-fuchsia-900 border-violet-300/40',
+  setback: 'from-rose-700 to-red-950 border-rose-300/40',
 };
 
 function Icon({ kind }: { kind: SpaceKind }) {
-  const common = { className: 'h-[38%] w-[38%] shrink-0', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true };
+  const common = { className: 'h-[56%] w-[56%]', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true };
   switch (kind) {
     case 'opportunity':
       return (
@@ -98,6 +100,7 @@ export function Board({ state, children, tv = false }: { state: GameState; child
   const current = state.game.currentPlayerId;
   const currentAt = shown.get(current);
   const labels = tokenLabels(state.players);
+  const pawnSize = usePawnSize(tv);
 
   return (
     <section aria-label="Game board" className="relative aspect-square w-full">
@@ -110,20 +113,21 @@ export function Board({ state, children, tv = false }: { state: GameState; child
             <div
               key={position}
               style={{ gridRow: row, gridColumn: col }}
-              className={`relative flex min-w-0 flex-col items-center justify-center gap-[6%] overflow-hidden rounded-[14%] border-[3px] p-[6%] text-center leading-none ${TILE[kind]} ${lit ? 'ring-4 ring-yellow-400 ring-offset-2' : ''}`}
+              className={`relative flex min-w-0 flex-col items-center justify-center gap-[7%] overflow-hidden rounded-[18%] border bg-gradient-to-br p-[6%] text-center leading-none text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_14px_-6px_rgba(0,0,0,0.7)] ${TILE[kind]} ${lit ? 'z-[1] scale-[1.06] shadow-glow' : ''} transition-transform duration-300`}
             >
               <span className="sr-only">{`Space ${String(position + 1)}: ${SPACE_LABEL[kind]}${here.length > 0 ? `. Here: ${here.join(', ')}` : ''}`}</span>
-              <Icon kind={kind} />
-              <span aria-hidden="true" className={`font-extrabold uppercase tracking-wide ${tv ? 'text-[1vw]' : 'text-[0.6rem] sm:text-xs'}`}>
+              <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[inherit] bg-gradient-to-b from-white/20 to-transparent" />
+              <span aria-hidden="true" className="flex aspect-square w-[46%] items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25">
+                <Icon kind={kind} />
+              </span>
+              <span aria-hidden="true" className={`font-display font-extrabold uppercase tracking-wider ${tv ? 'text-[0.95vw]' : 'text-[0.55rem] sm:text-[0.7rem]'}`}>
                 {SPACE_SHORT[kind]}
               </span>
             </div>
           );
         })}
         <div className="flex min-h-0 min-w-0 flex-col items-center justify-center gap-2 overflow-hidden p-2 text-center" style={{ gridRow: '2 / 7', gridColumn: '2 / 7' }}>
-          <p className={`font-semibold uppercase tracking-widest opacity-70 ${tv ? 'text-[1.3vw]' : 'text-sm'}`}>
-            Month {roundNumber(state)} of {roundLimit(state)}
-          </p>
+          <MonthMeter state={state} tv={tv} />
           {children}
         </div>
       </div>
@@ -132,20 +136,22 @@ export function Board({ state, children, tv = false }: { state: GameState; child
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         {state.players.map((p, seat) => {
           if (p.isOut) return null;
+          const shareCount = (space: number) => state.players.filter((q) => !q.isOut && (shown.get(q.id) ?? q.position) === space).length;
           const at = shown.get(p.id) ?? p.position;
           const { row, col } = cellFor(at);
           const crowd = state.players.filter((q, i) => !q.isOut && (shown.get(q.id) ?? q.position) === at && i < seat).length;
-          const cx = (col - 0.5) * (100 / 7) + (crowd % 2) * 3.2 - 1.6;
-          const cy = (row - 0.5) * (100 / 7) + Math.floor(crowd / 2) * 3.2 + 1.2;
+          const cx = (col - 0.5) * (100 / 7) + (crowd % 2) * 3.2 - (crowd > 0 || shareCount(at) > 1 ? 1.6 : 0);
+          // Pawns sit over the tile's icon so the label underneath stays readable.
+          const cy = (row - 0.5) * (100 / 7) - 1.6 + Math.floor(crowd / 2) * 2.6;
           const isCurrent = p.id === current;
           return (
             <div
               key={p.id}
-              className={`absolute flex items-center justify-center rounded-full border-[3px] border-white font-black text-white shadow-lg transition-[left,top] duration-150 ease-out ${tv ? 'h-[4.2%] w-[4.2%] text-[1.3vw]' : 'h-[5%] w-[5%] text-[0.75rem]'} ${isCurrent ? 'z-10 scale-125 ring-4 ring-yellow-400' : ''}`}
-              style={{ left: `${String(cx)}%`, top: `${String(cy)}%`, transform: 'translate(-50%, -50%)', backgroundColor: seatColor(seat) }}
+              className={`absolute transition-[left,top] duration-150 ease-out ${isCurrent ? 'z-10' : ''}`}
+              style={{ left: `${String(cx)}%`, top: `${String(cy)}%`, transform: 'translate(-50%, -50%)' }}
               title={p.name}
             >
-              {labels[seat]}
+              <Pawn seat={seat} label={labels[seat] ?? '?'} size={pawnSize} active={isCurrent} />
             </div>
           );
         })}
@@ -156,7 +162,7 @@ export function Board({ state, children, tv = false }: { state: GameState; child
 
 /** A die face. Remounting with a new `rollKey` replays the tumble. */
 export function Die({ value, rollKey, size = 64 }: { value: number; rollKey: number; size?: number }) {
-  const pip = (x: number, y: number) => <circle key={`${String(x)}${String(y)}`} cx={x} cy={y} r={9} fill="#1f2328" />;
+  const pip = (x: number, y: number) => <circle key={`${String(x)}${String(y)}`} cx={x} cy={y} r={9} fill="#1a1033" />;
   const faces: Readonly<Record<number, [number, number][]>> = {
     1: [[50, 50]],
     2: [[26, 26], [74, 74]],
@@ -166,9 +172,44 @@ export function Die({ value, rollKey, size = 64 }: { value: number; rollKey: num
     6: [[26, 26], [74, 26], [26, 50], [74, 50], [26, 74], [74, 74]],
   };
   return (
-    <svg key={rollKey} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label={`Rolled a ${String(value)}`} className="die-tumble drop-shadow-md">
-      <rect x="4" y="4" width="92" height="92" rx="18" fill="#fff" stroke="#1f2328" strokeWidth="4" />
+    <svg key={rollKey} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label={`Rolled a ${String(value)}`} className="die-tumble drop-shadow-[0_10px_20px_rgba(255,209,102,0.45)]">
+      <defs><linearGradient id="die-face" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff" /><stop offset="1" stopColor="#dfe3f5" /></linearGradient></defs>
+      <rect x="4" y="4" width="92" height="92" rx="22" fill="url(#die-face)" stroke="#ffd166" strokeWidth="4" />
       {(faces[value] ?? []).map(([x, y]) => pip(x, y))}
     </svg>
+  );
+}
+
+/** Pawn diameter in pixels: a share of the viewport so it scales from phone to TV. */
+function usePawnSize(tv: boolean): number {
+  const measure = () => Math.round(Math.min(window.innerWidth, window.innerHeight) * (tv ? 0.042 : 0.03));
+  const [size, setSize] = useState(measure);
+  useEffect(() => {
+    const onResize = () => {
+      setSize(Math.max(18, measure()));
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  });
+  return Math.max(18, size);
+}
+
+/** Month progress: the round as text plus a row of pips, one per month. */
+function MonthMeter({ state, tv }: { state: GameState; tv: boolean }) {
+  const month = roundNumber(state);
+  const limit = roundLimit(state);
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <p className={`eyebrow text-white/70 ${tv ? '!text-[1vw]' : ''}`}>
+        Month {month} of {limit}
+      </p>
+      <div aria-hidden="true" className="flex gap-1">
+        {Array.from({ length: limit }, (_, i) => (
+          <span key={i} className={`rounded-full ${tv ? 'h-[0.6vw] w-[0.6vw]' : 'h-1.5 w-1.5'} ${i < month - 1 ? 'bg-gold' : i === month - 1 ? 'bg-white' : 'bg-white/20'}`} />
+        ))}
+      </div>
+    </div>
   );
 }
