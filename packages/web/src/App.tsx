@@ -8,12 +8,16 @@ import { EndScreen } from './components/EndScreen';
 import { Finances } from './components/Finances';
 import { Lobby } from './components/Lobby';
 import { Scoreboard } from './components/Scoreboard';
+import { TableView } from './components/TableView';
 import { Turn } from './components/Turn';
 import { ERROR_TEXT } from './lib/text';
+import { tableUrl, useRoute } from './router';
 import { useGame } from './store';
 
 export function App() {
+  const route = useRoute();
   const state = useGame((s) => s.state);
+  if (route === 'table') return <TableView />;
   if (state === null) return <Lobby />;
   if (state.game.phase === 'finished') return <EndScreen state={state} />;
   return <GameScreen state={state} />;
@@ -28,6 +32,16 @@ function GameScreen({ state }: { state: GameState }) {
     <div className="mx-auto max-w-7xl px-4 py-4">
       <header className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-extrabold">Freedom Loop{state.game.mode === 'kids' ? ' (kids mode)' : ''}</h1>
+        <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={() => {
+            window.open(tableUrl(), 'freedom-loop-table', 'popup=yes,width=1280,height=720');
+          }}
+        >
+          Show on TV
+        </button>
         <button
           type="button"
           className="btn-secondary"
@@ -37,7 +51,9 @@ function GameScreen({ state }: { state: GameState }) {
         >
           Quit game
         </button>
+        </div>
       </header>
+      <p className="mt-1 text-sm text-slate-700">TV: click Show on TV, drag that window to the TV screen, press F for full screen. This window stays private.</p>
       <ErrorBanner />
       {/* Phones: board, decision, money, table. Laptops: board and table left, decision and money right. */}
       <main className="mt-4 flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">

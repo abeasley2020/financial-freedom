@@ -97,3 +97,16 @@ export const useGame = create<GameStore>((set, get) => ({
     set({ lastError: null });
   },
 }));
+
+/**
+ * Two windows of the same browser share the game: the laptop runs the
+ * controller and a second window on the TV shows the table. Every save above
+ * fires a storage event in the other window, which reloads from the same key.
+ */
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key !== SAVE_KEY && event.key !== null) return;
+    const saved = load();
+    useGame.setState({ state: saved.state, undoStack: saved.undoStack, lastError: null });
+  });
+}

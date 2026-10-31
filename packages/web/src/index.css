@@ -31,3 +31,61 @@
     @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold;
   }
 }
+
+@keyframes die-tumble {
+  0% {
+    transform: rotate(-200deg) scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: rotate(20deg) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+.die-tumble {
+  animation: die-tumble 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes rise {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.rise {
+  animation: rise 350ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .die-tumble,
+  .rise {
+    animation: none;
+  }
+  * {
+    transition-duration: 0ms !important;
+  }
+}
+
+/* The TV table: dark felt, light text. Tiles keep their own light fills and dark text. */
+.tv {
+  background: radial-gradient(ellipse at center, #15304a 0%, #0b1a2b 70%);
+  color: #f6f1e7;
+}
+.tv-panel {
+  @apply rounded-2xl bg-white/5 p-[1vw];
+}
+/* Money and muted text tuned for the dark TV background (both pass 4.5:1 on #0b1a2b). */
+.tv .text-gain {
+  color: #7fe0a6;
+}
+.tv .text-loss {
+  color: #ffa399;
+}
+.tv .text-slate-700 {
+  color: rgba(246, 241, 231, 0.85);
+}

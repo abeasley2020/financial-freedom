@@ -24,14 +24,25 @@ export const SPACE_LABEL: Readonly<Record<SpaceKind, string>> = {
   setback: 'Setback',
 };
 
-/** Phone-width labels; the full name stays in the space's accessible name. */
+/** Tile labels, short enough to fit a tile at any size; the full name stays in the space's accessible name. */
 export const SPACE_SHORT: Readonly<Record<SpaceKind, string>> = {
   opportunity: 'Deal',
   lifeChoices: 'Life',
-  market: 'Mkt',
+  market: 'Market',
   giving: 'Give',
-  setback: 'Oops',
+  setback: 'Setback',
 };
+
+/**
+ * One character per token. First letters of names when they are all
+ * different, otherwise seat numbers, so "Player 1" and "Player 2" never both
+ * read "P".
+ */
+export function tokenLabels(players: readonly { readonly name: string }[]): readonly string[] {
+  const initials = players.map((p) => p.name.trim().charAt(0).toUpperCase() || '?');
+  const unique = new Set(initials).size === initials.length;
+  return unique ? initials : players.map((_, i) => String(i + 1));
+}
 
 export const SPACE_STYLE: Readonly<Record<SpaceKind, string>> = {
   opportunity: 'bg-emerald-50 border-emerald-700',
@@ -196,4 +207,29 @@ export function describeEvent(state: GameState, actorId: string, event: LogEvent
     case 'turnSkipped':
       return `${playerName(state, event.playerId)} sits out this turn.`;
   }
+}
+
+/** The plain-language lines for the turn in progress, or the last finished turn when the new turn has not started. */
+export function recentLines(state: GameState): { readonly heading: string | null; readonly lines: readonly { key: string; text: string }[] } {
+  const thisTurn = state.game.log.filter((e) => e.turnNumber === state.game.turnNumber);
+  const lastTurn = thisTurn.length === 0 ? state.game.log.filter((e) => e.turnNumber === state.game.turnNumber - 1) : [];
+  const shown = thisTurn.length > 0 ? thisTurn : lastTurn;
+  const lastActor = state.players.find((p) => p.id === lastTurn[0]?.action.playerId)?.name;
+  const heading = thisTurn.length > 0 ? 'This turn' : lastActor === undefined ? null : `Last turn (${lastActor})`;
+  const lines = shown.flatMap((entry, i) =>
+    entry.events
+      .map((event, j) => ({ key: `${String(entry.turnNumber)}-${String(i)}-${String(j)}`, text: describeEvent(state, entry.action.playerId, event) }))
+      .filter((line): line is { key: string; text: string } => line.text !== null),
+  );
+  return { heading, lines };
+}
+
+/** The die value from the most recent ROLL in the log, with the log index so a new roll can restart the animation. */
+export function lastRoll(state: GameState): { readonly value: number; readonly key: number } | null {
+  for (let i = state.game.log.length - 1; i >= 0; i--) {
+    const entry = state.game.log[i];
+    if (entry === undefined) break;
+    for (const event of entry.events) if (event.kind === 'rolled') return { value: event.value, key: i };
+  }
+  return null;
 }

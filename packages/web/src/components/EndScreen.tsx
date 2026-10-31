@@ -5,7 +5,7 @@ import { professionName, seatColor } from '../lib/text';
 import { useGame } from '../store';
 
 /** End of game: the winner, the family ranking, and each player's money story. */
-export function EndScreen({ state }: { state: GameState }) {
+export function EndScreen({ state, readOnly = false }: { state: GameState; readOnly?: boolean }) {
   const quit = useGame((s) => s.quit);
   const start = useGame((s) => s.start);
   const champ = winner(state);
@@ -29,7 +29,7 @@ export function EndScreen({ state }: { state: GameState }) {
         </p>
       )}
 
-      <section className="panel mt-6" aria-labelledby="ranking-heading">
+      <section className="panel mt-6 text-ink" aria-labelledby="ranking-heading">
         <h2 id="ranking-heading" className="text-xl font-bold">
           Family ranking
         </h2>
@@ -53,7 +53,7 @@ export function EndScreen({ state }: { state: GameState }) {
         </ol>
       </section>
 
-      <section className="panel mt-6" aria-labelledby="story-heading">
+      <section className="panel mt-6 text-ink" aria-labelledby="story-heading">
         <h2 id="story-heading" className="text-xl font-bold">
           Money stories
         </h2>
@@ -65,6 +65,7 @@ export function EndScreen({ state }: { state: GameState }) {
         </div>
       </section>
 
+      {!readOnly && (
       <div className="mt-6 flex flex-wrap justify-end gap-3">
         <button
           type="button"
@@ -79,6 +80,7 @@ export function EndScreen({ state }: { state: GameState }) {
           New game
         </button>
       </div>
+      )}
     </main>
   );
 }
